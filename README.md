@@ -1,24 +1,24 @@
 # Abcq/Acedb Map Generator
-### version 0.0.5 (alfa)
+### version 0.0.5 (alpha)
 
-## The goal:
-The goal of this script/app is to have a tool for map generation for Open Tibia Servers.
-It can work as a part of probably any TFS version and also can be run
+## The Goal:
+The goal of this script/app is to provide a tool for map generation for Open Tibia Servers.
+It can likely work as part of any TFS version and also can be run
 independently, directly from CLI.
 
 It was mostly designed to generate tomb like dungeons, but can be extended to various purposes.
 
 ## Personal note:
-The core of this tool was created over 10 years a ago, as fun project when I was not
+The core of this tool was created over 10 years ago, as fun project when I was not
 even an IT student. It still contains much legacy in some areas, in the code, and it's in general messy. Please don't judge me :)
 
-And also please remember this is an alpha version.
+And also, please note that this is an alpha version.
 
 ## Requirements:
 
-- Lua 5.1 being installed or probably any TFS 1.x version (was tested on 1.5 downgrade 8.6 by Nekiro)
-- LuaJit (optional, but recommended to have, if you want to speed up the generation process)
-- Can be downgraded to be used on TFS 0.3.4 - 0.4.x (was originally implemented on 0.3.4-pl1, just check ```lib/mockFunctions.lua``` and search for "```-- tfs function call, depends on tfs version```" comments)
+- Lua 5.1 installed or probably any TFS 1.x version (was tested on 1.5 downgrade 8.6 by Nekiro)
+- LuaJit (optional but recommended to speed up the generation process)
+- It can be downgraded to work on TFS 0.3.4 - 0.4.x (was originally implemented on 0.3.4-pl1, just check ```lib/mockFunctions.lua``` and search for "```-- tfs function call, depends on tfs version```" comments)
 
 ## Usage:
 ### - CLI:
@@ -31,23 +31,23 @@ where ```<params_list_separated_by_comma>``` look like:\
 - ```<mode>``` in cli run mode it's constant "```tableMode```" always
 - ```<optional_save_param>``` optional param, determining do we want to save map
     after the generation process or not. If yes, value is "```save```". Expected in CLI mode.
-#### Full examples:
+#### Examples:
 - ```Lua main.lua test40,save cli```
 - ```Lua main.lua test40,tableMode,save cli```
 - ```Luajit main.lua test40,save cli``` (if LuaJIT being used)
 - ```Luajit main.lua test40,tableMode,save cli``` (if LuaJIT being used)
 
-#### Note: luajit usage decreases whole execution time up to 2-3 times or even more. For more check: https://luajit.org/install.html
+#### Note: Using LuaJIT can decrease execution time by 2-3 times or more. Check: https://luajit.org/install.html
 
 ### - TFS, talkaction (on running server):
 Place below line into your talkactions.xml (the )
 ```<talkaction words="/genMap" separator=" " script="otMapGen/main.lua"/>```
 
-for this setting your downloaded generator should be placed:
+For this setting, your downloaded generator should be placed in the following location:
 
 ![guide02](images/guide02.png)
 
-Depending on your own usage/implementaion, for talkaction it would be for example like this:\
+Depending on your usage/implementation, for talkaction it would be for example like this:\
 ```/genMap <params_list_separated_by_comma>```\
 where ```<params_list_separated_by_comma>``` look like:\
 ```<generation_script_filename>,<mode>,<optional_save_param>```
@@ -65,23 +65,23 @@ Which way to use depends on your specific needs (tableMode is incredibly faster)
 - ```/genMap test40,save```
 - ```/genMap test40,tableMode,save```
 
-### Credentials of some used resources:
-- Zbizu: https://github.com/Zbizu/map_generator-old-/tree/master (the files loader code)
+### Credentials of resources used:
+- Zbizu: https://github.com/Zbizu/map_generator-old-/tree/master (file loader code)
 - Capaverde, Zbizu: https://otland.net/threads/savemap-function-saves-it-to-a-new-otbm.193781 (saving maps to .otbm)
 - Kikito: https://github.com/kikito/ansicolors.lua (ansicolors, added, but currently not being used)
 - Bluebird75: https://github.com/bluebird75/luaunit (lua unit test framework)
 - Core Lua 5.1 Logging
 
 ### Todos:
-- better logging, for example like (with asci colors):
+- improved logging, for example (with asci colors):
 
 print(ANSICOLORS('%{red}hello'))\
 print(ANSICOLORS('%{redbg}hello%{reset}'))\
 print(ANSICOLORS('%{bright red underline}hello'))
 
-- possibility to erase the generation map area (actually a way to restart the process in running TFS)
+- the ability to erase the generated map area (actually a way to restart the process in running TFS)
 - add more generation scripts
-- make OOP MapSaver work
+- ensure OOP MapSaver works
 - more optimization
 - more functionalities like for example creating small architectures
 - isles generation
@@ -92,10 +92,10 @@ to be run "without-tfs-freeze" way - saves the map before any item is being crea
 - remove many unnecessary prints from the code
 
 ### Known bugs:
-- when run in CLI mode border are being placed over the carpetbrushes
-- wall border bug, when we generate small map with rooms close to each others:
+- when run in CLI mode borders are placed over carpet brushes
+- wall border bug occurs when generating small maps with rooms close to each other:
 ![wall border bug](images/wallBug01.png)
-- sometimes it happens, that it creates the structure on the player's way:
+- in some cases, structures may block the player's path:
 ![wall border bug](images/structureOnTheWay01.png)
 In some rare edge cases it can generate the dungeon, which can not be explored fully
 - generating map in TFS, requires restarting TFS each time (at least that's what I remember)
@@ -113,9 +113,9 @@ wayPointsCount = 18
 are strictly correlated with each other.
 Beginning from the end "wayPointsCount" determines how many rooms will be placed on map and
 "wpMinDist" determines the minimum distance between them, so if mapSizeX and mapSizeY multiplicity gives
-not enough space to handle the number of rooms generation will simply fail one way or another.
+not enough space to handle the number of rooms, generation will simply fail one way or another.
 
-To achieve the best outcome, you need to combine those parameters the way that will allow you to be still able to
+To achieve the best results, combine these parameters the way that will allow you to be still able to
 generate map and make sure that the map will not be empty of rooms, tunnels etc.
 
 As a guide you can watch the number log message:
@@ -132,9 +132,9 @@ In current generation script files you can find many commented things, it's beca
 of the generator, and I've been experimenting with them.
 
 Be aware that, the order of specific functions execution in the generation scripts can have the impact
-on the whole generation process! Get to know this tool well before you'll start changing the order of execution of specific functions!
+on the whole generation process! Familiarize yourself with this tool before changing the order of execution of specific functions!
 
-Feel free to create your own schema files, based and following the existing ones!
+Feel also free to create your own schema files, based and following the existing ones!
 
 -----------------------
 
