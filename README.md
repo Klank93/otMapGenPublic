@@ -134,7 +134,7 @@ of the generator, and I've been experimenting with them.
 Be aware that, the order of specific functions execution in the generation scripts can have the impact
 on the whole generation process! Get to know this tool well before you'll start changing the order of execution of specific functions!
 
-Feel also free to create your own schema files, based and following the existing ones!
+Feel free to create your own schema files, based and following the existing ones!
 
 -----------------------
 
