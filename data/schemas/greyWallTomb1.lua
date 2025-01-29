@@ -1,3 +1,4 @@
+-- WARNING: if you extend this table with unwalkable items, please remember to add them in array under lib/data/unwalkableItems.lua ! (to keep tableMode working)
 ITEMS_TABLE = {
     [0] = {919}, -- itemId of the main "external" ground, can be later randomized by next elements in this table (row)
     [1] = {3152, 3153},  -- itemId of the main walkable ground of tunnels, can be later randomized by next elements in this table (row)
@@ -105,7 +106,6 @@ ITEMS_TABLE = {
              5016, -- skull
              5018, -- skull2
              9517, -- small shield
-             10170, -- big shield
              7234, -- wooden shield
              7565, -- empty coffin
              7560, -- coffin
@@ -117,7 +117,6 @@ ITEMS_TABLE = {
              5017, -- skull
              5019,  -- skull2
              9518, -- small shield
-             10171, -- big shield
              7235, -- wooden shield
              7564, -- empty coffin
              7561, -- coffin
