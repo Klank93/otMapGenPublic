@@ -41,7 +41,7 @@ where ```<params_list_separated_by_comma>``` look like:\
 
 ### - TFS, talkaction (on running server):
 Place below line into your talkactions.xml (the )
-```<talkaction words="/genMap" separator=" " script="otMapGen/main.lua"/>```
+```<talkaction words="/genMap" separator=" " script="otMapGenPublic/main.lua"/>```
 
 For this setting, your downloaded generator should be placed in the following location:
 

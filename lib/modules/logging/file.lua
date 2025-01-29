@@ -10,17 +10,17 @@
 if (executionArgs[2] == 'cli') then
 	require "lib/modules/logging"
 else
-	require "data/talkactions/scripts/otMapGen/lib/modules/logging"
+	require "data/talkactions/scripts/otMapGenPublic/lib/modules/logging"
 end
 
 local lastFileNameDatePattern
 local lastFileHandler
 
 local openFileLogger = function (filename, datePattern)
-	
+
 	local filename = string.format(filename, os.date(datePattern))
 	if (lastFileNameDatePattern ~= filename) then
-		
+
 		local f = io.open(filename, "a")
 		if (f) then
 			f:setvbuf ("line")
@@ -28,12 +28,12 @@ local openFileLogger = function (filename, datePattern)
 			lastFileHandler = f
 			return f
 		else
-			return nil, string.format("file `%s' could not be opened for writing", filename)	
+			return nil, string.format("file `%s' could not be opened for writing", filename)
 		end
 	else
-		return lastFileHandler		
+		return lastFileHandler
 	end
-	
+
 end
 
 function logging.file(filename, datePattern, logPattern)

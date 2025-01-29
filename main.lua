@@ -2,7 +2,7 @@ executionArgs = {...}
 if (executionArgs[2] == 'cli') then
     require "lib/modules/logging/file"
 else
-    require "data/talkactions/scripts/otMapGen/lib/modules/logging/file"
+    require "data/talkactions/scripts/otMapGenPublic/lib/modules/logging/file"
 end
 
 local rootPath = ''
@@ -79,7 +79,7 @@ if (executionArgs[2] == 'cli') then
     onSay(cid, {}, executionArgs[1], nil)
 else
     RUNNING_MODE = 'tfs'
-    rootPath = 'data/talkactions/scripts/otMapGen/'
+    rootPath = 'data/talkactions/scripts/otMapGenPublic/'
     dofile(rootPath .. 'bootstrap.lua')
 end
 
