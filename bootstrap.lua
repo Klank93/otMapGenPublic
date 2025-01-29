@@ -1,9 +1,9 @@
-ROOT_PATH = "data/talkactions/scripts/otMapGen/"
+ROOT_PATH = "data/talkactions/scripts/otMapGenPublic/"
 
 ------------------------------
 -- Config Load
 ------------------------------
-dofile('data/talkactions/scripts/otMapGen/config.lua')
+dofile('data/talkactions/scripts/otMapGenPublic/config.lua')
 local prefix = ">> "
 
 local dirCommand = {'find ', ' -maxdepth 1 -type f'}

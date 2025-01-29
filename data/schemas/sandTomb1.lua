@@ -1,3 +1,4 @@
+-- WARNING: if you extend this table with unwalkable items, please remember to add them in array under lib/data/unwalkableItems.lua ! (to keep tableMode working)
 ITEMS_TABLE = {
     [0] = {8133}, -- itemId of the main "external" ground, can be later randomized by next elements in this table (row)
     [1] = {419, 412}, -- itemId of the main walkable ground of tunnels, can be later randomized by next elements in this table (row)
@@ -6,7 +7,6 @@ ITEMS_TABLE = {
         -- vertical 2sqm size items e.g. coffins // todo: handle the items on the coffins, altars etc.
         {1410,1411},
         {1415,1416},
-        {11771,11770},
         {1644,1645},  -- altar stone
         {2610,2622}, -- sacrificial stone
         {2610,2611}, -- sacrificial stone
@@ -17,7 +17,6 @@ ITEMS_TABLE = {
     [4] = {
         -- horizontal 2sqm size items e.g. coffins // todo: handle the items on the coffins, altars etc.
         {1642,1643}, -- altar stone
-        {11773,11772},
         {2612,2613}, -- sacrificial stone
         {2612,2623}, -- sacrificial stone
         {2617,2613}, -- sacrificial stone
@@ -32,7 +31,6 @@ ITEMS_TABLE = {
         {7058}, -- skull pillar
         {6972},
         {1486},
-        {12083},
         {1549} -- sandstone pillar
     },
 
@@ -44,7 +42,6 @@ ITEMS_TABLE = {
         {7058}, -- skull pillar
         {6972},
         {1486},
-        {12083},
         {1549}   -- sandstone pillar
     },
 
@@ -71,7 +68,6 @@ ITEMS_TABLE = {
         {2234,2230,2231,2227,2222,2225,2248,2229,2221,2255,2228,
          2975,2976, -- skeleton slain
          3060, -- dead human
-         --10912, 10913, 10911, -- bunch of grass for the desert -- todo: is it working?
          1905 -- bloodspot
         }
     },
@@ -109,13 +105,8 @@ ITEMS_TABLE = {
              5016, -- skull
              5018, -- skull2
              9517, -- small shield
-             10170, -- big shield
              7234, -- wooden shield
-             1829,
-             11778,
-             11776,
-             11777,
-             11780
+             1829
     },
     [19] = { -- hangable stuff for west walls
              5060, -- cobra
@@ -123,13 +114,8 @@ ITEMS_TABLE = {
              5017, -- skull
              5019,  -- skull2
              9518, -- small shield
-             10171, -- big shield
              7235, -- wooden shield
-             1830,
-             11781,
-             11779,
-             11774,
-             11775
+             1830
     },
     [20] = { -- blood on the walls, hangable for north walls
         1900,1901,1902,9731

@@ -40,12 +40,6 @@ where ```<params_list_separated_by_comma>``` look like:\
 #### Note: Using LuaJIT can decrease execution time by 2-3 times or more. Check: https://luajit.org/install.html
 
 ### - TFS, talkaction (on running server):
-Place below line into your talkactions.xml (the )
-```<talkaction words="/genMap" separator=" " script="otMapGen/main.lua"/>```
-
-For this setting, your downloaded generator should be placed in the following location:
-
-![guide02](images/guide02.png)
 
 Depending on your usage/implementation, for talkaction it would be for example like this:\
 ```/genMap <params_list_separated_by_comma>```\
@@ -126,6 +120,11 @@ repeating successful generation results.
 If it is too high, increase the number of rooms (wayPointsCount) or decrease the minimal distance between them (wpMinDist).
 Otherwise, if it's too low, decrease the number of rooms or increase the minimal distance between them.
 
+Other similar issue can happen if it wont be able to create requested by you markers count in generation script - calls of the ``Marker:createMarkersAlternatively(...)`` function.
+If ``Available map tiles for potential new markers count: 7 after the procedure.`` output will print low number (near to 0, lower then 5, 10 smth like that) frequently, please reconsider decreasing
+the value of ``minDistanceBetweenTwoMarkers`` or ``markersAmount`` or increase the map size.
+
+
 ``schemaFile`` determines the file with array, which provides the item ids to be used for generation of the map
 
 In current generation script files you can find many commented things, it's because it is still an alpha version
@@ -146,3 +145,20 @@ Feel also free to create your own schema files, based and following the existing
 2. genScript: sandCave100
 
 ![example2.png](images/examples/exampleSandCave100_01.png)
+
+## TFS configuration:
+
+#### 1. Place below line into your talkactions.xml (the )
+```<talkaction words="/genMap" separator=" " script="otMapGenPublic/main.lua"/>```
+
+For this setting, your downloaded generator should be placed in the following location:
+
+![guide02](images/guide02.png)
+
+(main directory should be named "otMapGenPublic" of course)
+
+#### 2. Move tmp map from ```tmpGenerationTestMap/generating860.otbm``` to your TFS ```data/world``` directory
+Be aware it's for 8.6 version, you can convert it if needed
+
+#### 3. Set the name of the map in your TFS config.lua file
+

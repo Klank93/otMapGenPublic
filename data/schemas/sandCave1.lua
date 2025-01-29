@@ -1,3 +1,4 @@
+-- WARNING: if you extend this table with unwalkable items, please remember to add them in array under lib/data/unwalkableItems.lua ! (to keep tableMode working)
 ITEMS_TABLE = {
     [0] = {101,5711,5712,5713,5714,5715,5716,5717,5718,5719,5720,5721,5722,5723,5724,5725,5726}, -- groundy maintile'a, pierwszy elementy to glowny id, ktory moze byc pozniej randomizowany na nastepne z tablicy
     [1] = {352, 353, 354, 355},  -- groundy, pierwszy elementy tablicy to glowny ground tuneli, pozniej jest randomizowany na nastepne z tablicy
@@ -109,7 +110,6 @@ ITEMS_TABLE = {
              5016, -- skull
              5018, -- skull2
              9517, -- small shield
-             10170, -- big shield
              7234, -- wooden shield
              7565, -- empty coffin
              7560, -- coffin
@@ -121,7 +121,6 @@ ITEMS_TABLE = {
              5017, -- skull
              5019,  -- skull2
              9518, -- small shield
-             10171, -- big shield
              7235, -- wooden shield
              7564, -- empty coffin
              7561, -- coffin
