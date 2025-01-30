@@ -2,12 +2,13 @@
 CaveGroundMapper = {}
 CaveGroundMapper.__index = CaveGroundMapper
 
-function CaveGroundMapper.new(mainPos, sizeX, sizeY, wpMinDist, wpMaxDist) -- todo: add more params, if needed
+function CaveGroundMapper.new(mainPos, sizeX, sizeY, sizeZ, wpMinDist, wpMaxDist) -- todo: add more params, if needed
     local instance = setmetatable(CaveGroundMapper, GroundMapper)
     instance.mainPos = mainPos
     instance.pos = {x = mainPos.x, y = mainPos.y, z = mainPos.z} -- todo: maybe not needed?
     instance.sizeX = sizeX
     instance.sizeY = sizeY
+	instance.sizeZ = sizeZ
     instance.wpMinDist = wpMinDist
     instance.wpMaxDist = wpMaxDist or 0 -- for middle/large maps the value can be set, other way keep 0 todo: does not work
     instance.wayPoints = {}
@@ -57,7 +58,7 @@ function CaveGroundMapper:correctCaveShapes(
                                     {x = pom.x + length, y = pom.y, z = pom.z, stackpos = 0}
                                 ).itemid == groundItemId)  and (getThingFromPosMock(
                                         {x = pom.x + length, y = pom.y + 1, z = pom.z, stackpos = 0}
-                                ).itemid == mainGroundItemId) 
+                                ).itemid == mainGroundItemId)
                             ) then
                                 length = length + 1
                             else
@@ -558,7 +559,7 @@ function CaveGroundMapper:correctBackgroundShapes(
                             --	break
                         elseif (id == 2) then
                             doCreateItemMock(
-                                    groundItemId, 
+                                    groundItemId,
                                     1,
                                     {x = pom.x, y = pom.y + math.pow(-1, math.random(0,1)), z = pom.z}
                             )
@@ -639,7 +640,7 @@ function CaveGroundMapper:correctBackgroundShapes(
                         if (id <= 8) then
                             doCreateItemMock(
                                     mainGroundItemId,
-                                    1, 
+                                    1,
                                     {x = pom.x, y = pom.y, z = pom.z}
                             )
                             doCreateItemMock(
@@ -683,7 +684,7 @@ function CaveGroundMapper:correctBackgroundShapes(
     end
 
     print("Correction of the background II, execution time: " .. os.clock() - startTime)
-    
+
     pom.x = self.mainPos.x
     pom.y = self.mainPos.y
     pom.z = self.mainPos.z

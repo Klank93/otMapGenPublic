@@ -33,9 +33,7 @@ where ```<params_list_separated_by_comma>``` look like:\
     after the generation process or not. If yes, value is "```save```". Expected in CLI mode.
 #### Examples:
 - ```Lua main.lua test40,save cli```
-- ```Lua main.lua test40,tableMode,save cli```
 - ```Luajit main.lua test40,save cli``` (if LuaJIT being used)
-- ```Luajit main.lua test40,tableMode,save cli``` (if LuaJIT being used)
 
 #### Note: Using LuaJIT can decrease execution time by 2-3 times or more. Check: https://luajit.org/install.html
 
@@ -55,9 +53,12 @@ Otherwise, it will create items on map during the generation process, in just on
 Which way to use depends on your specific needs (tableMode is incredibly faster).
 - ```<optional_save_param>``` optional param, determining do we want to save generated map
   after the process. If yes, value is "```save```". The generated file will appear in the TFS root directory.
-#### Full examples:
+#### Examples:
 - ```/genMap test40,save```
 - ```/genMap test40,tableMode,save```
+
+#### Erasing generated map (only in TFS, you need to provide generation script file - the same, which was used for generation):
+- ```/genMap test40,erase```
 
 ### Credentials of resources used:
 - Zbizu: https://github.com/Zbizu/map_generator-old-/tree/master (file loader code)
@@ -89,10 +90,9 @@ to be run "without-tfs-freeze" way - saves the map before any item is being crea
 - when run in CLI mode borders are placed over carpet brushes
 - wall border bug occurs when generating small maps with rooms close to each other:
 ![wall border bug](images/wallBug01.png)
-- in some cases, structures may block the player's path:
+- in some cases, structures may  partially block the player's path:
 ![wall border bug](images/structureOnTheWay01.png)
 In some rare edge cases it can generate the dungeon, which can not be explored fully
-- generating map in TFS, requires restarting TFS each time (at least that's what I remember)
 - don't know why, but tableMode in TFS does not work in some scenarios (have no time to investigate it)
 
 ## How to develop / modify / extend generation scripts:
@@ -120,8 +120,15 @@ repeating successful generation results.
 If it is too high, increase the number of rooms (wayPointsCount) or decrease the minimal distance between them (wpMinDist).
 Otherwise, if it's too low, decrease the number of rooms or increase the minimal distance between them.
 
-Other similar issue can happen if it wont be able to create requested by you markers count in generation script - calls of the ``Marker:createMarkersAlternatively(...)`` function.
-If ``Available map tiles for potential new markers count: 7 after the procedure.`` output will print low number (near to 0, lower then 5, 10 smth like that) frequently, please reconsider decreasing
+Other similar issue can happen if it wont be able to create requested by you markers count in generation script -
+calls of the ``Marker:createMarkersAlternatively(...)`` function.
+
+Example output (if it happens rarely, you can test your luck and generate map again, from scratch):
+
+![guide05](images/guide05.png)
+
+If ``Available map tiles for potential new markers count: 7 after the procedure.`` output will print low number
+(near to 0, lower then 5, 10 smth like that) frequently, please reconsider decreasing
 the value of ``minDistanceBetweenTwoMarkers`` or ``markersAmount`` or increase the map size.
 
 
@@ -161,4 +168,15 @@ For this setting, your downloaded generator should be placed in the following lo
 Be aware it's for 8.6 version, you can convert it if needed
 
 #### 3. Set the name of the map in your TFS config.lua file
+
+#### 4. If you want to use your own map, please change the value of pos:
+
+![guide03](images/guide03.png)
+
+in your generation file and be sure that map squares where map will be generated are filled
+with water ground or void ground - smth like that. Tiles can not be empty (not recommended, can cause issues).
+
+Make sure that base ground; water, void, whatever should create kind of a "frame" around generated map, example:
+
+![guide04](images/guide04.png)
 

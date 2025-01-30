@@ -10,8 +10,15 @@ logger = nil
 
 --function onSay(cid, words, param, param2)
 function onSay(player, words, param) -- todo: mess, to refactor (there is also some bug here with input params, but dont remember now what exactly)
+	local loadScriptFile = function (params, generalStartTime)
+		local generationScriptFilePath = rootPath .. 'data/genScripts/' .. params[1] .. '.lua'
+		print("# Executing script: " .. generationScriptFilePath .. ", logIdentifier: " .. generalStartTime)
+
+		return generationScriptFilePath
+	end
+
     local params = explode(removeWhitespace(param), ",")
-    if (params[1] ~= nil) then
+	if (params[1] ~= nil) then
         local generalStartTime = os.clock()
         logger = logging.file(
                 rootPath .. 'logs/' .. params[1] .. "-%s.log",
@@ -23,15 +30,24 @@ function onSay(player, words, param) -- todo: mess, to refactor (there is also s
             TFS_CID = player:getId() -- cid / player:getId(), depending on TFS version
             TFS_MESSAGE_CLASSES = MESSAGE_EVENT_DEFAULT
         end
+
+		if (params[2] == "erase") then
+			local generationScriptFilePath = loadScriptFile(params, generalStartTime)
+			dofile(generationScriptFilePath)
+			eraseMap()
+			print('Map was erased for script: ' .. generationScriptFilePath)
+
+			return
+		end
+
         if (params[2] == 'tableMode') then -- simulates running through CLI in TFS todo: bug in running in CLI
             PRECREATION_TABLE_MODE = true
             RETURNVALUE_NOERROR = 1
         end
 
-        local generationScriptFilePath = rootPath .. 'data/genScripts/' .. params[1] .. '.lua'
-        print("# Executing script: " .. generationScriptFilePath .. ", logIdentifier: " .. generalStartTime)
-
-        dofile(generationScriptFilePath)
+        local generationScriptFilePath = loadScriptFile(params, generalStartTime)
+        local runningScript = dofile(generationScriptFilePath)
+		runningScript.run()
 
         local endMessage = "# General execution time: " .. os.clock() - generalStartTime
         if (LOG_TO_FILE) then

@@ -1,12 +1,13 @@
 GroundMapper = {}
 GroundMapper.__index = GroundMapper
 
-function GroundMapper.new(mainPos, sizeX, sizeY, wpMinDist, wpMaxDist) -- todo: add more params, if needed
+function GroundMapper.new(mainPos, sizeX, sizeY, sizeZ, wpMinDist, wpMaxDist) -- todo: add more params, if needed
     local instance = setmetatable({}, GroundMapper)
     instance.mainPos = mainPos
     instance.pos = {x = mainPos.x, y = mainPos.y, z = mainPos.z} -- todo: maybe not needed?
     instance.sizeX = sizeX
     instance.sizeY = sizeY
+	instance.sizeZ = sizeZ
     instance.wpMinDist = wpMinDist
     instance.wpMaxDist = wpMaxDist or 0 -- for middle/large maps the value can be set, other way keep 0 todo: does not work
     instance.wayPoints = {}
@@ -211,20 +212,15 @@ end
 
 function GroundMapper:eraseMap() -- todo: handle multi-floor case
     local startTime = os.clock()
-    local startX = self.mainPos.x
-    local pom = {}
-    pom.x = self.mainPos.x
-    pom.y = self.mainPos.y
-    pom.z = self.mainPos.z
+	local removedItems = 0
 
     for i = self.mainPos.y, self.mainPos.y + self.sizeY do
-        pom.y = i
-        for j = self.mainPos.x, self.mainPos.x + self.sizeX do
-            pom.x = j
-            removeAllItemsFromPos({x = j, y = i, z = self.mainPos.z})
+		for j = self.mainPos.x, self.mainPos.x + self.sizeX do
+			for k = self.mainPos.z, self.mainPos.z - (self.sizeZ - 1), -1 do
+				removedItems = removedItems + removeAllItemsFromPos({x = j, y = i, z = k})
+			end
         end
-        pom.x = startX
     end
 
-    print("Map erased, execution time: " .. os.clock() - startTime)
+    print("Map erased, items removed: " .. removedItems .. ", execution time: " .. os.clock() - startTime)
 end

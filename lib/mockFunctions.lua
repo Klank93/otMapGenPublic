@@ -100,6 +100,12 @@ getThingFromPosMock = function(pos)
     local result
     if not (PRECREATION_TABLE_MODE) then
         result = getThingfromPos(pos) -- tfs function call, depends on tfs version
+		if result.uid ~= 0 and DEBUG_OUTPUT then
+			local thing = getThingPos(result.uid)
+			if type(thing) == "table" then
+				stackPos = thing.stackpos
+			end
+		end
     else
         if (isEmpty(CLI_FINAL_MAP_TABLE, pos.x, pos.y, pos.z)) then
             result = {
@@ -137,14 +143,15 @@ getThingFromPosMock = function(pos)
         if (result and result.itemid ~= nil) then
             itemId = result.itemid
         end
-        logger:debug(
-                getFunctionCallerInfo(3) .. 'Got itemId: %s, from pos: {x = %s, y = %s, z = %s, stackpos = %s}',
-                itemId,
-                pos.x,
-                pos.y,
-                pos.z,
-                stackPos or 'nil'
-        )
+
+		logger:debug(
+			getFunctionCallerInfo(3) .. 'Got itemId: %s, from pos: {x = %s, y = %s, z = %s, stackpos = %s}',
+			itemId,
+			pos.x,
+			pos.y,
+			pos.z,
+			stackPos or 'nil'
+		)
     end
 
     return result
@@ -177,8 +184,11 @@ end
 
 doPlayerSendTextMessageMock = function(cid, messageClasses, message)
     if (RUNNING_MODE == 'tfs') then
-        --return doPlayerSendTextMessage(cid, messageClasses, message) -- tfs function call, depends on tfs version
-		return cid:sendTextMessage(messageClasses, message) -- todo: to confirm is that the only one to replace
+		if (type(cid)) then
+			return doPlayerSendTextMessage(cid, messageClasses, message) -- tfs function call, depends on tfs version
+		else
+			return cid:sendTextMessage(messageClasses, message) -- todo: to confirm is that the only one to replace
+		end
     else
         print(message)
     end
@@ -234,16 +244,70 @@ queryTileAddThingMock = function(uid, pos)
     return result
 end
 
+doTransformItemMock = function (itemUid, newItemId, itemObject, itemPos)
+	local result
+	if not (PRECREATION_TABLE_MODE) then
+		if (doTransformItem(itemUid, newItemId)) then -- tfs function call, depends on tfs version
+			result = true
+		end
+	else
+		if (itemPos.stackpos == nil) then -- todo: no errors handled (reconsider is this behavior expected)
+			for stackpos, item in ipairs(CLI_FINAL_MAP_TABLE[itemPos.x][itemPos.y][itemPos.z]) do
+				if item.uid == itemUid then
+					CLI_FINAL_MAP_TABLE[itemPos.x][itemPos.y][itemPos.z][stackpos].itemid = newItemId
+					result = true
+				end
+			end
+		else
+			CLI_FINAL_MAP_TABLE[itemPos.x][itemPos.y][itemPos.z][itemPos.stackpos].itemid = newItemId
+			result = true
+		end
+	end
+
+	if (LOG_TO_FILE and DEBUG_OUTPUT) then
+		if (result) then
+			logger:debug(
+				getFunctionCallerInfo(3) .. 'Transformed Item with uid: %s, from itemId: %s, to itemId: %s, from pos: {x = %s, y = %s, z = %s, stackpos = %s}',
+				itemUid,
+				itemObject.itemid,
+				newItemId,
+				itemPos.x,
+				itemPos.y,
+				itemPos.z,
+				itemPos.stackpos or 'nil'
+			)
+		else
+			logger:debug(
+				getFunctionCallerInfo(3) .. 'Could not transform Item with uid: %s, from itemId: %s, to itemId: %s, from pos: {x = %s, y = %s, z = %s, stackpos = %s}',
+				itemUid,
+				itemObject.itemid,
+				newItemId,
+				itemPos.x,
+				itemPos.y,
+				itemPos.z,
+				itemPos.stackpos or 'nil'
+			)
+		end
+	end
+end
+
 doRemoveItemMock = function(itemUid, itemPos)
     if (itemUid == nil or itemPos == nil) then
         print('itemUid: %s', dumpVar(itemUid))
         print('itemPos: %s', dumpVar(itemPos))
         error('Pos argument is nil. Something went wrong')
     end
+
     local isRemoved = false
     local stackPos = 'unknown'
     if not (PRECREATION_TABLE_MODE) then
-        doRemoveItem(itemUid) -- tfs function call, depends on tfs version
+		local thingPos
+		if (DEBUG_OUTPUT == nil) then thingPos = getThingPos(itemUid) end
+
+		if doRemoveItem(itemUid) then -- tfs function call, depends on tfs version
+			isRemoved = true
+			if (thingPos ~= nil) then stackPos = thingPos.stackpos end
+		end
     else
         local lastStackPos = getLastStackPos(CLI_FINAL_MAP_TABLE, itemPos)
         if (itemPos.stackpos == nil) then
@@ -271,15 +335,26 @@ doRemoveItemMock = function(itemUid, itemPos)
         end
     end
 
-    if (LOG_TO_FILE and isRemoved and DEBUG_OUTPUT) then
-        logger:debug(
-                getFunctionCallerInfo(3) .. 'Removed itemUid: %s, from pos: {x = %s, y = %s, z = %s, stackpos = %s}',
-                itemUid,
-                itemPos.x,
-                itemPos.y,
-                itemPos.z,
-                stackPos
-        )
+    if (LOG_TO_FILE and DEBUG_OUTPUT) then
+		if isRemoved then
+			logger:debug(
+				getFunctionCallerInfo(3) .. 'Removed itemUid: %s, from pos: {x = %s, y = %s, z = %s, stackpos = %s}',
+				itemUid,
+				itemPos.x,
+				itemPos.y,
+				itemPos.z,
+				stackPos
+			)
+		else
+			logger:debug(
+				getFunctionCallerInfo(3) .. 'Could not remove itemUid: %s, from pos: {x = %s, y = %s, z = %s, stackpos = %s}',
+				itemUid,
+				itemPos.x,
+				itemPos.y,
+				itemPos.z,
+				stackPos
+			)
+		end
     end
 
     return isRemoved
