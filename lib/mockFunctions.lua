@@ -184,8 +184,11 @@ end
 
 doPlayerSendTextMessageMock = function(cid, messageClasses, message)
     if (RUNNING_MODE == 'tfs') then
-        --return doPlayerSendTextMessage(cid, messageClasses, message) -- tfs function call, depends on tfs version
-		return cid:sendTextMessage(messageClasses, message) -- todo: to confirm is that the only one to replace
+		if (type(cid)) then
+			return doPlayerSendTextMessage(cid, messageClasses, message) -- tfs function call, depends on tfs version
+		else
+			return cid:sendTextMessage(messageClasses, message) -- todo: to confirm is that the only one to replace
+		end
     else
         print(message)
     end

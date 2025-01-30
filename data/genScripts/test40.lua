@@ -6,6 +6,7 @@ MAP_CONFIGURATION = {
     mainPos = {x = 145, y = 145, z = 7},
     mapSizeX = 40,
     mapSizeY = 40,
+	mapSizeZ = 1, -- no multi-floor for now
     wpMinDist = 8,
     wayPointsCount = 7
 }
@@ -19,6 +20,7 @@ local mainPos = {
 }
 local mapSizeX = MAP_CONFIGURATION.mapSizeX
 local mapSizeY = MAP_CONFIGURATION.mapSizeY
+local mapSizeZ = MAP_CONFIGURATION.mapSizeZ
 local wpMinDist = MAP_CONFIGURATION.wpMinDist
 local wayPointsCount = MAP_CONFIGURATION.wayPointsCount
 local wayPoints = {}
@@ -33,7 +35,7 @@ function script.run()
 	print('> 1 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
 
 	local cursor = Cursor.new(mainPos)
-	local generatedMap = GroundMapper.new(mainPos, mapSizeX, mapSizeY, wpMinDist)
+	local generatedMap = GroundMapper.new(mainPos, mapSizeX, mapSizeY, mapSizeZ, wpMinDist)
 
 	generatedMap:doMainGround(ITEMS_TABLE)
 

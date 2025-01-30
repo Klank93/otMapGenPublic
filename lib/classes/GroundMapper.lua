@@ -1,12 +1,13 @@
 GroundMapper = {}
 GroundMapper.__index = GroundMapper
 
-function GroundMapper.new(mainPos, sizeX, sizeY, wpMinDist, wpMaxDist) -- todo: add more params, if needed
+function GroundMapper.new(mainPos, sizeX, sizeY, sizeZ, wpMinDist, wpMaxDist) -- todo: add more params, if needed
     local instance = setmetatable({}, GroundMapper)
     instance.mainPos = mainPos
     instance.pos = {x = mainPos.x, y = mainPos.y, z = mainPos.z} -- todo: maybe not needed?
     instance.sizeX = sizeX
     instance.sizeY = sizeY
+	instance.sizeZ = sizeZ
     instance.wpMinDist = wpMinDist
     instance.wpMaxDist = wpMaxDist or 0 -- for middle/large maps the value can be set, other way keep 0 todo: does not work
     instance.wayPoints = {}
@@ -215,7 +216,9 @@ function GroundMapper:eraseMap() -- todo: handle multi-floor case
 
     for i = self.mainPos.y, self.mainPos.y + self.sizeY do
 		for j = self.mainPos.x, self.mainPos.x + self.sizeX do
-			removedItems = removedItems + removeAllItemsFromPos({x = j, y = i, z = self.mainPos.z})
+			for k = self.mainPos.z, self.mainPos.z - (self.sizeZ - 1), -1 do
+				removedItems = removedItems + removeAllItemsFromPos({x = j, y = i, z = k})
+			end
         end
     end
 

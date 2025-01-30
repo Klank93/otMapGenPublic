@@ -53,9 +53,12 @@ Otherwise, it will create items on map during the generation process, in just on
 Which way to use depends on your specific needs (tableMode is incredibly faster).
 - ```<optional_save_param>``` optional param, determining do we want to save generated map
   after the process. If yes, value is "```save```". The generated file will appear in the TFS root directory.
-#### Full examples:
+#### Examples:
 - ```/genMap test40,save```
 - ```/genMap test40,tableMode,save```
+
+#### Erasing generated map (only in TFS, you need to provide generation script file - the same, which was used for generation):
+- ```/genMap test40,erase```
 
 ### Credentials of resources used:
 - Zbizu: https://github.com/Zbizu/map_generator-old-/tree/master (file loader code)
