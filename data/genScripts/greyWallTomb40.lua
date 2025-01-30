@@ -3,7 +3,7 @@ MAP_CONFIGURATION = {
     schemaFile = 'greyWallTomb1.lua',
     saveMapFilename = 'greyWallTomb40',
 	logToFile = true,
-    mainPos = {x = 155, y = 155, z = 7},
+    mainPos = {x = 145, y = 145, z = 7},
 	mapSizeX = 40,
 	mapSizeY = 40,
 	wpMinDist = 8,
@@ -28,11 +28,11 @@ loadSchemaFile() -- loads the schema file from map configuration with specific g
 ------ Base stuff
 
 local cursor = Cursor.new(mainPos)
-local map = GroundMapper.new(mainPos, mapSizeX, mapSizeY, wpMinDist)
+local generatedMap = GroundMapper.new(mainPos, mapSizeX, mapSizeY, wpMinDist)
 
-map:doMainGround(ITEMS_TABLE)
+generatedMap:doMainGround(ITEMS_TABLE)
 
-local wayPointer = WayPointer.new(map, cursor)
+local wayPointer = WayPointer.new(generatedMap, cursor)
 wayPointer:createWaypointsAlternatively(wayPoints, wayPointsCount)
 
 --print('Length: ' .. #wayPoints)
@@ -45,7 +45,7 @@ wayPointer:createPathBetweenWpsTSP(ITEMS_TABLE)
 local dungeonRoomBuilder = DungeonRoomBuilder.new(wayPoints)
 dungeonRoomBuilder:createRooms(ITEMS_TABLE, ROOM_SHAPES)
 
-local wallAutoBorder = WallAutoBorder.new(map)
+local wallAutoBorder = WallAutoBorder.new(generatedMap)
 wallAutoBorder:doWalls(
 	ITEMS_TABLE[1][1],
 	ITEMS_TABLE[0][1],
@@ -54,14 +54,14 @@ wallAutoBorder:doWalls(
 
 wallAutoBorder:createArchways(GREY_WALL_BORDER) -- todo: most likely does not work
 
-local marker = Marker.new(map)
+local marker = Marker.new(generatedMap)
 marker:createMarkersAlternatively(
 	ITEMS_TABLE[1][1],
 	12,
 	5
 )
 -- todo: doGround can work incorrectly, differences in original files \/
-map:doGround2(
+generatedMap:doGround2(
 	marker.markersTab,
 	cursor,
 	ITEMS_TABLE[1][1],
@@ -71,7 +71,7 @@ map:doGround2(
 )
 
 -- todo: can work incorrectly, differences in original files \/
-map:correctGround(
+generatedMap:correctGround(
 	ITEMS_TABLE[1][1],
 	ITEMS_TABLE[12][1]
 )
@@ -91,7 +91,7 @@ brush:doBrush(
 	GRAVEL_BRONZE_BASE_BRUSH
 ) -- it has to be executed before the base autoBorder, otherwise there are issues with stackpos
 
-local groundAutoBorder = GroundAutoBorder.new(map)
+local groundAutoBorder = GroundAutoBorder.new(generatedMap)
 groundAutoBorder:doGround(
 	ITEMS_TABLE[12][1],
 	ITEMS_TABLE[1][1],
@@ -109,7 +109,7 @@ groundAutoBorder:correctBorders(
 
 ------ Detailing Map
 
-local detailer = Detailer.new(map, wayPoints)
+local detailer = Detailer.new(generatedMap, wayPoints)
 detailer:createDetailsInRooms(ROOM_SHAPES, ITEMS_TABLE, GREY_WALL_BORDER)
 
 detailer:createDetailsOnMap(ITEMS_TABLE[11][1], 4)
@@ -126,10 +126,10 @@ detailer:createHangableDetails(
 	15
 )
 
-local groundRandomizer = GroundRandomizer.new(map)
+local groundRandomizer = GroundRandomizer.new(generatedMap)
 groundRandomizer:randomize(ITEMS_TABLE, 30)
 
 if (PRECREATION_TABLE_MODE and RUNNING_MODE == 'tfs') then
-	local mapCreator = MapCreator.new(map)
+	local mapCreator = MapCreator.new(generatedMap)
 	mapCreator:drawMap()
 end

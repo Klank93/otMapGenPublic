@@ -3,7 +3,7 @@ MAP_CONFIGURATION = {
     schemaFile = 'test1.lua',
     saveMapFilename = 'test70',
     logToFile = true,
-    mainPos = {x = 155, y = 155, z = 7},
+    mainPos = {x = 145, y = 145, z = 7},
     mapSizeX = 70,
     mapSizeY = 70,
     wpMinDist = 11,
@@ -30,13 +30,13 @@ loadSchemaFile() -- loads the schema file from map configuration with specific g
 print('> 1 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
 
 local cursor = Cursor.new(mainPos)
-local map = GroundMapper.new(mainPos, mapSizeX, mapSizeY, wpMinDist)
+local generatedMap = GroundMapper.new(mainPos, mapSizeX, mapSizeY, wpMinDist)
 
-map:doMainGround(ITEMS_TABLE)
+generatedMap:doMainGround(ITEMS_TABLE)
 
 print('> 2 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
 
-local wayPointer = WayPointer.new(map, cursor)
+local wayPointer = WayPointer.new(generatedMap, cursor)
 wayPointer:createWaypointsAlternatively(wayPoints, wayPointsCount)
 
 print('> 3 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
@@ -56,7 +56,7 @@ roomBuilder:createRooms(ITEMS_TABLE, ROOM_SHAPES)
 
 print('> 4 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
 
-local wallAutoBorder = WallAutoBorder.new(map)
+local wallAutoBorder = WallAutoBorder.new(generatedMap)
 wallAutoBorder:doWalls(
         ITEMS_TABLE[1][1],
         ITEMS_TABLE[0][1],
@@ -65,7 +65,7 @@ wallAutoBorder:doWalls(
 
 print('> 5 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
 
-local marker = Marker.new(map)
+local marker = Marker.new(generatedMap)
 marker:createMarkersAlternatively(
         ITEMS_TABLE[1][1],
         35,
@@ -74,7 +74,7 @@ marker:createMarkersAlternatively(
 
 print('> 6 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
 
-map:doGround2(
+generatedMap:doGround2(
         marker.markersTab,
         cursor,
         ITEMS_TABLE[1][1],
@@ -95,7 +95,7 @@ marker:createMarkersAlternatively(
 
 print('> 8 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
 
-map:doGround2(
+generatedMap:doGround2(
         marker.markersTab,
         cursor,
         ITEMS_TABLE[1][1],
@@ -106,7 +106,7 @@ map:doGround2(
 
 print('> 9 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
 
-map:correctGround(ITEMS_TABLE[1][1], ITEMS_TABLE[12][1])
+generatedMap:correctGround(ITEMS_TABLE[1][1], ITEMS_TABLE[12][1])
 
 print('> 10 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
 
@@ -130,7 +130,7 @@ brush:doBrush(
 
 print('> 12 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
 
-local groundAutoBorder = GroundAutoBorder.new(map)
+local groundAutoBorder = GroundAutoBorder.new(generatedMap)
 groundAutoBorder:doGround(
         ITEMS_TABLE[12][1],
         ITEMS_TABLE[1][1],
@@ -151,13 +151,13 @@ groundAutoBorder:correctBorders(
 
 print('> 14 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
 
---local groundRandomizer = GroundRandomizer.new(map)
+--local groundRandomizer = GroundRandomizer.new(generatedMap)
 --groundRandomizer:randomize(ITEMS_TABLE, 40)
 
 ------ Detailing Map
 
 local startTime = os.clock()
-local detailer = Detailer.new(map, wayPoints)
+local detailer = Detailer.new(generatedMap, wayPoints)
 detailer:createDetailsInRooms(ROOM_SHAPES, ITEMS_TABLE, TOMB_SAND_WALL_BORDER)
 
 print('> 15 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')

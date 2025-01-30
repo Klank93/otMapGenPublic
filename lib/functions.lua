@@ -140,15 +140,24 @@ function printWaypoints(wp, cid)
 end
 
 function removeAllItemsFromPos(pos)
-    for index = 1, 253 do
+	local removedItems = 0
+    for index = 15, 0, -1 do
         pos.stackpos = index
         local currentItem = getThingFromPosMock(pos)
-        if currentItem.itemid > 0 then
-            doRemoveItemMock(currentItem.uid, pos)
-        end
+		if currentItem ~= nil and currentItem.itemid > 0 then
+			if not (inArray(ITEMS_TABLE[0], currentItem.itemid)) then
+				if (isGround(currentItem.itemid)) then
+					doTransformItemMock(currentItem.uid, ITEMS_TABLE[0][math.random(1, #ITEMS_TABLE[0])], currentItem, pos)
+				else
+					if (doRemoveItemMock(currentItem.uid, pos)) then
+						removedItems = removedItems + 1
+					end
+				end
+			end
+		end
     end
 
-    return true
+	return removedItems
 end
 
 function round(num, numDecimalPlaces)

@@ -3,7 +3,7 @@ MAP_CONFIGURATION = {
     schemaFile = 'sandCave1.lua',
     saveMapFilename = 'sandCave100',
     logToFile = true,
-    mainPos = {x = 155, y = 155, z = 7},
+    mainPos = {x = 145, y = 145, z = 7},
     mapSizeX = 100,
     mapSizeY = 100,
     wpMinDist = 16,
@@ -28,12 +28,12 @@ loadSchemaFile() -- loads the schema file from map configuration with specific g
 ------ Base stuff
 
 local cursor = Cursor.new(mainPos)
-local map = CaveGroundMapper.new(mainPos, mapSizeX, mapSizeY, wpMinDist)
+local generatedMap = CaveGroundMapper.new(mainPos, mapSizeX, mapSizeY, wpMinDist)
 
-map:doMainGround(ITEMS_TABLE)
+generatedMap:doMainGround(ITEMS_TABLE)
 
 local brush = Brush.new()
-local caveWayPointer = CaveWayPointer.new(map, cursor, nil, brush)
+local caveWayPointer = CaveWayPointer.new(generatedMap, cursor, nil, brush)
 caveWayPointer:createWaypointsAlternatively(wayPoints, wayPointsCount)
 
 --print('Length: ' .. #wayPoints)
@@ -46,19 +46,19 @@ caveWayPointer:createPathBetweenWpsTSPMS(ITEMS_TABLE, 5, 3)
 local caveRoomBuilder = CaveRoomBuilder.new(wayPoints)
 caveRoomBuilder:createRooms(ITEMS_TABLE, 11, 11)
 
-map:correctCaveShapes(
+generatedMap:correctCaveShapes(
         ITEMS_TABLE[0][1],
         ITEMS_TABLE[1][1],
         CAVE_LINE_SHAPES
 ) -- todo: method completely not optimised, terrible performance
 
-map:correctBackgroundShapes(
+generatedMap:correctBackgroundShapes(
         ITEMS_TABLE[0][1],
         ITEMS_TABLE[1][1],
         CAVE_BACKGROUND_CORRECT_SHAPES
 ) -- todo: method completely not optimised, terrible performance
 
-local groundAutoBorder = GroundAutoBorder.new(map)
+local groundAutoBorder = GroundAutoBorder.new(generatedMap)
 groundAutoBorder:doGround(
         ITEMS_TABLE[0][1],
         ITEMS_TABLE[1][1],
@@ -66,13 +66,13 @@ groundAutoBorder:doGround(
         CAVE_BASE_BORDER
 )
 
-local marker = Marker.new(map)
+local marker = Marker.new(generatedMap)
 marker:createMarkersAlternatively(
         ITEMS_TABLE[1][1],
         55,
         6
 )
-map:doGround2(
+generatedMap:doGround2(
         marker.markersTab,
         cursor,
         ITEMS_TABLE[1][1],
@@ -88,7 +88,7 @@ marker:createMarkersAlternatively(
         30,
         6
 )
-map:doGround2(
+generatedMap:doGround2(
         marker.markersTab,
         cursor,
         ITEMS_TABLE[1][1],
@@ -97,7 +97,7 @@ map:doGround2(
         8
 )
 
-map:correctGround(ITEMS_TABLE[1][1], ITEMS_TABLE[12][1])
+generatedMap:correctGround(ITEMS_TABLE[1][1], ITEMS_TABLE[12][1])
 
 addRotatedTab(BRUSH_BORDER_SHAPES, 9)
 marker:createMarkersAlternatively(
@@ -143,7 +143,7 @@ marker:createMarkersAlternatively(
         55,
         6
 )
-local detailer = Detailer.new(map, wayPoints)
+local detailer = Detailer.new(generatedMap, wayPoints)
 detailer:createDetailsInCave(
         marker.markersTab,
         ITEMS_TABLE[10],
@@ -151,7 +151,7 @@ detailer:createDetailsInCave(
         25
 )
 
-local groundRandomizer = GroundRandomizer.new(map)
+local groundRandomizer = GroundRandomizer.new(generatedMap)
 groundRandomizer:randomizeByIds(ITEMS_TABLE[1], 40)
 
 detailer:createDetailsOnMap(ITEMS_TABLE[11][1], 4)

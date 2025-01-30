@@ -3,7 +3,7 @@ MAP_CONFIGURATION = {
     schemaFile = 'test1.lua',
     saveMapFilename = 'test70Alt',
     logToFile = true,
-    mainPos = {x = 155, y = 155, z = 7},
+    mainPos = {x = 145, y = 145, z = 7},
     mapSizeX = 70,
     mapSizeY = 70,
     wpMinDist = 11,
@@ -28,14 +28,14 @@ loadSchemaFile() -- loads the schema file from map configuration with specific g
 print('> 1 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
 
 local cursor = Cursor.new(mainPos)
-local map = GroundMapper.new(mainPos, mapSizeX, mapSizeY, wpMinDist)
-local wayPointer = WayPointer.new(map, cursor)
+local generatedMap = GroundMapper.new(mainPos, mapSizeX, mapSizeY, wpMinDist)
+local wayPointer = WayPointer.new(generatedMap, cursor)
 local roomBuilder
-local wallAutoBorder = WallAutoBorder.new(map)
-local marker = Marker.new(map)
+local wallAutoBorder = WallAutoBorder.new(generatedMap)
+local marker = Marker.new(generatedMap)
 local brush = Brush.new()
-local groundAutoBorder = GroundAutoBorder.new(map)
---local groundRandomizer = GroundRandomizer.new(map) -- not needed in this script
+local groundAutoBorder = GroundAutoBorder.new(generatedMap)
+--local groundRandomizer = GroundRandomizer.new(generatedMap) -- not needed in this script
 local detailer
 local mapCreator
 
@@ -52,7 +52,7 @@ local function generateMap(step)
                         MAP_CONFIGURATION.saveMapFilename
                 )
         )
-        map:doMainGround(ITEMS_TABLE)
+        generatedMap:doMainGround(ITEMS_TABLE)
 
         print('> 2 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
     elseif (step == 2) then
@@ -83,7 +83,7 @@ local function generateMap(step)
                 35,
                 6
         )
-        map:doGround2(
+        generatedMap:doGround2(
                 marker.markersTab,
                 cursor,
                 ITEMS_TABLE[1][1],
@@ -98,7 +98,7 @@ local function generateMap(step)
                 20,
                 6
         )
-        map:doGround2(
+        generatedMap:doGround2(
                 marker.markersTab,
                 cursor,
                 ITEMS_TABLE[1][1],
@@ -108,7 +108,7 @@ local function generateMap(step)
         )
         print('> 7 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
     elseif (step == 8) then
-        map:correctGround(ITEMS_TABLE[1][1], ITEMS_TABLE[12][1])
+        generatedMap:correctGround(ITEMS_TABLE[1][1], ITEMS_TABLE[12][1])
         print('> 8 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
     elseif (step == 9) then
         addRotatedTab(BRUSH_BORDER_SHAPES, 9)
@@ -153,7 +153,7 @@ local function generateMap(step)
         --groundRandomizer:randomize(ITEMS_TABLE, 40)
         print('> 13 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
     elseif (step == 14) then
-        detailer = Detailer.new(map, wayPoints)
+        detailer = Detailer.new(generatedMap, wayPoints)
         detailer:createDetailsInRooms(ROOM_SHAPES, ITEMS_TABLE, TOMB_SAND_WALL_BORDER)
 
         print('> 14 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
@@ -179,7 +179,7 @@ local function generateMap(step)
 
         print('> 16 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
     elseif (step == 22 and PRECREATION_TABLE_MODE and RUNNING_MODE == 'tfs') then
-        mapCreator = MapCreator.new(map)
+        mapCreator = MapCreator.new(generatedMap)
         mapCreator:drawMap()
 
         local diffTime = os.clock() - startTime

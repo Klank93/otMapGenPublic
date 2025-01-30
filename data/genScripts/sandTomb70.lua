@@ -2,7 +2,7 @@
 MAP_CONFIGURATION = {
     schemaFile = 'sandTomb1.lua',
     saveMapFilename = 'sandTomb70',
-    mainPos = {x = 155, y = 155, z = 7},
+    mainPos = {x = 145, y = 145, z = 7},
     mapSizeX = 70,
     mapSizeY = 70,
     wpMinDist = 11,
@@ -27,11 +27,11 @@ loadSchemaFile() -- loads the schema file from map configuration with specific g
 ------ Base stuff
 
 local cursor = Cursor.new(mainPos)
-local map = GroundMapper.new(mainPos, mapSizeX, mapSizeY, wpMinDist)
+local generatedMap = GroundMapper.new(mainPos, mapSizeX, mapSizeY, wpMinDist)
 
-map:doMainGround(ITEMS_TABLE)
+generatedMap:doMainGround(ITEMS_TABLE)
 
-local wayPointer = WayPointer.new(map, cursor)
+local wayPointer = WayPointer.new(generatedMap, cursor)
 wayPointer:createWaypointsAlternatively(wayPoints, wayPointsCount)
 
 --print('Length: ' .. #wayPoints)
@@ -43,7 +43,7 @@ wayPointer:createPathBetweenWps(ITEMS_TABLE)
 local dungeonRoomBuilder = DungeonRoomBuilder.new(wayPoints)
 dungeonRoomBuilder:createRooms(ITEMS_TABLE, ROOM_SHAPES)
 
-local wallAutoBorder = WallAutoBorder.new(map)
+local wallAutoBorder = WallAutoBorder.new(generatedMap)
 wallAutoBorder:doWalls(
         ITEMS_TABLE[1][1],
         ITEMS_TABLE[0][1],
@@ -52,13 +52,13 @@ wallAutoBorder:doWalls(
 
 wallAutoBorder:createArchways(TOMB_SAND_WALL_BORDER) -- todo: most likely does not work
 
-local marker = Marker.new(map)
+local marker = Marker.new(generatedMap)
 marker:createMarkersAlternatively(
         ITEMS_TABLE[1][1],
         35,
         6
 )
-map:doGround2(
+generatedMap:doGround2(
         marker.markersTab,
         cursor,
         ITEMS_TABLE[1][1],
@@ -74,7 +74,7 @@ marker:createMarkersAlternatively(
         20,
         6
 )
-map:doGround2(
+generatedMap:doGround2(
         marker.markersTab,
         cursor,
         ITEMS_TABLE[1][1],
@@ -83,7 +83,7 @@ map:doGround2(
         6
 )
 
-map:correctGround(ITEMS_TABLE[1][1], ITEMS_TABLE[12][1])
+generatedMap:correctGround(ITEMS_TABLE[1][1], ITEMS_TABLE[12][1])
 
 addRotatedTab(BRUSH_BORDER_SHAPES, 9)
 marker:createMarkersAlternatively(
@@ -99,7 +99,7 @@ brush:doBrush(
         SAND_BASE_BRUSH
 ) -- it has to be executed before the base autoBorder, otherwise there are issues with stackpos
 
-local groundAutoBorder = GroundAutoBorder.new(map)
+local groundAutoBorder = GroundAutoBorder.new(generatedMap)
 groundAutoBorder:doGround(
         ITEMS_TABLE[12][1],
         ITEMS_TABLE[1][1],
@@ -115,12 +115,12 @@ groundAutoBorder:correctBorders(
         30
 )
 
---local groundRandomizer = GroundRandomizer.new(map)
+--local groundRandomizer = GroundRandomizer.new(generatedMap)
 --groundRandomizer:randomize(ITEMS_TABLE, 40)
 
 ------ Detailing Map
 
-local detailer = Detailer.new(map, wayPoints)
+local detailer = Detailer.new(generatedMap, wayPoints)
 detailer:createDetailsInRooms(ROOM_SHAPES, ITEMS_TABLE, TOMB_SAND_WALL_BORDER)
 
 detailer:createDetailsOnMap(ITEMS_TABLE[11][1], 4)
@@ -141,7 +141,7 @@ detailer:createHangableDetails(
 ------ Additional Actions (old step 4) \/ not need for simple tomb
 
 
---map:correctGround(ITEMS_TABLE[0][1], ITEMS_TABLE[22][1])
+--generatedMap:correctGround(ITEMS_TABLE[0][1], ITEMS_TABLE[22][1])
 ---- not exactly sure what was the reason of it /\ and why it is being run twice
 --
 --groundAutoBorder:doGround2( -- most likely creates the border for main and second not walkable ground
@@ -152,7 +152,7 @@ detailer:createHangableDetails(
 --        RED_MOUNTAIN_TOP_BORDER
 --)
 --
---local groundRandomizer = GroundRandomizer.new(map)
+--local groundRandomizer = GroundRandomizer.new(generatedMap)
 --groundRandomizer:randomize(ITEMS_TABLE, 40)
 
---map:eraseMap()
+generatedMap:eraseMap()

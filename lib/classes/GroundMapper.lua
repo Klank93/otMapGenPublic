@@ -211,20 +211,13 @@ end
 
 function GroundMapper:eraseMap() -- todo: handle multi-floor case
     local startTime = os.clock()
-    local startX = self.mainPos.x
-    local pom = {}
-    pom.x = self.mainPos.x
-    pom.y = self.mainPos.y
-    pom.z = self.mainPos.z
+	local removedItems = 0
 
     for i = self.mainPos.y, self.mainPos.y + self.sizeY do
-        pom.y = i
-        for j = self.mainPos.x, self.mainPos.x + self.sizeX do
-            pom.x = j
-            removeAllItemsFromPos({x = j, y = i, z = self.mainPos.z})
+		for j = self.mainPos.x, self.mainPos.x + self.sizeX do
+			removedItems = removedItems + removeAllItemsFromPos({x = j, y = i, z = self.mainPos.z})
         end
-        pom.x = startX
     end
 
-    print("Map erased, execution time: " .. os.clock() - startTime)
+    print("Map erased, items removed: " .. removedItems .. ", execution time: " .. os.clock() - startTime)
 end

@@ -33,9 +33,7 @@ where ```<params_list_separated_by_comma>``` look like:\
     after the generation process or not. If yes, value is "```save```". Expected in CLI mode.
 #### Examples:
 - ```Lua main.lua test40,save cli```
-- ```Lua main.lua test40,tableMode,save cli```
 - ```Luajit main.lua test40,save cli``` (if LuaJIT being used)
-- ```Luajit main.lua test40,tableMode,save cli``` (if LuaJIT being used)
 
 #### Note: Using LuaJIT can decrease execution time by 2-3 times or more. Check: https://luajit.org/install.html
 
@@ -120,8 +118,15 @@ repeating successful generation results.
 If it is too high, increase the number of rooms (wayPointsCount) or decrease the minimal distance between them (wpMinDist).
 Otherwise, if it's too low, decrease the number of rooms or increase the minimal distance between them.
 
-Other similar issue can happen if it wont be able to create requested by you markers count in generation script - calls of the ``Marker:createMarkersAlternatively(...)`` function.
-If ``Available map tiles for potential new markers count: 7 after the procedure.`` output will print low number (near to 0, lower then 5, 10 smth like that) frequently, please reconsider decreasing
+Other similar issue can happen if it wont be able to create requested by you markers count in generation script -
+calls of the ``Marker:createMarkersAlternatively(...)`` function.
+
+Example output (if it happens rarely, you can test your luck and generate map again, from scratch):
+
+![guide05](images/guide05.png)
+
+If ``Available map tiles for potential new markers count: 7 after the procedure.`` output will print low number
+(near to 0, lower then 5, 10 smth like that) frequently, please reconsider decreasing
 the value of ``minDistanceBetweenTwoMarkers`` or ``markersAmount`` or increase the map size.
 
 
@@ -161,4 +166,15 @@ For this setting, your downloaded generator should be placed in the following lo
 Be aware it's for 8.6 version, you can convert it if needed
 
 #### 3. Set the name of the map in your TFS config.lua file
+
+#### 4. If you want to use your own map, please change the value of pos:
+
+![guide03](images/guide03.png)
+
+in your generation file and be sure that map squares where map will be generated are filled
+with water ground or void ground - smth like that. Tiles can not be empty (not recommended, can cause issues).
+
+Make sure that base ground; water, void, whatever should create kind of a "frame" around generated map, example:
+
+![guide04](images/guide04.png)
 
