@@ -90,7 +90,7 @@ to be run "without-tfs-freeze" way - saves the map before any item is being crea
 - when run in CLI mode borders are placed over carpet brushes
 - wall border bug occurs when generating small maps with rooms close to each other:
 ![wall border bug](images/wallBug01.png)
-- in some cases, structures may  partially block the player's path:
+- in some cases, structures may partially block the player's path:
 ![wall border bug](images/structureOnTheWay01.png)
 In some rare edge cases it can generate the dungeon, which can not be explored fully
 - don't know why, but tableMode in TFS does not work in some scenarios (have no time to investigate it)
