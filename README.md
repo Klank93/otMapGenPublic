@@ -1,5 +1,5 @@
 # Abcq/Acedb Map Generator
-### version 0.0.5 (alpha)
+### version 0.0.6 (alpha)
 
 ## The Goal:
 The goal of this script/app is to provide a tool for map generation for Open Tibia Servers.
@@ -179,4 +179,11 @@ with water ground or void ground - smth like that. Tiles can not be empty (not r
 Make sure that base ground; water, void, whatever should create kind of a "frame" around generated map, example:
 
 ![guide04](images/guide04.png)
+
+
+If you will face below issue:
+
+![guide06](images/guide06.png)
+
+You can do a little trick: create a new map with your spr & dat and import generating860.otbm into it in RME, save it and replace with initial generating860.otbm
 

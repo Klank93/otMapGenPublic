@@ -182,8 +182,14 @@ function script.run()
 	)
 	print("Combined creation of the details done, execution time: " .. os.clock() - startTime)
 
-
 	print('> 16 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
+
+	if (PRECREATION_TABLE_MODE and RUNNING_MODE == 'tfs') then
+		local mapCreator = MapCreator.new(generatedMap)
+		mapCreator:drawMap()
+
+		print('> 17 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
+	end
 end
 
 return script

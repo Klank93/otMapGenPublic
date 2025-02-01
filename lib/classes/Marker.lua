@@ -191,7 +191,7 @@ function Marker:createMarkersAlternatively( -- performance improvement ~40% in c
 
         table.insert(self.markersTab, {randomPos, true}) -- true <- backward compatibility
         markersCounter = markersCounter + 1
-        acceptedMapTilesTab = {unpack(acceptedMapTilesTab, 1, #acceptedMapTilesTab)}
+        --acceptedMapTilesTab = {unpack(acceptedMapTilesTab, 1, #acceptedMapTilesTab)} -- ai says, it's not needed
     until markersCounter > markersAmount
 
     print("Available map tiles for potential new markers count: " .. #acceptedMapTilesTab .. " after the procedure.")

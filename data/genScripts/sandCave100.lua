@@ -167,6 +167,11 @@ function script.run()
 	detailer:createDetailsOnMap(ITEMS_TABLE[9][1], 2)
 
 	groundRandomizer:randomizeByIds(ITEMS_TABLE[0], 40)
+
+	if (PRECREATION_TABLE_MODE and RUNNING_MODE == 'tfs') then
+		local mapCreator = MapCreator.new(generatedMap)
+		mapCreator:drawMap()
+	end
 end
 
 return script

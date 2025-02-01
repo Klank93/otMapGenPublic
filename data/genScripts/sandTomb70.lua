@@ -142,9 +142,7 @@ function script.run()
 			15
 	)
 
-
 	------ Additional Actions (old step 4) \/ not need for simple tomb
-
 
 	--generatedMap:correctGround(ITEMS_TABLE[0][1], ITEMS_TABLE[22][1])
 	---- not exactly sure what was the reason of it /\ and why it is being run twice
@@ -160,7 +158,10 @@ function script.run()
 	--local groundRandomizer = GroundRandomizer.new(generatedMap)
 	--groundRandomizer:randomize(ITEMS_TABLE, 40)
 
-	generatedMap:eraseMap()
+	if (PRECREATION_TABLE_MODE and RUNNING_MODE == 'tfs') then
+		local mapCreator = MapCreator.new(generatedMap)
+		mapCreator:drawMap()
+	end
 end
 
 return script

@@ -158,7 +158,7 @@ function WayPointer:createWaypointsAlternatively(wp, pointsAmount) -- performanc
 
         table.insert(wp, {randomPos, true}) -- true <- backward compatibility
         wpCounter = wpCounter + 1
-        availableMapTilesTab = {unpack(availableMapTilesTab, 1, #availableMapTilesTab)}
+        --availableMapTilesTab = {unpack(availableMapTilesTab, 1, #availableMapTilesTab)} -- ai says, it's not needed
     until wpCounter > pointsAmount
 
     self.wayPoints = wp

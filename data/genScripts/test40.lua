@@ -161,6 +161,7 @@ function script.run()
 
 	------ Detailing Map
 
+	local startTime = os.clock()
 	local detailer = Detailer.new(generatedMap, wayPoints)
 	detailer:createDetailsInRooms(ROOM_SHAPES, ITEMS_TABLE, TOMB_SAND_WALL_BORDER)
 
@@ -179,6 +180,7 @@ function script.run()
 		ITEMS_TABLE,
 		15
 	)
+	print("Combined creation of the details done, execution time: " .. os.clock() - startTime)
 
 	print('> 16 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
 

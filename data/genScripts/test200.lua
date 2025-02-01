@@ -1,13 +1,14 @@
--- old: "generation_map2 - dobra.lua"
+-- script for testing new solutions
 MAP_CONFIGURATION = {
-    schemaFile = 'darkWallTomb1.lua',
-    saveMapFilename = 'darkWallTomb100',
+    schemaFile = 'test1.lua',
+    saveMapFilename = 'test100',
+    logToFile = true,
     mainPos = {x = 145, y = 145, z = 7},
-    mapSizeX = 100,
-    mapSizeY = 100,
+    mapSizeX = 200,
+    mapSizeY = 200,
 	mapSizeZ = 1, -- no multi-floor for now
     wpMinDist = 13,
-    wayPointsCount = 30
+    wayPointsCount = 110
 }
 LOG_TO_FILE = MAP_GEN_CFG.logToFile -- can be overridden for specific script
 DEBUG_OUTPUT = MAP_GEN_CFG.debugOutput -- can be overridden for specific script
@@ -31,40 +32,53 @@ loadSchemaFile() -- loads the schema file from map configuration with specific g
 function script.run()
 	------ Base stuff
 
+	print('> 1 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
+
 	local cursor = Cursor.new(mainPos)
 	local generatedMap = GroundMapper.new(mainPos, mapSizeX, mapSizeY, mapSizeZ, wpMinDist)
 
 	generatedMap:doMainGround(ITEMS_TABLE)
 
+	print('> 2 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
+
 	local wayPointer = WayPointer.new(generatedMap, cursor)
 	wayPointer:createWaypointsAlternatively(wayPoints, wayPointsCount)
 
-	--print('Length: ' .. #wayPoints)
+	print('> 3 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
+
+	print('Length: ' .. #wayPoints)
 	--sortWaypoints(wayPoints)
 	--print(dumpVar(wayPoints))
 
+	-- wayPointer:createPathBetweenWps(ITEMS_TABLE)
 	wayPointer:createPathBetweenWpsTSP(ITEMS_TABLE)
-	--wayPointer:createPathBetweenWpsTSPMS(ITEMS_TABLE)
+	-- wayPointer:createPathBetweenWpsTSPMS(ITEMS_TABLE)
 
-	local dungeonRoomBuilder = DungeonRoomBuilder.new(wayPoints)
-	dungeonRoomBuilder:createRooms(ITEMS_TABLE, ROOM_SHAPES)
+	-- do return end
+
+	local roomBuilder = DungeonRoomBuilder.new(wayPoints)
+	roomBuilder:createRooms(ITEMS_TABLE, ROOM_SHAPES)
+
+	print('> 4 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
 
 	local wallAutoBorder = WallAutoBorder.new(generatedMap)
 	wallAutoBorder:doWalls(
 			ITEMS_TABLE[1][1],
 			ITEMS_TABLE[0][1],
-			BLACK_WALL_BORDER
+			TOMB_SAND_WALL_BORDER
 	)
 
-	wallAutoBorder:createArchways(BLACK_WALL_BORDER) -- todo: most likely does not work
+	print('> 5 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
 
 	local marker = Marker.new(generatedMap)
 	marker:createMarkersAlternatively(
 			ITEMS_TABLE[1][1],
-			75,
+			35,
 			6
 	)
-	-- todo: doGround can work incorrectly, differences in original files \/
+
+	print('> 6 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
+
 	generatedMap:doGround2(
 			marker.markersTab,
 			cursor,
@@ -74,19 +88,43 @@ function script.run()
 			6
 	)
 
-	-- todo: can work incorrectly, differences in original files \/
-	generatedMap:correctGround(
+	print('> 7 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
+
+	------ repeat createMarkers & doGround2
+
+	marker:createMarkersAlternatively(
 			ITEMS_TABLE[1][1],
-			ITEMS_TABLE[12][1]
+			75,
+			6
 	)
+
+	print('> 8 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
+
+	generatedMap:doGround2(
+			marker.markersTab,
+			cursor,
+			ITEMS_TABLE[1][1],
+			ITEMS_TABLE[12][1],
+			1,
+			6
+	)
+
+	print('> 9 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
+
+	generatedMap:correctGround(ITEMS_TABLE[1][1], ITEMS_TABLE[12][1])
+
+	print('> 10 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
 
 	addRotatedTab(BRUSH_BORDER_SHAPES, 9)
 
 	marker:createMarkersAlternatively(
-			ITEMS_TABLE[1][1],
-			100, -- 70
+			0, -- todo: "0" does not work with CLI, because of the bug in isWalkable function (doCreateItemMock actually)
+			100,
 			4
 	)
+
+	print('> 11 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
+
 	local brush = Brush.new()
 	brush:doBrush(
 			marker.markersTab,
@@ -95,6 +133,8 @@ function script.run()
 			SAND_BASE_BRUSH
 	) -- it has to be executed before the base autoBorder, otherwise there are issues with stackpos
 
+	print('> 12 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
+
 	local groundAutoBorder = GroundAutoBorder.new(generatedMap)
 	groundAutoBorder:doGround(
 			ITEMS_TABLE[12][1],
@@ -102,19 +142,30 @@ function script.run()
 			ITEMS_TABLE[0][1],
 			SAND_GROUND_BASE_BORDER
 	)
+
+	print('> 13 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
+
 	groundAutoBorder:correctBorders(
 			ITEMS_TABLE[0][1],
 			SAND_GROUND_BASE_BORDER,
-			BLACK_WALL_BORDER,
+			TOMB_SAND_WALL_BORDER,
 			ITEMS_TABLE[12][1],
 			BORDER_CORRECT_SHAPES,
 			30
 	)
 
+	print('> 14 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
+
+	--local groundRandomizer = GroundRandomizer.new(generatedMap)
+	--groundRandomizer:randomize(ITEMS_TABLE, 40)
+
 	------ Detailing Map
 
+	local startTime = os.clock()
 	local detailer = Detailer.new(generatedMap, wayPoints)
-	detailer:createDetailsInRooms(ROOM_SHAPES, ITEMS_TABLE, BLACK_WALL_BORDER)
+	detailer:createDetailsInRooms(ROOM_SHAPES, ITEMS_TABLE, TOMB_SAND_WALL_BORDER)
+
+	print('> 15 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
 
 	detailer:createDetailsOnMap(ITEMS_TABLE[11][1], 4)
 	detailer:createDetailsOnMap(ITEMS_TABLE[8][1], 10)
@@ -125,17 +176,19 @@ function script.run()
 
 	detailer:createHangableDetails(
 			ITEMS_TABLE[0][1],
-			BLACK_WALL_BORDER,
+			TOMB_SAND_WALL_BORDER,
 			ITEMS_TABLE,
 			15
 	)
+	print("Combined creation of the details done, execution time: " .. os.clock() - startTime)
 
-	local groundRandomizer = GroundRandomizer.new(generatedMap)
-	groundRandomizer:randomize(ITEMS_TABLE, 30)
+	print('> 16 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
 
 	if (PRECREATION_TABLE_MODE and RUNNING_MODE == 'tfs') then
 		local mapCreator = MapCreator.new(generatedMap)
 		mapCreator:drawMap()
+
+		print('> 17 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
 	end
 end
 
