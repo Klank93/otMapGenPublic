@@ -14,7 +14,7 @@ end
 
 -- Method to calculate the distance between two points (ignoring z coordinate)
 function TSP:distance(point1, point2)
-    return math.sqrt((point1[1].x - point2[1].x)^2 + (point1[1].y - point2[1].y)^2)
+    return math.sqrt((point1["pos"].x - point2["pos"].x)^2 + (point1["pos"].y - point2["pos"].y)^2)
 end
 
 -- Method to solve the TSP using the nearest neighbor heuristic

@@ -9,13 +9,13 @@ function WallAutoBorder.new(map)
     return instance
 end
 
-function WallAutoBorder:doWalls(ground1, ground2, border)
+function WallAutoBorder:doWalls(ground1, ground2, border, currentFloor)
     print("Bordering walls...")
     local startTime = os.clock()
     local pom = {}
     pom.x = self.map.mainPos.x
     pom.y = self.map.mainPos.y
-    pom.z = self.map.mainPos.z
+    pom.z = currentFloor
 
     for i = self.map.mainPos.y, self.map.mainPos.y + self.map.sizeY do
         for j = self.map.mainPos.x, self.map.mainPos.x + self.map.sizeX do

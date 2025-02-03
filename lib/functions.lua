@@ -84,15 +84,15 @@ end
 
 function isWalkable(pos) -- ORIGINAL FUNCTION CHECKS ALL THE STACKPOSES
     local geItemUid = getThingFromPosMock(
-            {x = pos.x, y = pos.y, z = pos.z, stackpos = 0}
-        ).uid
-    local result = queryTileAddThingMock(
-            geItemUid,
-            {x = pos.x, y = pos.y, z = pos.z}
-    )
-    if result == RETURNVALUE_NOERROR then
-        --print('Walkable: ' .. dumpVar(pos))
+		{x = pos.x, y = pos.y, z = pos.z, stackpos = 0}
+	).uid
 
+    local result = queryTileAddThingMock(
+		geItemUid,
+		{x = pos.x, y = pos.y, z = pos.z}
+    )
+
+    if result == RETURNVALUE_NOERROR then
         return true
     else
         return false
@@ -102,46 +102,51 @@ end
 function sortWaypoints(wp)
     local pom = {}
 
-    for i=1, #wp do
-        for j=1, #wp do
-            if (i ~= j) then
-                if ((wp[i][1].x <= wp[j][1].x)) then
-                    if (wp[i][1].x == wp[j][1].x) then
-                        if ((wp[i][1].y < wp[j][1].y)) then
-                            pom = wp[i][1]
-                            wp[i][1] = wp[j][1]
-                            wp[j][1] = pom
-                        end
-                    else
-                        pom = wp[i][1]
-                        wp[i][1] = wp[j][1]
-                        wp[j][1] = pom
-                    end
-                end
-            end
-
-        end
-    end
+	for floor, wayPoints in pairs(wp) do
+		for i=1, #wayPoints do
+			for j=1, #wayPoints do
+				if (i ~= j) then
+					if ((wp[floor][i]["pos"].x <= wp[floor][j]["pos"].x)) then
+						if (wp[floor][i]["pos"].x == wp[floor][j]["pos"].x) then
+							if ((wp[floor][i]["pos"].y < wp[floor][j]["pos"].y)) then
+								pom = wp[floor][i]["pos"]
+								wp[floor][i]["pos"] = wp[floor][j]["pos"]
+								wp[floor][j]["pos"] = pom
+							end
+						else
+							pom = wp[floor][i]["pos"]
+							wp[floor][i]["pos"] = wp[floor][j]["pos"]
+							wp[floor][j]["pos"] = pom
+						end
+					end
+				end
+			end
+		end
+	end
 end
 
-function printWaypoints(wp, cid)
-    for i=1, #wp do
-        x = wp[i][1].x
-        y = wp[i][1].y
-        z = wp[i][1].z
-        rm_sh = wp[i][3]
-        rm_h = wp[i][4]
-        rm_w = wp[i][5]
-        local msg = "[".. i .."] = {{ x = ".. x ..", y = ".. y ..", z = ".. z .. " }, " ..
-                "room_shape = "..rm_sh..",   rm_h = " ..rm_h.. ",   rm_w =" ..rm_w.."}"
-        doPlayerSendTextMessageMock(TFS_CID, TFS_MESSAGE_CLASSES, msg)
-        print(msg)
-    end
+function printWaypoints(wp)
+	for floor, wayPoints in pairs(wp) do
+		for i, wayPoint in pairs(wayPoints) do
+			local x = wayPoint["pos"].x
+			local y = wayPoint["pos"].y
+			local z = wayPoint["pos"].z
+			local rm_sh = wayPoint["room_shape"]
+			local rm_h = wayPoint["room_height"]
+			local rm_w = wayPoint["room_width"]
+			local msg = "Floor: " .. floor .. " [".. i .."] = {{ x = ".. x ..", y = ".. y ..", z = ".. z .. " }, " ..
+				"room_shape = ".. rm_sh ..",   rm_h = " .. rm_h .. ",   rm_w =" .. rm_w .."}"
+			doPlayerSendTextMessageMock(TFS_CID, TFS_MESSAGE_CLASSES, msg)
+			print(msg)
+		end
+	end
 end
 
-function removeAllItemsFromPos(pos)
+function removeAllItemsFromPos(pos, withGround)
 	local removedItems = 0
-    for index = 15, 0, -1 do
+	local lastStackPos = 1
+	if withGround == true then lastStackPos = 0 end
+    for index = 15, lastStackPos, -1 do
         pos.stackpos = index
         local currentItem = getThingFromPosMock(pos)
 		if currentItem ~= nil and currentItem.itemid > 0 then
@@ -158,6 +163,32 @@ function removeAllItemsFromPos(pos)
     end
 
 	return removedItems
+end
+
+function getPosItems(pos, withGround)
+	local posItemIds = {}
+	local lastStackPos = 1
+	if withGround == true then lastStackPos = 0 end
+	for stackpos = 15, lastStackPos, -1 do
+		local possibleItem = getThingFromPosMock({x = pos.x, y = pos.y, z = pos.z, stackpos = stackpos})
+		-- no usage of Tile:getItems() for TFS backward compatibility
+		if (possibleItem ~= nil and possibleItem.itemid > 0) then
+			table.insert(posItemIds, possibleItem)
+		end
+	end
+
+	return posItemIds
+end
+
+removeAllUnwalkableItems = function (pos, wallBorder) -- deletes all items which are unwalkable from pos except walls
+	local posItems = getPosItems(pos, false)
+	for _, item in pairs(posItems) do
+		if (not inArray(flattenArray(wallBorder), item.itemid) and
+			inArray(UNWALKABLE_ITEMS, item.itemid)
+		) then
+			doRemoveItemMock(item.uid, pos)
+		end
+	end
 end
 
 function round(num, numDecimalPlaces)

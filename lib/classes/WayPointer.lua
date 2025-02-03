@@ -10,7 +10,7 @@ function WayPointer.new(map, cursor, wayPoints)
     return instance
 end
 
-function WayPointer:createWaypoints(wp, pointsAmount, initialTime)
+function WayPointer:createWaypoints(wp, pointsAmount, initialTime, currentFloor) -- legacy function, deprecated
     local startTime = defaultParam(initialTime, os.clock())
     local status = true
     local counter = 0
@@ -20,14 +20,18 @@ function WayPointer:createWaypoints(wp, pointsAmount, initialTime)
     local minPos = {}
     minPos.x = (self.map.pos.x + self.map.wpMinDist)
     minPos.y = (self.map.pos.y + self.map.wpMinDist)
-    minPos.z = self.map.pos.z
+    minPos.z = currentFloor
 
     local maxPos = {}
     maxPos.x = (self.map.pos.x - self.map.wpMinDist) + self.map.sizeX
     maxPos.y = (self.map.pos.y - self.map.wpMinDist) + self.map.sizeY
-    maxPos.z = self.map.pos.z
+    maxPos.z = currentFloor
 
-    -------------------
+	-------------------
+	if (wp[currentFloor] == nil) then
+		wp[currentFloor] = {}
+	end
+
     local i = 1
     repeat
         repeat -- shooting loop
@@ -36,14 +40,14 @@ function WayPointer:createWaypoints(wp, pointsAmount, initialTime)
             local randomPos = {}
             randomPos.x = xRand
             randomPos.y = yRand
-            randomPos.z = self.map.pos.z
-            local tab = {}
-
-            table.insert(tab, 1, randomPos)
-            table.insert(tab, 2, true)
-            table.insert(tab, 3, 0) -- todo: what's the point of it?
-            table.insert(tab, 4, 0) -- todo: what's the point of it?
-            table.insert(tab, 5, 0) -- todo: what's the point of it?
+            randomPos.z = currentFloor
+            local tab = {
+				["pos"] = randomPos,
+				['result'] = true,
+				[3] = 0, -- defines room shape number
+				[4] = 0, -- defines room height
+				[5] = 0 -- defines room width
+			}
 
             counter = counter + 1
             if (counter > safetyFuse) then
@@ -57,16 +61,16 @@ function WayPointer:createWaypoints(wp, pointsAmount, initialTime)
             end
             --[[
             if (counter % 20000 == 0 ) then
-                print("TAB : x - " .. tab[1].x .. ", y - " .. tab[1].y .. ", z - " .. tab[1].z .. ", III : " .. tab[3] .. ", IV : " .. tab[4] .. ", V : " .. tab[5])
+                print("TAB : x - " .. tab["pos"].x .. ", y - " .. tab["pos"].y .. ", z - " .. tab["pos"].z .. ", III : " .. tab[3] .. ", IV : " .. tab[4] .. ", V : " .. tab[5])
             end
             ]]--
             if (i ~= 1) then
                 local minimumDist = 999999
-                for j=1, #wp do
+                for j = 1, #wp[currentFloor] do
                     if (i ~= j) then
-                        local pointDist = pointDistance(tab[1], wp[j][1])
+                        local pointDist = pointDistance(tab["pos"], wp[currentFloor][j]["pos"])
                         if (pointDist < self.map.wpMinDist) then
-                            tab[2] = false
+                            tab["result"] = false
                             break
                         else
                             if (minimumDist > pointDist) then
@@ -81,17 +85,17 @@ function WayPointer:createWaypoints(wp, pointsAmount, initialTime)
                     -- todo: one issue, loop j=i
                     if (minimumDist > self.map.wpMaxDist) then
                         --	print("Minimum incorrect for i =" .. i .. ", value: " .. minimumDist)
-                        tab[2] = false
+                        tab["result"] = false
                     end
                 end
             end
 
 
-            if (tab[2]) then
-                table.insert(wp, i, tab)
+            if (tab["result"]) then
+                table.insert(wp[currentFloor], i, tab)
                 -- print("SHOOTED i = " .. i .. " counter = " .. counter .. " wp.x - " .. wp[i][1].x ..", wp.y - " .. wp[i][1].y .. ", wp.z - " .. wp[i][1].z)
             end
-        until tab[2] == true
+        until tab["result"] == true
 
         if (status == false) then
             break
@@ -102,28 +106,37 @@ function WayPointer:createWaypoints(wp, pointsAmount, initialTime)
     until (i > pointsAmount)
 
     if (status == false) then
-        a = #wp
+        local a = #wp[currentFloor]
         repeat
-            table.remove(wp, a)
+            table.remove(wp[currentFloor], a)
             a = a - 1
         until (a == 0)
-        self:createWaypoints(wp, pointsAmount, startTime)
+        self:createWaypoints(wp, pointsAmount, startTime, currentFloor)
     else
-        self.wayPoints = wp
+        self.wayPoints = wp[currentFloor]
         print("Waypoints created, execution time: ".. os.clock() - startTime)
     end
 end
 
-function WayPointer:createWaypointsAlternatively(wp, pointsAmount) -- performance improvement ~40% in comparison to original method
+function WayPointer:createWaypointsAlternatively(pointsAmount, currentFloor) -- performance improvement ~40% in comparison to original method
+	if (self.wayPoints[currentFloor] ~= nil and
+		#self.wayPoints[currentFloor] > 0
+	) then
+		-- multi-floor, respect waypoints already present
+		pointsAmount = pointsAmount - #self.wayPoints[currentFloor]
+	else
+		self.wayPoints[currentFloor] = {}
+	end
+
     -- does not handle the wpMaxDist
     local startTime = os.clock()
     local availableMapTilesTab = {}
-    for i = self.map.pos.y + 9, self.map.pos.y + self.map.sizeY - 9 do
-        for j = self.map.pos.x + 9, self.map.pos.x + self.map.sizeX - 9 do
-            table.insert(
-                    availableMapTilesTab,
-                    {x = j, y = i, z = self.map.mainPos.z}
-            ) -- todo: no multi-floor
+    for i = self.map.pos.y + 9, self.map.pos.y + self.map.sizeY - 9 do -- 9 is safety offset, to prevent the situation where room exceeds map area todo: should be dynamic
+        for j = self.map.pos.x + 9, self.map.pos.x + self.map.sizeX - 9 do -- 9 is safety offset, to prevent the situation where room exceeds map area todo: should be dynamic
+			table.insert(
+				availableMapTilesTab,
+				{x = j, y = i, z = currentFloor}
+			)
         end
     end
 
@@ -141,8 +154,8 @@ function WayPointer:createWaypointsAlternatively(wp, pointsAmount) -- performanc
         local randomPos = {
             x = availableMapTilesTab[randomIndex].x,
             y = availableMapTilesTab[randomIndex].y,
-            z = self.map.mainPos.z
-        } -- todo: no multi-floor
+            z = currentFloor
+        }
 
         local i = 1
         while i <= #availableMapTilesTab do
@@ -156,18 +169,18 @@ function WayPointer:createWaypointsAlternatively(wp, pointsAmount) -- performanc
         -- print("availableMapTilesTab count: " .. #availableMapTilesTab .. " after removal")
         -- makeSquare(419, randomPos) -- points the waypoint
 
-        table.insert(wp, {randomPos, true}) -- true <- backward compatibility
+        table.insert(self.wayPoints[currentFloor], {["pos"] = randomPos, ["result"] = true}) -- true <- backward compatibility (some legacy)
         wpCounter = wpCounter + 1
-        --availableMapTilesTab = {unpack(availableMapTilesTab, 1, #availableMapTilesTab)} -- ai says, it's not needed
     until wpCounter > pointsAmount
 
-    self.wayPoints = wp
-    print("Available map tiles for potential new wayPoints count: " .. #availableMapTilesTab .. " after the procedure.")
+    print("Available map tiles for potential new wayPoints count: " .. #availableMapTilesTab .. " after the procedure. Floor: " .. currentFloor)
     -- /\ if #availableMapTilesTab is near to 0, reconsider decreasing the value of wpMinDist or increase the map size
     print("Waypoints created alternatively, execution time: ".. os.clock() - startTime)
+
+	return self.wayPoints
 end
 
-function WayPointer:createPathBetweenWps(itemsTab) -- old, initial own, custom implementation (without tsp usage)
+function WayPointer:createPathBetweenWps(itemsTab) -- old, initial own, custom implementation (without tsp usage), deprecated
     local startTime = os.clock()
     local minDist = 9999
     -- pointDistance2(self.wayPoints[1][1], self.wayPoints[2][1])
@@ -323,39 +336,38 @@ function WayPointer:_createPathBetweenTwoPoints(itemsTab, pos1, pos2)
     end
 end
 
-function WayPointer:createPathBetweenWpsTSP(itemsTab)
+function WayPointer:createPathBetweenWpsTSP(itemsTab, brushSize, currentFloor)
+	brushSize = brushSize or 3
     local startTime = os.clock()
-    local tsp = TSP.new(self.wayPoints)
+    local tsp = TSP.new(self.wayPoints[currentFloor])
     -- looks like original TSP is actually faster than TSPSA,
     -- TSPSA efficiency can not be easily predicted
-    print("TSP running...")
+    print("TSP running for floor: " .. currentFloor .. "...")
     local bestPaths, minDistance = tsp:solve()
+    if not bestPaths then return print("TSP could not generate best paths.") end
 
-    if not bestPaths then return end
-
-    print("Creating paths...")
+    print("Creating paths for floor: " .. currentFloor .. "...")
     for i = 1, #bestPaths - 1 do
-        local pos1 = self.wayPoints[bestPaths[i]][1]
-        local pos2 = self.wayPoints[bestPaths[i + 1]][1]
-        self:_createPathBetweenTwoPointsTSP(itemsTab, pos1, pos2)
+        local pos1 = self.wayPoints[currentFloor][bestPaths[i]]["pos"]
+        local pos2 = self.wayPoints[currentFloor][bestPaths[i + 1]]["pos"]
+        self:_createPathBetweenTwoPointsTSP(itemsTab, pos1, pos2, brushSize, currentFloor)
     end
 
     -- Connect the last point to the first to complete the cycle
-    --local lastPos = self.wayPoints[bestPaths[#bestPaths]][1]
-    --local firstPos = self.wayPoints[bestPaths[1]][1]
+    --local lastPos = self.wayPoints[currentFloor][bestPaths[#bestPaths]][1]
+    --local firstPos = self.wayPoints[currentFloor][bestPaths[1]][1]
     --self:_createPathBetweenTwoPointsTSP(itemsTab, lastPos, firstPos)
-    print("Paths between waypoints created, execution time: " .. os.clock() - startTime)
+    print("Paths between waypoints for floor: " .. currentFloor .. " created, execution time: " .. os.clock() - startTime)
 end
 
-function WayPointer:createPathBetweenWpsTSPMS(itemsTab)
+function WayPointer:createPathBetweenWpsTSPMS(itemsTab, brushSize)
     local startTime = os.clock()
     local travellersCounts = 3
     local centralPoint = findCentralWayPoint(self.wayPoints)
     local tspms = TSPMS.new(self.wayPoints, travellersCounts, centralPoint)
     print("TSPMS running...")
     local bestPaths, minDistance = tspms:solve()
-
-    if not bestPaths then return end
+    if not bestPaths then return print("TSPMS could not generate best paths.") end
 
     print("Creating paths...")
 
@@ -364,15 +376,24 @@ function WayPointer:createPathBetweenWpsTSPMS(itemsTab)
             local pos1 = self.wayPoints[bestPaths[i][j]][1]
             local pos2 = self.wayPoints[bestPaths[i][j + 1]][1]
 
-            self:_createPathBetweenTwoPointsTSP(itemsTab, pos1, pos2)
+            self:_createPathBetweenTwoPointsTSP(itemsTab, pos1, pos2, brushSize)
         end
     end
 
     print("Paths between waypoints created, execution time: " .. os.clock() - startTime)
 end
 
-function WayPointer:_createPathBetweenTwoPointsTSP(itemsTab, pos1, pos2)
+function WayPointer:getCentralWaypointForNextFloor(waypoints)
+	return self:_promoteWaypoints(waypoints, math.random(1,4), true, 1)
+end
+
+function WayPointer:getWaypointsForNextFloor(waypoints, quadrantNumber, numToPromote)
+	return self:_promoteWaypoints(waypoints, quadrantNumber, false, numToPromote)
+end
+
+function WayPointer:_createPathBetweenTwoPointsTSP(itemsTab, pos1, pos2, brushSize, currentFloor)
     local cr = self.cursor
+	cr.z = currentFloor -- watch out
     local brush = Brush.new()
 
     local function moveCursorAndBrush(startPos, endPos, axis)
@@ -387,14 +408,14 @@ function WayPointer:_createPathBetweenTwoPointsTSP(itemsTab, pos1, pos2)
                 cr:setPos(cr.pos.x, currentPos, cr.pos.z)
             end
 
-            for i = 1, #self.wayPoints do
-                if cr.pos ~= self.wayPoints[i][1] then
-                    brush:doBrushLines(itemsTab, 3, cr.pos, (axis == "x") and 0 or 1)
+            for i = 1, #self.wayPoints[currentFloor] do
+                if cr.pos ~= self.wayPoints[currentFloor][i]["pos"] then
+                    brush:doBrushLines(itemsTab, brushSize, cr.pos, (axis == "x") and 0 or 1)
                 end
             end
         end
 
-        brush:doBrushSquares(itemsTab, 3, cr.pos)
+        brush:doBrushSquares(itemsTab, brushSize, cr.pos)
     end
 
     cr:setPos(pos1.x, pos1.y, pos1.z)
@@ -404,4 +425,55 @@ function WayPointer:_createPathBetweenTwoPointsTSP(itemsTab, pos1, pos2)
 
     -- Move along y-axis
     moveCursorAndBrush(pos1.y, pos2.y, "y")
+end
+
+function WayPointer:_promoteWaypoints(waypoints, quadrantNumber, useCentralPoint, numToPromote)
+	local filteredWaypoints = {}
+	local centerX, centerY = 0, 0
+	local totalX, totalY, count = 0, 0, 0
+
+	-- Calculate the center of all waypoints if central point selection is enabled
+	if useCentralPoint == true then
+		for _, waypoint in ipairs(waypoints) do
+			totalX = totalX + waypoint.pos.x
+			totalY = totalY + waypoint.pos.y
+			count = count + 1
+		end
+		if count > 0 then
+			centerX = totalX / count
+			centerY = totalY / count
+		end
+	end
+
+	-- Filter waypoints based on the selected quadrantNumber
+	for _, waypoint in ipairs(waypoints) do
+		local x, y = waypoint.pos.x, waypoint.pos.y
+		if quadrantNumber == 1 and x >= centerX and y <= centerY then
+			table.insert(filteredWaypoints, waypoint)
+		elseif quadrantNumber == 2 and x <= centerX and y <= centerY then
+			table.insert(filteredWaypoints, waypoint)
+		elseif quadrantNumber == 3 and x <= centerX and y >= centerY then
+			table.insert(filteredWaypoints, waypoint)
+		elseif quadrantNumber == 4 and x >= centerX and y >= centerY then
+			table.insert(filteredWaypoints, waypoint)
+		end
+	end
+
+	-- Randomly select waypoints to promote if more than the required number are available
+	local promotedWaypoints = {}
+	math.randomseed(os.time())
+	while #filteredWaypoints > 0 and #promotedWaypoints < numToPromote do
+		local index = math.random(1, #filteredWaypoints)
+		local promotedWaypoint = table.remove(filteredWaypoints, index)
+		local waypointCopy = {
+			["pos"] = {x = promotedWaypoint.pos.x, y = promotedWaypoint.pos.y, z = promotedWaypoint.pos.z + 1},
+			["room_shape"] = nil,
+			["room_height"] = nil,
+			["room_width"] = nil
+		}
+
+		table.insert(promotedWaypoints, waypointCopy)
+	end
+
+	return promotedWaypoints
 end

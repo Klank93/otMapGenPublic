@@ -19,6 +19,7 @@ local folders = {
     'lib/data',
     'lib/data/borders',
     'lib/data/brushes',
+	'lib/data/elevation',
     'lib/data/shapes',
 	'lib/commonScripts'
 }

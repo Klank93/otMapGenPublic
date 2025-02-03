@@ -32,6 +32,18 @@ local function removeUid(val)
     end
 end
 
+local function doCreateNoTileItem(itemId, count, pos) -- watch-out TFS 1.x only!
+	local tile = Tile(pos)
+	if not tile then
+		Game.createTile(pos, true) -- Creates new Tile, if it does not exist
+	end
+
+	local item = Game.createItem(itemId, count, pos)
+	if item then
+		return item:getUniqueId()
+	end
+end
+
 ---
 
  doCreateItemMock = function(itemId, typeOrCount, pos)
@@ -52,7 +64,8 @@ end
      local stackPos
      local uid
      if not (PRECREATION_TABLE_MODE) then
-         doCreateItem(itemId, typeOrCount, pos) -- tfs function call, depends on tfs version
+		 doCreateNoTileItem(itemId, typeOrCount, pos) -- workaround for multi-floor purpose, for lower TFS versions than 1.X comment this and uncomment below (you will lose multi-floor feature)
+         --doCreateItem(itemId, typeOrCount, pos) -- tfs function call, depends on tfs version
          stackPos = pos.stackpos or 0
      else
          local currentLastStackPos = getLastStackPos(
@@ -82,15 +95,15 @@ end
 
      if (LOG_TO_FILE and DEBUG_OUTPUT) then
          logger:debug(
-                 getFunctionCallerInfo(3) ..
-                         'Created itemId: %s, uid: %s, type/count: %s, on {x = %s, y = %s, z = %s, stackpos = %s}',
-                 itemId,
-                 uid or 'nil',
-                 typeOrCount,
-                 pos.x,
-                 pos.y,
-                 pos.z,
-                 stackPos
+			 getFunctionCallerInfo(3) ..
+					 'Created itemId: %s, uid: %s, type/count: %s, on {x = %s, y = %s, z = %s, stackpos = %s}',
+			 itemId,
+			 uid or 'nil',
+			 typeOrCount,
+			 pos.x,
+			 pos.y,
+			 pos.z,
+			 stackPos
          )
      end
  end
@@ -116,7 +129,7 @@ getThingFromPosMock = function(pos)
             }
             stackPos = 0
         elseif (pos.stackpos ~= nil and
-                not isEmpty(CLI_FINAL_MAP_TABLE, pos.x, pos.y, pos.z, pos.stackpos + 1)
+			not isEmpty(CLI_FINAL_MAP_TABLE, pos.x, pos.y, pos.z, pos.stackpos + 1)
         ) then
             result = CLI_FINAL_MAP_TABLE[pos.x][pos.y][pos.z][pos.stackpos + 1]
             stackPos = pos.stackpos + 1
@@ -232,12 +245,12 @@ queryTileAddThingMock = function(uid, pos)
             isWalkableStr = 'unwalkable'
         end
         logger:debug(
-                getFunctionCallerInfo(3) .. 'Tile pos: {x = %s, y = %s, z = %s} is %s, returned: %s',
-                pos.x,
-                pos.y,
-                pos.z,
-                isWalkableStr,
-                result
+			getFunctionCallerInfo(3) .. 'Tile pos: {x = %s, y = %s, z = %s} is %s, returned: %s',
+			pos.x,
+			pos.y,
+			pos.z,
+			isWalkableStr,
+			result
         )
     end
 

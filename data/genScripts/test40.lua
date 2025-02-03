@@ -6,12 +6,12 @@ MAP_CONFIGURATION = {
     mainPos = {x = 145, y = 145, z = 7},
     mapSizeX = 40,
     mapSizeY = 40,
-	mapSizeZ = 1, -- no multi-floor for now
+	mapSizeZ = 3, -- multi-floor
     wpMinDist = 8,
     wayPointsCount = 7
 }
-LOG_TO_FILE = MAP_GEN_CFG.logToFile -- can be overridden for specific script
-DEBUG_OUTPUT = MAP_GEN_CFG.debugOutput -- can be overridden for specific script
+LOG_TO_FILE = true --MAP_GEN_CFG.logToFile -- can be overridden for specific script
+DEBUG_OUTPUT = true --MAP_GEN_CFG.debugOutput -- can be overridden for specific script
 
 local mainPos = {
     x = MAP_CONFIGURATION.mainPos.x,
@@ -24,171 +24,193 @@ local mapSizeZ = MAP_CONFIGURATION.mapSizeZ
 local wpMinDist = MAP_CONFIGURATION.wpMinDist
 local wayPointsCount = MAP_CONFIGURATION.wayPointsCount
 local wayPoints = {}
+local generatedMap = nil
 
 local script = {}
 
 loadSchemaFile() -- loads the schema file from map configuration with specific global ITEMS_TABLE
 
 function script.run()
-	------ Base stuff
+	local promotedWaypoints = {}
+	mapSizeZ = mapSizeZ - 1
+	generatedMap = GroundMapper.new(mainPos, mapSizeX, mapSizeY, mapSizeZ, wpMinDist)
+	for currentFloor = mainPos.z - mapSizeZ, mainPos.z do -- todo: for multi-floor we need to store at least one waypoint between two floors (for stairs)
+		print('#########>>> Processing Floor: ' .. currentFloor)
 
-	print('> 1 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
+		------ Base stuff
+		print('> 1 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
 
-	local cursor = Cursor.new(mainPos)
-	local generatedMap = GroundMapper.new(mainPos, mapSizeX, mapSizeY, mapSizeZ, wpMinDist)
+		generatedMap:doMainGround(ITEMS_TABLE, currentFloor)
 
-	generatedMap:doMainGround(ITEMS_TABLE)
+		print('> 2 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
 
-	print('> 2 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
+		if (promotedWaypoints[currentFloor] ~= nil) then
+			wayPoints[currentFloor] = arrayMerge({}, promotedWaypoints[currentFloor])
+		end
 
-	local wayPointer = WayPointer.new(generatedMap, cursor)
-	wayPointer:createWaypointsAlternatively(wayPoints, wayPointsCount)
+		local cursor = Cursor.new(mainPos)
+		local wayPointer = WayPointer.new(generatedMap, cursor, wayPoints)
+		wayPoints = wayPointer:createWaypointsAlternatively(wayPointsCount, currentFloor)
 
-	print('> 3 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
+		print('> 3 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
 
-	print('Length: ' .. #wayPoints)
-	--sortWaypoints(wayPoints)
-	--print(dumpVar(wayPoints))
+		-- wayPointer:createPathBetweenWps(ITEMS_TABLE)
+		wayPointer:createPathBetweenWpsTSP(ITEMS_TABLE, 3, currentFloor) -- exact one
+		-- wayPointer:createPathBetweenWpsTSPMS(ITEMS_TABLE)
 
-	-- wayPointer:createPathBetweenWps(ITEMS_TABLE)
-	wayPointer:createPathBetweenWpsTSP(ITEMS_TABLE)
-	-- wayPointer:createPathBetweenWpsTSPMS(ITEMS_TABLE)
+		local roomBuilder = DungeonRoomBuilder.new(wayPoints[currentFloor])
+		roomBuilder:createRooms(ITEMS_TABLE, ROOM_SHAPES)
 
-	-- do return end
+		print('> 4 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
 
-	local roomBuilder = DungeonRoomBuilder.new(wayPoints)
-	roomBuilder:createRooms(ITEMS_TABLE, ROOM_SHAPES)
+		local wallAutoBorder = WallAutoBorder.new(generatedMap)
+		wallAutoBorder:doWalls(
+			ITEMS_TABLE[1][1],
+			ITEMS_TABLE[0][1],
+			TOMB_SAND_WALL_BORDER,
+			currentFloor
+		)
 
-	print('> 4 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
+		print('> 5 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
 
-	local wallAutoBorder = WallAutoBorder.new(generatedMap)
-	wallAutoBorder:doWalls(
-		ITEMS_TABLE[1][1],
-		ITEMS_TABLE[0][1],
-		TOMB_SAND_WALL_BORDER
-	)
+		local marker = Marker.new(generatedMap)
+		marker:createMarkersAlternatively(
+			ITEMS_TABLE[1][1],
+			12,
+			5,
+			currentFloor
+		)
 
-	print('> 5 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
+		print('> 6 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
 
-	local marker = Marker.new(generatedMap)
-	marker:createMarkersAlternatively(
-		ITEMS_TABLE[1][1],
-		12,
-		5
-	)
+		generatedMap:doGround2(
+			marker.markersTab,
+			cursor,
+			ITEMS_TABLE[1][1],
+			ITEMS_TABLE[12][1],
+			1,
+			6
+		)
 
-	print('> 6 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
+		print('> 7 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
 
-	generatedMap:doGround2(
-		marker.markersTab,
-		cursor,
-		ITEMS_TABLE[1][1],
-		ITEMS_TABLE[12][1],
-		1,
-		6
-	)
+		------ repeat createMarkers & doGround2
 
-	print('> 7 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
+		marker:createMarkersAlternatively(
+			ITEMS_TABLE[1][1],
+			8,
+			6,
+			currentFloor
+		)
 
-	------ repeat createMarkers & doGround2
+		print('> 8 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
 
-	marker:createMarkersAlternatively(
-		ITEMS_TABLE[1][1],
-		8,
-		6
-	)
+		generatedMap:doGround2(
+			marker.markersTab,
+			cursor,
+			ITEMS_TABLE[1][1],
+			ITEMS_TABLE[12][1],
+			1,
+			6
+		)
 
-	print('> 8 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
+		print('> 9 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
 
-	generatedMap:doGround2(
-		marker.markersTab,
-		cursor,
-		ITEMS_TABLE[1][1],
-		ITEMS_TABLE[12][1],
-		1,
-		6
-	)
+		generatedMap:correctGround(ITEMS_TABLE[1][1], ITEMS_TABLE[12][1], currentFloor) -- todo: most likely does not work in CLI mode
 
-	print('> 9 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
+		print('> 10 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
 
-	generatedMap:correctGround(ITEMS_TABLE[1][1], ITEMS_TABLE[12][1]) -- todo: most likely does not work in CLI mode
+		addRotatedTab(BRUSH_BORDER_SHAPES, 9)
 
-	print('> 10 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
+		marker:createMarkersAlternatively(
+			0, -- todo: "0" does not work with CLI, because of the bug in isWalkable function (doCreateItemMock actually)
+			19,
+			4,
+			currentFloor
+		)
 
-	addRotatedTab(BRUSH_BORDER_SHAPES, 9)
+		print('> 11 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
 
-	marker:createMarkersAlternatively(
-		0, -- todo: "0" does not work with CLI, because of the bug in isWalkable function (doCreateItemMock actually)
-		20,
-		4
-	)
+		local brush = Brush.new()
+		brush:doBrush(
+			marker.markersTab,
+			ITEMS_TABLE[0][1],
+			BRUSH_BORDER_SHAPES,
+			SAND_BASE_BRUSH
+		) -- it has to be executed before the base autoBorder, otherwise there are issues with stackpos
 
-	print('> 11 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
+		print('> 12 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
 
-	local brush = Brush.new()
-	brush:doBrush(
-		marker.markersTab,
-		ITEMS_TABLE[0][1],
-		BRUSH_BORDER_SHAPES,
-		SAND_BASE_BRUSH
-	) -- it has to be executed before the base autoBorder, otherwise there are issues with stackpos
+		local groundAutoBorder = GroundAutoBorder.new(generatedMap)
+		groundAutoBorder:doGround(
+			ITEMS_TABLE[12][1],
+			ITEMS_TABLE[1][1],
+			ITEMS_TABLE[0][1],
+			SAND_GROUND_BASE_BORDER,
+			currentFloor
+		)
 
-	print('> 12 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
+		print('> 13 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
 
-	local groundAutoBorder = GroundAutoBorder.new(generatedMap)
-	groundAutoBorder:doGround(
-		ITEMS_TABLE[12][1],
-		ITEMS_TABLE[1][1],
-		ITEMS_TABLE[0][1],
-		SAND_GROUND_BASE_BORDER
-	)
+		groundAutoBorder:correctBorders(
+			ITEMS_TABLE[0][1],
+			SAND_GROUND_BASE_BORDER,
+			TOMB_SAND_WALL_BORDER,
+			ITEMS_TABLE[12][1],
+			BORDER_CORRECT_SHAPES,
+			30,
+			currentFloor
+		)
 
-	print('> 13 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
+		print('> 14 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
 
-	groundAutoBorder:correctBorders(
-		ITEMS_TABLE[0][1],
-		SAND_GROUND_BASE_BORDER,
-		TOMB_SAND_WALL_BORDER,
-		ITEMS_TABLE[12][1],
-		BORDER_CORRECT_SHAPES,
-		30
-	)
+		--local groundRandomizer = GroundRandomizer.new(generatedMap)
+		--groundRandomizer:randomize(ITEMS_TABLE, 40)
 
-	print('> 14 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
+		------ Detailing Map
 
-	--local groundRandomizer = GroundRandomizer.new(generatedMap)
-	--groundRandomizer:randomize(ITEMS_TABLE, 40)
+		local startTime = os.clock()
+		local detailer = Detailer.new(generatedMap, wayPoints)
+		detailer:createDetailsInRooms(ROOM_SHAPES, ITEMS_TABLE, TOMB_SAND_WALL_BORDER, currentFloor)
 
-	------ Detailing Map
+		print('> 15 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
 
-	local startTime = os.clock()
-	local detailer = Detailer.new(generatedMap, wayPoints)
-	detailer:createDetailsInRooms(ROOM_SHAPES, ITEMS_TABLE, TOMB_SAND_WALL_BORDER)
+		detailer:createDetailsOnMap(ITEMS_TABLE[11][1], 4, currentFloor)
+		detailer:createDetailsOnMap(ITEMS_TABLE[8][1], 10, currentFloor)
+		detailer:createDetailsOnMap(ITEMS_TABLE[8][2], 4, currentFloor)
+		detailer:createDetailsOnMap(ITEMS_TABLE[8][3], 1, currentFloor)
+		detailer:createDetailsOnMap(ITEMS_TABLE[9][2], 4, currentFloor)
+		detailer:createDetailsOnMap(ITEMS_TABLE[9][1], 2, currentFloor)
 
-	print('> 15 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
+		detailer:createHangableDetails(
+			ITEMS_TABLE[0][1],
+			TOMB_SAND_WALL_BORDER,
+			ITEMS_TABLE,
+			15,
+			currentFloor
+		)
+		print("Combined creation of the details done, execution time: " .. os.clock() - startTime)
 
-	detailer:createDetailsOnMap(ITEMS_TABLE[11][1], 4)
-	detailer:createDetailsOnMap(ITEMS_TABLE[8][1], 10)
-	detailer:createDetailsOnMap(ITEMS_TABLE[8][2], 4)
-	detailer:createDetailsOnMap(ITEMS_TABLE[8][3], 1)
-	detailer:createDetailsOnMap(ITEMS_TABLE[9][2], 4)
-	detailer:createDetailsOnMap(ITEMS_TABLE[9][1], 2)
+		print('> 16 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
 
-	detailer:createHangableDetails(
-		ITEMS_TABLE[0][1],
-		TOMB_SAND_WALL_BORDER,
-		ITEMS_TABLE,
-		15
-	)
-	print("Combined creation of the details done, execution time: " .. os.clock() - startTime)
+		-- multi-floor
+		if (currentFloor ~= mainPos.z) then
+			promotedWaypoints[currentFloor + 1] = wayPointer:getCentralWaypointForNextFloor(wayPoints[currentFloor])
+		else
+			print("No waypoints to promote for next floor - last floor processed.")
+		end
+	end
 
-	print('> 16 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
+	local elevator = ElevationManager.new(generatedMap, promotedWaypoints, TOMB_SAND_WALL_BORDER)
+	elevator:createLadders()
+
+	print('> 17 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
 
 	if (PRECREATION_TABLE_MODE and RUNNING_MODE == 'tfs') then
 		local mapCreator = MapCreator.new(generatedMap)
 		mapCreator:drawMap()
 
-		print('> 17 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
+		print('> 18 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
 	end
 end
 

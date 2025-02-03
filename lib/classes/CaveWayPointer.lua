@@ -10,7 +10,7 @@ function CaveWayPointer.new(map, cursor, wayPoints, brush)
     return instance
 end
 
-function CaveWayPointer:createPathBetweenWpsTSP(itemsTab, size)
+function CaveWayPointer:createPathBetweenWpsTSP(itemsTab, brushSize)
     local startTime = os.clock()
     local tsp = TSP.new(self.wayPoints)
     print("TSP running...")
@@ -24,13 +24,13 @@ function CaveWayPointer:createPathBetweenWpsTSP(itemsTab, size)
             local point1 = self.wayPoints[path[i]][1]
             local point2 = self.wayPoints[path[i + 1]][1]
 
-            self:_connectTwoPoints(itemsTab, point1, point2, size)
+            self:_connectTwoPoints(itemsTab, point1, point2, brushSize)
         end
     end
     print("Paths created in " .. os.clock() - startTime .. " seconds.")
 end
 
-function CaveWayPointer:createPathBetweenWpsTSPMS(itemsTab, size, travellersCount)
+function CaveWayPointer:createPathBetweenWpsTSPMS(itemsTab, brushSize, travellersCount)
     local startTime = os.clock()
 
     -- Uses the TSP class for multiple salesmen, to find the most optimal paths between wayPoints
@@ -47,14 +47,14 @@ function CaveWayPointer:createPathBetweenWpsTSPMS(itemsTab, size, travellersCoun
             local point1 = self.wayPoints[path[i]][1]
             local point2 = self.wayPoints[path[i + 1]][1]
 
-            self:_connectTwoPoints(itemsTab, point1, point2, size)
+            self:_connectTwoPoints(itemsTab, point1, point2, brushSize)
         end
     end
     print("Paths created in " .. os.clock() - startTime .. " seconds.")
 end
 
 -- private
-function CaveWayPointer:_connectTwoPoints(itemsTab, point1, point2, size)
+function CaveWayPointer:_connectTwoPoints(itemsTab, point1, point2, brushSize)
     local newPos = {}
     local dist = pointDistance2(point1, point2)
     local triesCount = math.floor(dist / (self.map.wpMinDist/2) ) -- const
@@ -109,7 +109,7 @@ function CaveWayPointer:_connectTwoPoints(itemsTab, point1, point2, size)
                 print("Exceeded Y !!!!!!\n")
             end
 
-            self:_createPathBetweenTwoPoints(itemsTab, pos1, newPos, size)
+            self:_createPathBetweenTwoPoints(itemsTab, pos1, newPos, brushSize)
 
             pos1.x = newPos.x
             pos1.y = newPos.y
@@ -118,15 +118,15 @@ function CaveWayPointer:_connectTwoPoints(itemsTab, point1, point2, size)
             dist = pointDistance2(newPos, point2)
         end
 
-        self:_createPathBetweenTwoPoints(itemsTab, pos1, point2, size)
+        self:_createPathBetweenTwoPoints(itemsTab, pos1, point2, brushSize)
     else
         -- incorrect dist
-        self:_createPathBetweenTwoPoints(itemsTab, point1, point2, size)
+        self:_createPathBetweenTwoPoints(itemsTab, point1, point2, brushSize)
     end
 end
 
 -- private
-function CaveWayPointer:_createPathBetweenTwoPoints(itemsTab, pos1, pos2, size)
+function CaveWayPointer:_createPathBetweenTwoPoints(itemsTab, pos1, pos2, brushSize)
     if self.brush == nil then
         error("Brush property is null. Could not create paths.")
     end
@@ -146,31 +146,31 @@ function CaveWayPointer:_createPathBetweenTwoPoints(itemsTab, pos1, pos2, size)
                 if (directionY > 0) then
                     pom.y = pom.y - 1 -- up
                     --	print("Up-Left")
-                    self.brush:doBrushSquares(itemsTab, size, pom)
+                    self.brush:doBrushSquares(itemsTab, brushSize, pom)
                 elseif (directionY < 0) then
                     pom.y = pom.y + 1 -- down
                     --	print("Down-Left")
 
-                    self.brush:doBrushSquares(itemsTab, size, pom)
+                    self.brush:doBrushSquares(itemsTab, brushSize, pom)
                 end
                 pom.x = pom.x - 1
                 --	print("Left")
-                self.brush:doBrushSquares(itemsTab, size, pom)
+                self.brush:doBrushSquares(itemsTab, brushSize, pom)
             elseif (directionX < 0) then -- right
                 if (directionY > 0) then
                     pom.y = pom.y - 1 -- up
                     --	print("Up-Right")
 
-                    self.brush:doBrushSquares(itemsTab, size, pom)
+                    self.brush:doBrushSquares(itemsTab, brushSize, pom)
                 elseif (directionY < 0) then
                     pom.y = pom.y + 1 -- down
                     --	print("Down-Right")
 
-                    self.brush:doBrushSquares(itemsTab, size, pom)
+                    self.brush:doBrushSquares(itemsTab, brushSize, pom)
                 end
                 pom.x = pom.x + 1
                 --	print("Right")
-                self.brush:doBrushSquares(itemsTab, size, pom)
+                self.brush:doBrushSquares(itemsTab, brushSize, pom)
             else -- x in the same line
                 if (directionY > 0) then
                     pom.y = pom.y - 1 -- up
@@ -180,7 +180,7 @@ function CaveWayPointer:_createPathBetweenTwoPoints(itemsTab, pos1, pos2, size)
                     --	print("Down")
                 end
 
-                self.brush:doBrushSquares(itemsTab, size, pom)
+                self.brush:doBrushSquares(itemsTab, brushSize, pom)
             end
         until (pom.x == pos2.x and pom.y == pos2.y)
     end

@@ -9,20 +9,25 @@ function GroundAutoBorder.new(map)
     return instance
 end
 
-function GroundAutoBorder:doGround(ground1, ground2, badGround, border)
+function GroundAutoBorder:doGround(ground1, ground2, badGround, border, currentFloor)
     -- todo: lastly stackposes were changed from 1 to 2, for running via CLI purposes (otherwise they were deleting walls)
     -- todo: has to be checked doesn't it cause the other issues
     local startTime = os.clock()
     local pom = {}
     pom.x = self.map.mainPos.x
     pom.y = self.map.mainPos.y
-    pom.z = self.map.mainPos.z
+    pom.z = currentFloor
 
     for i = self.map.mainPos.y, self.map.mainPos.y + self.map.sizeY do
         for j = self.map.mainPos.x, self.map.mainPos.x + self.map.sizeX do
-            local itemId = getThingFromPosMock(
-                    {x = pom.x, y = pom.y, z = pom.z, stackpos = 0}
-            ).itemid
+			local itemId
+			local getThing = getThingFromPosMock(
+			{x = pom.x, y = pom.y, z = pom.z, stackpos = 0}
+            )
+			if getThing ~= nil then
+				itemId = getThing.itemid
+			end
+
             local nw = 0
             local ne = 0
             local sw = 0
@@ -481,15 +486,16 @@ function GroundAutoBorder:correctBorders(
         wallBorder,
         groundItemId,
         shapesTab,
-        chance
-) -- todo: does not work in CLI mode
+        chance,
+		currentFloor
+) -- todo: does not work in CLI mode (to confirm)
     local startTime = os.clock()
     local lengthX = 1
     local lengthY = 1
     local pom = {}
     pom.x = self.map.mainPos.x
     pom.y = self.map.mainPos.y
-    pom.z = self.map.mainPos.z
+    pom.z = currentFloor
 
     for i = self.map.mainPos.y, self.map.mainPos.y + self.map.sizeY do
         for j = self.map.mainPos.x, self.map.mainPos.x + self.map.sizeX do
@@ -557,8 +563,8 @@ function GroundAutoBorder:correctBorders(
                     end
                 elseif (mapItem.itemid == border[1][1]) then
                     if (getThingFromPosMock(
-                            {x = pom.x + 1, y = pom.y, z = pom.z, stackpos = 1}
-                    ).itemid == border[1][1]
+						{x = pom.x + 1, y = pom.y, z = pom.z, stackpos = 1}
+                   		).itemid == border[1][1]
                     ) then
                         lengthX = 2
                         -- else
@@ -577,12 +583,12 @@ function GroundAutoBorder:correctBorders(
                                     for ax = 1, 12 do
                                         if (tab.shape[ai][aj] == ax) then
                                             if (getThingFromPosMock(
-                                                    {x = pom2.x, y = pom2.y, z = pom2.z, stackpos = 0}
-                                            ).itemid ~= badGroundItemId
+												{x = pom2.x, y = pom2.y, z = pom2.z, stackpos = 0}
+                                            	).itemid ~= badGroundItemId
                                             ) then
                                                 if (getThingFromPosMock(
-                                                        {x = pom2.x, y = pom2.y, z = pom2.z, stackpos = 0}
-                                                ).itemid ~= groundItemId
+													{x = pom2.x, y = pom2.y, z = pom2.z, stackpos = 0}
+                                                	).itemid ~= groundItemId
                                                 ) then
                                                     local mapItem2Pos =
                                                         {x = pom2.x, y = pom2.y, z = pom2.z, stackpos = 1}
@@ -737,5 +743,5 @@ function GroundAutoBorder:correctBorders(
         pom.y = pom.y + 1
     end
 
-    print("Corrections of borders done, execution time: " .. os.clock() - startTime)
+    print("Corrections of borders for floor " .. currentFloor .. " done, execution time: " .. os.clock() - startTime)
 end

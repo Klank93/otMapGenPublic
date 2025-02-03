@@ -21,8 +21,9 @@ function Marker:createMarkers(
         itemsTable,
         acceptedGroundItemId,
         markersAmount,
-        minDistanceBetweenTwoMarkers
-)
+        minDistanceBetweenTwoMarkers,
+		currentFloor
+) -- deprecated!
     local startTime = os.clock()
     local counter = 0
     local status = true
@@ -38,20 +39,20 @@ function Marker:createMarkers(
         -- todo: check why (probably something with decrease working area of the map)
         minPos.x = (self.map.pos.x + (self.map.wpMinDist/2))
         minPos.y = (self.map.pos.y + (self.map.wpMinDist/2))
-        minPos.z = self.map.pos.z
+        minPos.z = currentFloor
 
         maxPos.x = (self.map.pos.x - (self.map.wpMinDist/2)) + self.map.sizeX
         maxPos.y = (self.map.pos.y - (self.map.wpMinDist/2)) + self.map.sizeY
-        maxPos.z = self.map.pos.z
+        maxPos.z = currentFloor
     else
         -- todo: originally it was only this \/
         minPos.x = (self.map.pos.x + self.map.wpMinDist)
         minPos.y = (self.map.pos.y + self.map.wpMinDist)
-        minPos.z = self.map.pos.z
+        minPos.z = currentFloor
 
         maxPos.x = (self.map.pos.x - self.map.wpMinDist) + self.map.sizeX
         maxPos.y = (self.map.pos.y - self.map.wpMinDist) + self.map.sizeY
-        maxPos.z = self.map.pos.z
+        maxPos.z = currentFloor
     end
 
     local i = 1
@@ -62,7 +63,7 @@ function Marker:createMarkers(
             local randPos = {}
             randPos.x = xRand
             randPos.y = yRand
-            randPos.z = self.map.pos.z -- todo: has to be refactored in case of multi-floor functionality
+            randPos.z = currentFloor
             local tab = {}
 
             table.insert(tab, 1, randPos)
@@ -109,10 +110,11 @@ function Marker:createMarkers(
 
     if (status == false) then
         self:createMarkers(
-                itemsTable,
-                acceptedGroundItemId,
-                markersAmount,
-                minDistanceBetweenTwoMarkers
+			itemsTable,
+			acceptedGroundItemId,
+			markersAmount,
+			minDistanceBetweenTwoMarkers,
+			currentFloor
         )
     else
         -- print(dumpVar(self.markersTab))
@@ -124,33 +126,34 @@ function Marker:createMarkersAlternatively( -- performance improvement ~40% in c
         acceptedGroundItemId, -- if set to 0, it will create markers on all walkable tiles (not on just one ground)
         -- otherwise only on the map tiles with ground itemid == acceptedGroundItemId
         markersAmount,
-        minDistanceBetweenTwoMarkers
-)
+        minDistanceBetweenTwoMarkers,
+		currentFloor
+	)
     local startTime = os.clock()
     local acceptedMapTilesTab = {}
-    print("Creating " .. markersAmount .. " markers alternatively..., #acceptedMapTilesTab: " .. #acceptedMapTilesTab)
+    print("Creating " .. markersAmount .. " markers alternatively, on floor: " .. currentFloor .. ", #acceptedMapTilesTab: " .. #acceptedMapTilesTab)
     self:_cleanMarkers()
 
     for i = self.map.pos.y, self.map.pos.y + self.map.sizeY - 1 do
         for j = self.map.pos.x, self.map.pos.x + self.map.sizeX - 1 do
             if (acceptedGroundItemId == 0) then
                 local isWalkable = isWalkable(
-                        {x = j, y = i, z = self.map.mainPos.z}
-                ) -- todo: always returns false in CLI
+                        {x = j, y = i, z = currentFloor}
+                )
                 if (isWalkable) then
                     table.insert(
                             acceptedMapTilesTab,
-                            {x = j, y = i, z = self.map.mainPos.z}
-                    ) -- todo: no multi-floor
+                            {x = j, y = i, z = currentFloor}
+                    )
                 end
             elseif (getThingFromPosMock(
-                    {x = j, y = i, z = self.map.mainPos.z, stackpos = 0}
+                    {x = j, y = i, z = currentFloor, stackpos = 0}
                 ).itemid == acceptedGroundItemId
             ) then
                 table.insert(
                         acceptedMapTilesTab,
-                        {x = j, y = i, z = self.map.mainPos.z}
-                ) -- todo: no multi-floor
+                        {x = j, y = i, z = currentFloor}
+                )
             end
         end
     end
@@ -174,7 +177,7 @@ function Marker:createMarkersAlternatively( -- performance improvement ~40% in c
         local randomPos = {
             x = acceptedMapTilesTab[randomIndex].x,
             y = acceptedMapTilesTab[randomIndex].y,
-            z = self.map.mainPos.z
+            z = currentFloor
         } -- todo: no multi-floor
 
         local i = 1
@@ -197,5 +200,5 @@ function Marker:createMarkersAlternatively( -- performance improvement ~40% in c
     print("Available map tiles for potential new markers count: " .. #acceptedMapTilesTab .. " after the procedure.")
     -- /\ if #acceptedMapTilesTab is near to 0, reconsider decreasing
     -- the value of minDistanceBetweenTwoMarkers or increase the map size
-    print("Markers created alternatively, execution time: ".. os.clock() - startTime)
+    print("Markers created alternatively on floor: " .. currentFloor .. ", execution time: ".. os.clock() - startTime)
 end

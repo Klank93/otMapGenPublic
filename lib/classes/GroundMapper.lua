@@ -15,13 +15,13 @@ function GroundMapper.new(mainPos, sizeX, sizeY, sizeZ, wpMinDist, wpMaxDist) --
     return instance
 end
 
-function GroundMapper:doMainGround(itemTab) -- creates the background tiles
+function GroundMapper:doMainGround(itemTab, currentFloor) -- creates the background tiles
     local startTime = os.clock()
     local startX = self.mainPos.x
     local pom = {}
     pom.x = self.mainPos.x
     pom.y = self.mainPos.y
-    pom.z = self.mainPos.z
+    pom.z = currentFloor
 
     for i = self.mainPos.y, self.mainPos.y + self.sizeY do -- todo: watchout, there was an issue with additional 1 sqm
         pom.y = i
@@ -32,7 +32,7 @@ function GroundMapper:doMainGround(itemTab) -- creates the background tiles
         pom.x = startX
     end
 
-    print("Main ground created, execution time: " .. os.clock() - startTime)
+    print("Main ground created, floor: " .. self.mainPos.z .. ", execution time: " .. os.clock() - startTime)
 end
 
 function GroundMapper:doGround(
@@ -169,13 +169,14 @@ end
 
 function GroundMapper:correctGround(
         mainGround,
-        newGround
+        newGround,
+		currentFloor
 )
     local startTime = os.clock()
     local pom = {}
     pom.x = self.mainPos.x
     pom.y = self.mainPos.y
-    pom.z = self.mainPos.z
+    pom.z = currentFloor
 
     for i = self.mainPos.y, self.mainPos.y + self.sizeY do
         for j = self.mainPos.x, self.mainPos.x + self.sizeX do
@@ -207,7 +208,7 @@ function GroundMapper:correctGround(
         pom.y = pom.y + 1
     end
 
-    print("Correction of the groundId ".. newGround .." done, execution time: " .. os.clock() - startTime)
+    print("Correction of the groundId ".. newGround .." on floor: " .. currentFloor .. " done, execution time: " .. os.clock() - startTime)
 end
 
 function GroundMapper:eraseMap() -- todo: handle multi-floor case
@@ -216,8 +217,8 @@ function GroundMapper:eraseMap() -- todo: handle multi-floor case
 
     for i = self.mainPos.y, self.mainPos.y + self.sizeY do
 		for j = self.mainPos.x, self.mainPos.x + self.sizeX do
-			for k = self.mainPos.z, self.mainPos.z - (self.sizeZ - 1), -1 do
-				removedItems = removedItems + removeAllItemsFromPos({x = j, y = i, z = k})
+			for k = self.mainPos.z, self.mainPos.z + (self.sizeZ - 1) do
+				removedItems = removedItems + removeAllItemsFromPos({x = j, y = i, z = k}, true)
 			end
         end
     end
