@@ -165,10 +165,10 @@ function Marker:createMarkersAlternatively( -- performance improvement ~40% in c
         -- print("Creating marker: " .. markersCounter .. ", memory usage: " .. round(collectgarbage("count"), 3) .. ' kB')
         -- print("Current acceptedMapTilesTab length: " .. #acceptedMapTilesTab .. ", wpCounter: " .. markersCounter)
         if (#acceptedMapTilesTab < 1) then
-            error("Can not create more markers, with given parameters." ..
-                    " Please, change the configuration, current count: " ..
-                    #self.markersTab .. ' markersCounter: ' .. markersCounter ..
-                    ", availableTiles: " .. #acceptedMapTilesTab
+            error("Can not create more markers, with given parameters. Floor: " .. currentFloor ..
+				" Please, change the configuration, current count: " ..
+				#self.markersTab .. ' markersCounter: ' .. markersCounter ..
+				", availableTiles: " .. #acceptedMapTilesTab
             )
             break
         end

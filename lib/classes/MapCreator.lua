@@ -13,30 +13,28 @@ function MapCreator:drawMap(currentFloor)
         do return end
     end
 
-	local drawning = function (i, j, currentFloor)
-		if (CLI_FINAL_MAP_TABLE[i][j][currentFloor][1].itemid ~= nil) then
-			for key, value in pairs(CLI_FINAL_MAP_TABLE[i][j][currentFloor]) do
-				doCreateItem( -- only direct TFS function call in files, done with purpose
-					CLI_FINAL_MAP_TABLE[i][j][currentFloor][key].itemid,
-					CLI_FINAL_MAP_TABLE[i][j][currentFloor][key].typeOrCount,
-					{x = i, y = j, z = currentFloor, stackpos = (key - 1)}
+	PRECREATION_TABLE_MODE = false -- disable to be able to actually create map finally
+	local drawning = function (i, j, floor)
+		if (CLI_FINAL_MAP_TABLE[i][j][floor][1].itemid ~= nil) then
+			for key, value in pairs(CLI_FINAL_MAP_TABLE[i][j][floor]) do
+				doCreateItemMock(
+					value.itemid,
+					value.typeOrCount,
+					{x = i, y = j, z = floor, stackpos = (key - 1)}
 				)
 			end
 		end
 	end
 
     local startTime = os.clock()
-    for i = self.map.mainPos.x, self.map.mainPos.x + self.map.sizeX do -- todo: watchout, there was an issue with additional 1 sqm
-        for j = self.map.mainPos.y, self.map.mainPos.y + self.map.sizeY do -- todo: watchout, there was an issue with additional 1 sqm
-			if (currentFloor ~= nil) then
-				drawning(i, j, currentFloor)
-			else
-				for k = self.map.mainPos.z, self.map.mainPos.z + self.map.sizeZ do
-					drawning(i, j, k)
-				end
+	for k = self.map.mainPos.z - self.map.sizeZ, self.map.mainPos.z do
+		print('Drawning floor: ' .. k)
+		for i = self.map.mainPos.x, self.map.mainPos.x + self.map.sizeX do -- todo: watchout, there was an issue with additional 1 sqm
+			for j = self.map.mainPos.y, self.map.mainPos.y + self.map.sizeY do -- todo: watchout, there was an issue with additional 1 sqm
+				drawning(i, j, k)
 			end
-        end
-    end
+		end
+	end
 
 	if (currentFloor ~= nil) then
 		print("Map tiles created for floor: " .. currentFloor .. ", execution time: " .. os.clock() - startTime)
@@ -59,7 +57,6 @@ function MapCreator:drawChunk(iterationStepsCountPerChunk) -- todo !!!
 			end
 		end
 	end
-
 
 	-- Iterating function, which go through all table elements
 	function iterateNSteps(tbl, n)

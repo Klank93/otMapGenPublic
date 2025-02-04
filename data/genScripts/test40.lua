@@ -24,7 +24,7 @@ local mapSizeZ = MAP_CONFIGURATION.mapSizeZ
 local wpMinDist = MAP_CONFIGURATION.wpMinDist
 local wayPointsCount = MAP_CONFIGURATION.wayPointsCount
 local wayPoints = {}
-local generatedMap = nil
+local generatedMap
 
 local script = {}
 
@@ -34,7 +34,7 @@ function script.run()
 	local promotedWaypoints = {}
 	mapSizeZ = mapSizeZ - 1
 	generatedMap = GroundMapper.new(mainPos, mapSizeX, mapSizeY, mapSizeZ, wpMinDist)
-	for currentFloor = mainPos.z - mapSizeZ, mainPos.z do -- todo: for multi-floor we need to store at least one waypoint between two floors (for stairs)
+	for currentFloor = mainPos.z - mapSizeZ, mainPos.z do -- multi-floor (it's working in ascending order, from upper floors to lower ones)
 		print('#########>>> Processing Floor: ' .. currentFloor)
 
 		------ Base stuff
@@ -202,7 +202,8 @@ function script.run()
 	end
 
 	local elevator = ElevationManager.new(generatedMap, promotedWaypoints, TOMB_SAND_WALL_BORDER)
-	elevator:createLadders()
+	--elevator:createRopeLadders()
+	elevator:createDesertRamps()
 
 	print('> 17 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
 

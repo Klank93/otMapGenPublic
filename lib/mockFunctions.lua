@@ -32,7 +32,9 @@ local function removeUid(val)
     end
 end
 
-local function doCreateNoTileItem(itemId, count, pos) -- watch-out TFS 1.x only!
+---
+
+doCreateNoTileItem = function(itemId, count, pos) -- watch-out TFS 1.x only!
 	local tile = Tile(pos)
 	if not tile then
 		Game.createTile(pos, true) -- Creates new Tile, if it does not exist
@@ -43,8 +45,6 @@ local function doCreateNoTileItem(itemId, count, pos) -- watch-out TFS 1.x only!
 		return item:getUniqueId()
 	end
 end
-
----
 
  doCreateItemMock = function(itemId, typeOrCount, pos)
      if (itemId == nil) then
@@ -64,7 +64,8 @@ end
      local stackPos
      local uid
      if not (PRECREATION_TABLE_MODE) then
-		 doCreateNoTileItem(itemId, typeOrCount, pos) -- workaround for multi-floor purpose, for lower TFS versions than 1.X comment this and uncomment below (you will lose multi-floor feature)
+		 doCreateNoTileItem(itemId, typeOrCount, pos) -- workaround for multi-floor purpose,
+		 -- for lower TFS versions than 1.X comment above line and uncomment below (you will lose multi-floor feature, unfortunately)
          --doCreateItem(itemId, typeOrCount, pos) -- tfs function call, depends on tfs version
          stackPos = pos.stackpos or 0
      else

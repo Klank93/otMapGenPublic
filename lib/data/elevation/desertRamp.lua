@@ -2,42 +2,42 @@ DESERT_RAMP_SCHEMA = {
 	["upper"] = {
 		["north"] = {
 			['schema'] = {
-				{nil,0,nil},
-				{nil,1,nil},
-				{nil,nil,nil}
+				{0,0,0},
+				{0,1,0},
+				{0,0,0}
 			},
 			['itemId'] = {
-				[1] = 459
+				[1] = 4837
 			}
 		},
 		["east"] = {
 			['schema'] = {
-				{nil,nil,nil},
-				{nil,1,0},
-				{nil,nil,nil}
+				{0,0,0},
+				{0,1,0},
+				{0,0,0}
 			},
 			['itemId'] = {
-				[1] = 459
+				[1] = 4837
 			}
 		},
 		["south"] = {
 			['schema'] = {
-				{nil,nil,nil},
-				{nil,1,nil},
-				{nil,0,nil}
+				{0,0,0},
+				{0,1,0},
+				{0,0,0}
 			},
 			['itemId'] = {
-				[1] = 459
+				[1] = 4837
 			}
 		},
 		["west"] = {
 			['schema'] = {
-				{nil,nil,nil},
-				{0,1,nil},
-				{nil,nil,nil}
+				{0,0,0},
+				{0,1,0},
+				{0,0,0}
 			},
 			['itemId'] = {
-				[1] = 459
+				[1] = 4837
 			}
 		},
 	},

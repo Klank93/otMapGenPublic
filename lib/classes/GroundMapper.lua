@@ -217,7 +217,7 @@ function GroundMapper:eraseMap() -- todo: handle multi-floor case
 
     for i = self.mainPos.y, self.mainPos.y + self.sizeY do
 		for j = self.mainPos.x, self.mainPos.x + self.sizeX do
-			for k = self.mainPos.z, self.mainPos.z + (self.sizeZ - 1) do
+			for k = self.mainPos.z - (self.sizeZ - 1), self.mainPos.z do
 				removedItems = removedItems + removeAllItemsFromPos({x = j, y = i, z = k}, true)
 			end
         end

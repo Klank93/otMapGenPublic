@@ -181,12 +181,13 @@ function getPosItems(pos, withGround)
 end
 
 removeAllUnwalkableItems = function (pos, wallBorder) -- deletes all items which are unwalkable from pos except walls
+	-- todo: some issue, sometimes it does not remove all unwalkable items
 	local posItems = getPosItems(pos, false)
 	for _, item in pairs(posItems) do
 		if (not inArray(flattenArray(wallBorder), item.itemid) and
 			inArray(UNWALKABLE_ITEMS, item.itemid)
 		) then
-			doRemoveItemMock(item.uid, pos)
+			doRemoveItemMock(item.uid, {x = pos.x, y = pos.y, z = pos.z})
 		end
 	end
 end
