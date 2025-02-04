@@ -10,9 +10,9 @@ function Detailer.new(map, wayPoints)
     return instance
 end
 
-function Detailer:createDetailsInRooms(rmsh, itemsTab, wallBorder, currentFloor)
+function Detailer:createDetailsInRooms(rmsh, itemsTab, wallBorder)
     local startTime = os.clock()
-    for _, waypoint in pairs(self.wayPoints[currentFloor]) do
+    for _, waypoint in pairs(self.wayPoints) do
         local pillar = math.random(1,#itemsTab[5]) -- chooses pillars for specific room
         local fountain = math.random(1,#itemsTab[17])
         local pom = {}
@@ -311,12 +311,13 @@ function Detailer:createDetailsInRooms(rmsh, itemsTab, wallBorder, currentFloor)
             pom.y = pom.y + 1
         end
     end
-    print("Making details in rooms on floor: " .. currentFloor .. " done, execution time: " .. os.clock() - startTime)
+    print("Making details in rooms done, execution time: " .. os.clock() - startTime)
 end
 
 function Detailer:createDetailsOnMap(itemsTab, chance, currentFloor) -- chance is int, percentage in range 1%-100%
     -- add details, trashes on the walkable tiles, which have less than 3 stackpos items on it
     -- todo: refactor, takes to much time
+	currentFloor = currentFloor or self.map.mainPos.z
     local startTime = os.clock()
     local pom = {}
     local randomChance = 0
@@ -391,21 +392,22 @@ function Detailer:createDetailsOnMap(itemsTab, chance, currentFloor) -- chance i
     print("Creating details on floor: " .. currentFloor .. " done, execution time: " .. os.clock() - startTime)
 end
 
-function Detailer:createDetailsOnMapAlternatively(itemsTab, chance) -- chance is int, percentage in range 1%-100%
+function Detailer:createDetailsOnMapAlternatively(itemsTab, chance, currentFloor) -- chance is int, percentage in range 1%-100%
     -- add details, trashes on the walkable tiles, which have less than 3 stackpos items on it
+	currentFloor = currentFloor or self.map.mainPos.z
     local startTime = os.clock()
     local acceptedMapTilesTab = {}
 
     for i = self.map.mainPos.y, self.map.mainPos.y + self.map.sizeY do
         for j = self.map.mainPos.x, self.map.mainPos.x + self.map.sizeX do
-            local currentPos = {x = j, y = i, z = self.map.mainPos.z}
+            local currentPos = {x = j, y = i, z = currentFloor}
             local isWalkable = isWalkable(
-                    currentPos
+				currentPos
             ) -- todo: always returns false in CLI
             if (isWalkable and not inArray(self.alreadyUsedTilesForDetails, currentPos)) then
                 table.insert(
-                        acceptedMapTilesTab,
-                        currentPos
+					acceptedMapTilesTab,
+					currentPos
                 ) -- todo: no multi-floor
             end
         end
@@ -415,19 +417,19 @@ function Detailer:createDetailsOnMapAlternatively(itemsTab, chance) -- chance is
     for i = 1, #tilesToAddDetails do
         local detailItem = itemsTab[math.random(1,#itemsTab)]
         doCreateItemMock(
-                detailItem,
-                1,
-                tilesToAddDetails[i]
+			detailItem,
+			1,
+			tilesToAddDetails[i]
         )
         table.insert(
-                self.alreadyUsedTilesForDetails,
-                tilesToAddDetails[i]
+			self.alreadyUsedTilesForDetails,
+			tilesToAddDetails[i]
         )
     end
 
     print("Creating " .. #tilesToAddDetails ..
-            " details on map alternatively done, execution time: " ..
-            os.clock() - startTime
+		" details on map alternatively done, execution time: " ..
+		os.clock() - startTime
     )
 end
 
@@ -438,6 +440,7 @@ function Detailer:createHangableDetails(
         chance,
 		currentFloor
 ) -- chance is int, percentage in range 1%-100%
+	currentFloor = currentFloor or self.map.mainPos.z
     local startTime = os.clock()
     local pom = {}
     pom.x = self.map.mainPos.x
@@ -525,9 +528,9 @@ function Detailer:createDetailsInCave(
             table.insert(pom_tab, i, {})
             for j = 1, detailsSpawnSize do
                 table.insert(
-                        pom_tab[i],
-                        j,
-                        itemsTab[1][math.random(1, #itemsTab[1])]
+					pom_tab[i],
+					j,
+					itemsTab[1][math.random(1, #itemsTab[1])]
                 )
             end
         end

@@ -12,6 +12,7 @@ end
 function GroundAutoBorder:doGround(ground1, ground2, badGround, border, currentFloor)
     -- todo: lastly stackposes were changed from 1 to 2, for running via CLI purposes (otherwise they were deleting walls)
     -- todo: has to be checked doesn't it cause the other issues
+	currentFloor = currentFloor or self.map.mainPos.z
     local startTime = os.clock()
     local pom = {}
     pom.x = self.map.mainPos.x
@@ -207,16 +208,17 @@ function GroundAutoBorder:doGround(ground1, ground2, badGround, border, currentF
         pom.y = pom.y + 1
     end
 
-    print("Bordering ground done, execution time: " .. os.clock() - startTime)
+    print("Bordering ground on floor: " .. currentFloor .. " done, execution time: " .. os.clock() - startTime)
 end
 
-function GroundAutoBorder:doGround2(ground1, ground2, badGround1, badGround2, border)
+function GroundAutoBorder:doGround2(ground1, ground2, badGround1, badGround2, border, currentFloor)
     -- ground1 is the one by which it's bordering and for ground1 the borders have to chosen
+	currentFloor = currentFloor or self.map.mainPos.z
     local startTime = os.clock()
     local pom = {}
     pom.x = self.map.mainPos.x
     pom.y = self.map.mainPos.y
-    pom.z = self.map.mainPos.z
+    pom.z = currentFloor
 
     for i = self.map.mainPos.y, self.map.mainPos.y + self.map.sizeY do
         for j = self.map.mainPos.x, self.map.mainPos.x + self.map.sizeX do
@@ -477,7 +479,7 @@ function GroundAutoBorder:doGround2(ground1, ground2, badGround1, badGround2, bo
         pom.y = pom.y + 1
     end
 
-    print("Bordering2 ground done, execution time: " .. os.clock() - startTime)
+    print("Bordering2 ground on floor: " .. currentFloor .. " done, execution time: " .. os.clock() - startTime)
 end
 
 function GroundAutoBorder:correctBorders(
@@ -489,6 +491,7 @@ function GroundAutoBorder:correctBorders(
         chance,
 		currentFloor
 ) -- todo: does not work in CLI mode (to confirm)
+	currentFloor = currentFloor or self.map.mainPos.z
     local startTime = os.clock()
     local lengthX = 1
     local lengthY = 1
@@ -743,5 +746,5 @@ function GroundAutoBorder:correctBorders(
         pom.y = pom.y + 1
     end
 
-    print("Corrections of borders for floor " .. currentFloor .. " done, execution time: " .. os.clock() - startTime)
+    print("Corrections of borders on floor: " .. currentFloor .. " done, execution time: " .. os.clock() - startTime)
 end

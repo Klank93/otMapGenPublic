@@ -42,7 +42,7 @@ function script.run()
 	print('> 2 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
 
 	local wayPointer = WayPointer.new(generatedMap, cursor)
-	wayPointer:createWaypointsAlternatively(wayPoints, wayPointsCount)
+	wayPoints = wayPointer:createWaypointsAlternatively(wayPointsCount)
 
 	print('> 3 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
 

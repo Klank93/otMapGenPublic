@@ -38,7 +38,7 @@ function script.run()
 	generatedMap:doMainGround(ITEMS_TABLE)
 
 	local wayPointer = WayPointer.new(generatedMap, cursor)
-	wayPointer:createWaypointsAlternatively(wayPoints, wayPointsCount)
+	wayPoints = wayPointer:createWaypointsAlternatively(wayPointsCount)
 
 	--print('Length: ' .. #wayPoints)
 	--sortWaypoints(wayPoints)

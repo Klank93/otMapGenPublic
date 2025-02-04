@@ -119,6 +119,7 @@ function WayPointer:createWaypoints(wp, pointsAmount, initialTime, currentFloor)
 end
 
 function WayPointer:createWaypointsAlternatively(pointsAmount, currentFloor) -- performance improvement ~40% in comparison to original method
+	currentFloor = currentFloor or self.map.mainPos.z
 	if (self.wayPoints[currentFloor] ~= nil and
 		#self.wayPoints[currentFloor] > 0
 	) then
@@ -177,7 +178,11 @@ function WayPointer:createWaypointsAlternatively(pointsAmount, currentFloor) -- 
     -- /\ if #availableMapTilesTab is near to 0, reconsider decreasing the value of wpMinDist or increase the map size
     print("Waypoints created alternatively, execution time: ".. os.clock() - startTime)
 
-	return self.wayPoints
+	if (self.map.sizeZ == 1) then
+		return self.wayPoints[currentFloor] -- backward compatibility
+	else
+		return self.wayPoints
+	end
 end
 
 function WayPointer:createPathBetweenWps(itemsTab) -- old, initial own, custom implementation (without tsp usage), deprecated
@@ -337,6 +342,7 @@ function WayPointer:_createPathBetweenTwoPoints(itemsTab, pos1, pos2)
 end
 
 function WayPointer:createPathBetweenWpsTSP(itemsTab, brushSize, currentFloor)
+	currentFloor = currentFloor or self.map.mainPos.z
 	brushSize = brushSize or 3
     local startTime = os.clock()
     local tsp = TSP.new(self.wayPoints[currentFloor])

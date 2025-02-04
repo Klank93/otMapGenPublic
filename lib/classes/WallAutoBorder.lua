@@ -15,7 +15,7 @@ function WallAutoBorder:doWalls(ground1, ground2, border, currentFloor)
     local pom = {}
     pom.x = self.map.mainPos.x
     pom.y = self.map.mainPos.y
-    pom.z = currentFloor
+    pom.z = currentFloor or self.map.mainPos.z
 
     for i = self.map.mainPos.y, self.map.mainPos.y + self.map.sizeY do
         for j = self.map.mainPos.x, self.map.mainPos.x + self.map.sizeX do

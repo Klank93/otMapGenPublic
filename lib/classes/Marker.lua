@@ -129,6 +129,7 @@ function Marker:createMarkersAlternatively( -- performance improvement ~40% in c
         minDistanceBetweenTwoMarkers,
 		currentFloor
 	)
+	currentFloor = currentFloor or self.map.mainPos.z
     local startTime = os.clock()
     local acceptedMapTilesTab = {}
     print("Creating " .. markersAmount .. " markers alternatively, on floor: " .. currentFloor .. ", #acceptedMapTilesTab: " .. #acceptedMapTilesTab)
@@ -166,7 +167,7 @@ function Marker:createMarkersAlternatively( -- performance improvement ~40% in c
         -- print("Current acceptedMapTilesTab length: " .. #acceptedMapTilesTab .. ", wpCounter: " .. markersCounter)
         if (#acceptedMapTilesTab < 1) then
             error("Can not create more markers, with given parameters. Floor: " .. currentFloor ..
-				" Please, change the configuration, current count: " ..
+				". Please, change the configuration, current count: " ..
 				#self.markersTab .. ' markersCounter: ' .. markersCounter ..
 				", availableTiles: " .. #acceptedMapTilesTab
             )

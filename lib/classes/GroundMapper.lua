@@ -21,7 +21,7 @@ function GroundMapper:doMainGround(itemTab, currentFloor) -- creates the backgro
     local pom = {}
     pom.x = self.mainPos.x
     pom.y = self.mainPos.y
-    pom.z = currentFloor
+    pom.z = currentFloor or self.mainPos.z
 
     for i = self.mainPos.y, self.mainPos.y + self.sizeY do -- todo: watchout, there was an issue with additional 1 sqm
         pom.y = i
@@ -168,10 +168,11 @@ function GroundMapper:doGround2(
 end
 
 function GroundMapper:correctGround(
-        mainGround,
-        newGround,
-		currentFloor
+	mainGround,
+	newGround,
+	currentFloor
 )
+	currentFloor = currentFloor or self.mainPos.z
     local startTime = os.clock()
     local pom = {}
     pom.x = self.mainPos.x

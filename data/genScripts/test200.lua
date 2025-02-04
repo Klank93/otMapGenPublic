@@ -1,7 +1,7 @@
 -- script for testing new solutions
 MAP_CONFIGURATION = {
     schemaFile = 'test1.lua',
-    saveMapFilename = 'test100',
+    saveMapFilename = 'test200',
     logToFile = true,
     mainPos = {x = 145, y = 145, z = 7},
     mapSizeX = 200,
@@ -42,7 +42,7 @@ function script.run()
 	print('> 2 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
 
 	local wayPointer = WayPointer.new(generatedMap, cursor)
-	wayPointer:createWaypointsAlternatively(wayPoints, wayPointsCount)
+	wayPoints = wayPointer:createWaypointsAlternatively(wayPointsCount)
 
 	print('> 3 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
 
@@ -51,7 +51,7 @@ function script.run()
 	--print(dumpVar(wayPoints))
 
 	-- wayPointer:createPathBetweenWps(ITEMS_TABLE)
-	wayPointer:createPathBetweenWpsTSP(ITEMS_TABLE)
+	wayPointer:createPathBetweenWpsTSP(ITEMS_TABLE, 4)
 	-- wayPointer:createPathBetweenWpsTSPMS(ITEMS_TABLE)
 
 	-- do return end

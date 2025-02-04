@@ -41,8 +41,8 @@ function script.run()
 
 	print('> 2 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
 
-	local wayPointer = WayPointer.new(generatedMap, cursor)
-	wayPointer:createWaypointsAlternatively(wayPoints, wayPointsCount)
+	local wayPointer = WayPointer.new(generatedMap, cursor, wayPoints)
+	wayPoints = wayPointer:createWaypointsAlternatively(wayPointsCount)
 
 	print('> 3 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
 
@@ -54,8 +54,6 @@ function script.run()
 	wayPointer:createPathBetweenWpsTSP(ITEMS_TABLE)
 	-- wayPointer:createPathBetweenWpsTSPMS(ITEMS_TABLE)
 
-	-- do return end
-
 	local roomBuilder = DungeonRoomBuilder.new(wayPoints)
 	roomBuilder:createRooms(ITEMS_TABLE, ROOM_SHAPES)
 
@@ -63,29 +61,29 @@ function script.run()
 
 	local wallAutoBorder = WallAutoBorder.new(generatedMap)
 	wallAutoBorder:doWalls(
-			ITEMS_TABLE[1][1],
-			ITEMS_TABLE[0][1],
-			TOMB_SAND_WALL_BORDER
+		ITEMS_TABLE[1][1],
+		ITEMS_TABLE[0][1],
+		TOMB_SAND_WALL_BORDER
 	)
 
 	print('> 5 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
 
 	local marker = Marker.new(generatedMap)
 	marker:createMarkersAlternatively(
-			ITEMS_TABLE[1][1],
-			35,
-			6
+		ITEMS_TABLE[1][1],
+		32,
+		6
 	)
 
 	print('> 6 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
 
 	generatedMap:doGround2(
-			marker.markersTab,
-			cursor,
-			ITEMS_TABLE[1][1],
-			ITEMS_TABLE[12][1],
-			1,
-			6
+		marker.markersTab,
+		cursor,
+		ITEMS_TABLE[1][1],
+		ITEMS_TABLE[12][1],
+		1,
+		6
 	)
 
 	print('> 7 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
@@ -93,20 +91,20 @@ function script.run()
 	------ repeat createMarkers & doGround2
 
 	marker:createMarkersAlternatively(
-			ITEMS_TABLE[1][1],
-			20,
-			6
+		ITEMS_TABLE[1][1],
+		20,
+		6
 	)
 
 	print('> 8 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
 
 	generatedMap:doGround2(
-			marker.markersTab,
-			cursor,
-			ITEMS_TABLE[1][1],
-			ITEMS_TABLE[12][1],
-			1,
-			6
+		marker.markersTab,
+		cursor,
+		ITEMS_TABLE[1][1],
+		ITEMS_TABLE[12][1],
+		1,
+		6
 	)
 
 	print('> 9 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
@@ -118,40 +116,40 @@ function script.run()
 	addRotatedTab(BRUSH_BORDER_SHAPES, 9)
 
 	marker:createMarkersAlternatively(
-			0,
-			70,
-			4
+		0,
+		56,
+		4
 	)
 
 	print('> 11 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
 
 	local brush = Brush.new()
 	brush:doBrush(
-			marker.markersTab,
-			ITEMS_TABLE[0][1],
-			BRUSH_BORDER_SHAPES,
-			SAND_BASE_BRUSH
+		marker.markersTab,
+		ITEMS_TABLE[0][1],
+		BRUSH_BORDER_SHAPES,
+		SAND_BASE_BRUSH
 	) -- it has to be executed before the base autoBorder, otherwise there are issues with stackpos
 
 	print('> 12 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
 
 	local groundAutoBorder = GroundAutoBorder.new(generatedMap)
 	groundAutoBorder:doGround(
-			ITEMS_TABLE[12][1],
-			ITEMS_TABLE[1][1],
-			ITEMS_TABLE[0][1],
-			SAND_GROUND_BASE_BORDER
+		ITEMS_TABLE[12][1],
+		ITEMS_TABLE[1][1],
+		ITEMS_TABLE[0][1],
+		SAND_GROUND_BASE_BORDER
 	)
 
 	print('> 13 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
 
 	groundAutoBorder:correctBorders(
-			ITEMS_TABLE[0][1],
-			SAND_GROUND_BASE_BORDER,
-			TOMB_SAND_WALL_BORDER,
-			ITEMS_TABLE[12][1],
-			BORDER_CORRECT_SHAPES,
-			30
+		ITEMS_TABLE[0][1],
+		SAND_GROUND_BASE_BORDER,
+		TOMB_SAND_WALL_BORDER,
+		ITEMS_TABLE[12][1],
+		BORDER_CORRECT_SHAPES,
+		30
 	)
 
 	print('> 14 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
