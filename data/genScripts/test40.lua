@@ -132,7 +132,7 @@ function script.run()
 		print('> 11 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
 
 		local brush = Brush.new()
-		brush:doBrush(
+		brush:doCarpetBrush(
 			marker.markersTab,
 			ITEMS_TABLE[0][1],
 			BRUSH_BORDER_SHAPES,
@@ -170,8 +170,8 @@ function script.run()
 		------ Detailing Map
 
 		local startTime = os.clock()
-		local detailer = Detailer.new(generatedMap, wayPoints)
-		detailer:createDetailsInRooms(ROOM_SHAPES, ITEMS_TABLE, TOMB_SAND_WALL_BORDER, currentFloor)
+		local detailer = Detailer.new(generatedMap, wayPoints[currentFloor])
+		detailer:createDetailsInRooms(ROOM_SHAPES, ITEMS_TABLE, TOMB_SAND_WALL_BORDER)
 
 		print('> 15 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
 

@@ -89,7 +89,7 @@ function script.run()
 		4
 	)
 	local brush = Brush.new()
-	brush:doBrush(
+	brush:doCarpetBrush(
 		marker.markersTab,
 		ITEMS_TABLE[0][1],
 		BRUSH_BORDER_SHAPES,

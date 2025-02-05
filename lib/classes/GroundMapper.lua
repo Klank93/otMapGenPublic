@@ -212,7 +212,7 @@ function GroundMapper:correctGround(
     print("Correction of the groundId ".. newGround .." on floor: " .. currentFloor .. " done, execution time: " .. os.clock() - startTime)
 end
 
-function GroundMapper:eraseMap() -- todo: handle multi-floor case
+function GroundMapper:eraseMap()
     local startTime = os.clock()
 	local removedItems = 0
 
@@ -224,5 +224,6 @@ function GroundMapper:eraseMap() -- todo: handle multi-floor case
         end
     end
 
+	CLI_FINAL_MAP_TABLE = newFlexibleTable()
     print("Map erased, items removed: " .. removedItems .. ", execution time: " .. os.clock() - startTime)
 end

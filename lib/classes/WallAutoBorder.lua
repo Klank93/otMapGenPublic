@@ -174,7 +174,7 @@ function WallAutoBorder:createArchways(wallBorder)
                             {x = pom.x, y = pom.y + 3, z = pom.z, stackpos = 1}
                     )
 
-                    if( (pomitem2.itemid  == wallBorder[2][1]) and (getThingFromPosMock(
+                    if ( (pomitem2.itemid  == wallBorder[2][1]) and (getThingFromPosMock(
                             {x = pom.x + 4, y = pom.y, z = pom.z, stackpos = 1}
                     ).itemid == wallBorder[1][1])
                     ) then

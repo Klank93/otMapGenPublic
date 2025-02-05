@@ -19,22 +19,24 @@ end
 function CaveGroundMapper:correctCaveShapes(
         mainGroundItemId,
         groundItemId,
-        backGroundShapes
+        backGroundShapes,
+		currentFloor
 )
+	currentFloor = currentFloor or self.mainPos.z
     local startTime = os.clock()
     local step = 1
     local length = 0
     local pom = {}
     pom.x = self.mainPos.x
     pom.y = self.mainPos.y
-    pom.z = self.mainPos.z
+    pom.z = currentFloor
 
     for i = self.mainPos.y, self.mainPos.y + self.sizeY do
         for j = self.mainPos.x, self.mainPos.x + self.sizeX do
             step = 1
 
-            if(getThingFromPosMock(
-                    {x = pom.x, y = pom.y, z = pom.z, stackpos = 0}
+            if (getThingFromPosMock(
+				{x = pom.x, y = pom.y, z = pom.z, stackpos = 0}
                 ).itemid == groundItemId
             ) then
                 for tabId = 1, 2 do
@@ -44,9 +46,9 @@ function CaveGroundMapper:correctCaveShapes(
                     repeat
                         if (tabId == 1) then
                             if ((getThingFromPosMock(
-                                    {x = pom.x + length, y = pom.y, z = pom.z, stackpos = 0}
+								{x = pom.x + length, y = pom.y, z = pom.z, stackpos = 0}
                                 ).itemid == groundItemId)  and (getThingFromPosMock(
-                                        {x = pom.x + length, y = pom.y - 1, z = pom.z, stackpos = 0}
+								{x = pom.x + length, y = pom.y - 1, z = pom.z, stackpos = 0}
                                 ).itemid == mainGroundItemId)
                             ) then
                                 length = length + 1
@@ -55,9 +57,9 @@ function CaveGroundMapper:correctCaveShapes(
                             end
                         elseif (tabId == 2) then
                             if ((getThingFromPosMock(
-                                    {x = pom.x + length, y = pom.y, z = pom.z, stackpos = 0}
+								{x = pom.x + length, y = pom.y, z = pom.z, stackpos = 0}
                                 ).itemid == groundItemId)  and (getThingFromPosMock(
-                                        {x = pom.x + length, y = pom.y + 1, z = pom.z, stackpos = 0}
+								{x = pom.x + length, y = pom.y + 1, z = pom.z, stackpos = 0}
                                 ).itemid == mainGroundItemId)
                             ) then
                                 length = length + 1
@@ -92,7 +94,7 @@ function CaveGroundMapper:correctCaveShapes(
                         for ai = 1, #backGroundShapes[tabId][length][1] do
                             for aj = 1, #backGroundShapes[tabId][length][1][ai] do
                                 local mapItemItemId = getThingFromPosMock(
-                                        {x = pom2.x, y = pom2.y, z = pom2.z, stackpos = 0}
+									{x = pom2.x, y = pom2.y, z = pom2.z, stackpos = 0}
                                 ).itemid
 
                                 if (backGroundShapes[tabId][length][1][ai][aj] == 0) then
@@ -188,7 +190,7 @@ function CaveGroundMapper:correctCaveShapes(
 
     pom.x = self.mainPos.x
     pom.y = self.mainPos.y
-    pom.z = self.mainPos.z
+    pom.z = currentFloor
 
     for i = self.mainPos.x, self.mainPos.x + self.sizeX do
         for j = self.mainPos.y, self.mainPos.y + self.sizeY do
@@ -349,7 +351,7 @@ function CaveGroundMapper:correctCaveShapes(
 
     pom.x = self.mainPos.x
     pom.y = self.mainPos.y
-    pom.z = self.mainPos.z
+    pom.z = currentFloor
 
     for i = self.mainPos.y, self.mainPos.y + self.sizeY do
         for j = self.mainPos.x, self.mainPos.x + self.sizeX do
@@ -497,18 +499,20 @@ end
 function CaveGroundMapper:correctBackgroundShapes(
         mainGroundItemId,
         groundItemId,
-        correctBackgroundShapes
+        correctBackgroundShapes,
+		currentFloor
 )
+	currentFloor = currentFloor or self.mainPos.z
     local startTime = os.clock()
     local pom = {}
     pom.x = self.mainPos.x
     pom.y = self.mainPos.y
-    pom.z = self.mainPos.z
+    pom.z = currentFloor
 
     for i = self.mainPos.y, self.mainPos.y + self.sizeY do
         for j = self.mainPos.x, self.mainPos.x + self.sizeX do
             local mapItemItemId = getThingFromPosMock(
-                    {x = pom.x, y = pom.y, z = pom.z, stackpos = 0}
+				{x = pom.x, y = pom.y, z = pom.z, stackpos = 0}
             ).itemid
             if (mapItemItemId == groundItemId) then
                 for id = 1, 4 do
@@ -520,7 +524,7 @@ function CaveGroundMapper:correctBackgroundShapes(
                     for ai = 1, #correctBackgroundShapes[id] do
                         for aj = 1, #correctBackgroundShapes[id][ai] do
                             local mapItem2ItemId = getThingFromPosMock(
-                                    {x = pom2.x, y = pom2.y, z = pom2.z, stackpos = 0}
+								{x = pom2.x, y = pom2.y, z = pom2.z, stackpos = 0}
                             ).itemid
 
                             if (correctBackgroundShapes[id][ai][aj] == 0) then
@@ -543,33 +547,33 @@ function CaveGroundMapper:correctBackgroundShapes(
                         --print("Counter : " .. counter)
                         if (id == 1) then
                             doCreateItemMock(
-                                    groundItemId,
-                                    1,
-                                    {x = pom.x + math.pow(-1, math.random(0,1)), y = pom.y, z = pom.z}
+								groundItemId,
+								1,
+								{x = pom.x + math.pow(-1, math.random(0,1)), y = pom.y, z = pom.z}
                             )
                             -- print("ID 1  Pos :  x - " .. pom.x .. ", y - " .. pom.y)
                             --	break
                         elseif (id == 3) then
                             doCreateItemMock(
-                                    groundItemId,
-                                    1,
-                                    {x = pom.x + math.pow(-1, math.random(0,1)), y = pom.y, z = pom.z}
+								groundItemId,
+								1,
+								{x = pom.x + math.pow(-1, math.random(0,1)), y = pom.y, z = pom.z}
                             )
                             --	print("ID 3  Pos :  x - " .. pom.x .. ", y - " .. pom.y)
                             --	break
                         elseif (id == 2) then
                             doCreateItemMock(
-                                    groundItemId,
-                                    1,
-                                    {x = pom.x, y = pom.y + math.pow(-1, math.random(0,1)), z = pom.z}
+								groundItemId,
+								1,
+								{x = pom.x, y = pom.y + math.pow(-1, math.random(0,1)), z = pom.z}
                             )
                             --	print("ID 2  Pos :  x - " .. pom.x .. ", y - " .. pom.y)
                             --	break
                         elseif (id == 4) then
                             doCreateItemMock(
-                                    groundItemId,
-                                    1,
-                                    {x = pom.x, y = pom.y + math.pow(-1, math.random(0,1)), z = pom.z}
+								groundItemId,
+								1,
+								{x = pom.x, y = pom.y + math.pow(-1, math.random(0,1)), z = pom.z}
                             )
                             --	print("ID 4  Pos :  x - " .. pom.x .. ", y - " .. pom.y)
                             --	break
@@ -588,7 +592,7 @@ function CaveGroundMapper:correctBackgroundShapes(
 
     pom.x = self.mainPos.x
     pom.y = self.mainPos.y
-    pom.z = self.mainPos.z
+    pom.z = currentFloor
     for i = self.mainPos.y, self.mainPos.y + self.sizeY do
         for j = self.mainPos.x, self.mainPos.x + self.sizeX do
             local mapItemItemId = getThingFromPosMock(
@@ -615,7 +619,7 @@ function CaveGroundMapper:correctBackgroundShapes(
                     for ai = 1, #correctBackgroundShapes[id] do
                         for aj = 1, #correctBackgroundShapes[id][ai] do
                             local mapItem2ItemId = getThingFromPosMock(
-                                    {x = pom2.x, y = pom2.y, z = pom2.z, stackpos = 0}
+								{x = pom2.x, y = pom2.y, z = pom2.z, stackpos = 0}
                             ).itemid
 
                             if (correctBackgroundShapes[id][ai][aj] == 0) then
@@ -639,42 +643,40 @@ function CaveGroundMapper:correctBackgroundShapes(
                         --print("Counter : " .. counter)
                         if (id <= 8) then
                             doCreateItemMock(
-                                    mainGroundItemId,
-                                    1,
-                                    {x = pom.x, y = pom.y, z = pom.z}
+								mainGroundItemId,
+								1,
+								{x = pom.x, y = pom.y, z = pom.z}
                             )
                             doCreateItemMock(
-                                    mainGroundItemId,
-                                    1,
-                                    {x = pom.x, y = pom.y + 1, z = pom.z}
+								mainGroundItemId,
+								1,
+								{x = pom.x, y = pom.y + 1, z = pom.z}
                             )
                             --	print("ID 7|8  Pos :  x - " .. pom.x .. ", y - " .. pom.y)
                         else
                             doCreateItemMock(
-                                    mainGroundItemId,
-                                    1,
-                                    {x = pom.x, y = pom.y, z = pom.z}
+								mainGroundItemId,
+								1,
+								{x = pom.x, y = pom.y, z = pom.z}
                             )
                             if id == 9 then
                                 doCreateItemMock(
-                                        mainGroundItemId,
-                                        1,
-                                        {x = pom.x - 1, y = pom.y, z = pom.z}
+									mainGroundItemId,
+									1,
+									{x = pom.x - 1, y = pom.y, z = pom.z}
                                 )
                                 --		print("ID 9  Pos :  x - " .. pom.x .. ", y - " .. pom.y)
                             else
                                 doCreateItemMock(
-                                        mainGroundItemId,
-                                        1,
-                                        {x = pom.x + 1, y = pom.y, z = pom.z}
+									mainGroundItemId,
+									1,
+									{x = pom.x + 1, y = pom.y, z = pom.z}
                                 )
                                 --		print("ID 10  Pos :  x - " .. pom.x .. ", y - " .. pom.y)
                             end
                         end
                     end
-
                 end
-
             end
 
             pom.x = pom.x + 1
@@ -687,11 +689,11 @@ function CaveGroundMapper:correctBackgroundShapes(
 
     pom.x = self.mainPos.x
     pom.y = self.mainPos.y
-    pom.z = self.mainPos.z
+    pom.z = currentFloor
     for i = self.mainPos.y, self.mainPos.y + self.sizeY do
         for j = self.mainPos.x, self.mainPos.x + self.sizeX do
             local mapItemItemId = getThingFromPosMock(
-                    {x = pom.x, y = pom.y, z = pom.z, stackpos = 0}
+				{x = pom.x, y = pom.y, z = pom.z, stackpos = 0}
             ).itemid
             if (mapItemItemId == groundItemId) then
                 for id = 5, 6 do
@@ -730,30 +732,30 @@ function CaveGroundMapper:correctBackgroundShapes(
                         if (id == 5) then
                             if math.random(0,1) == 0 then
                                 doCreateItemMock(
-                                        mainGroundItemId,
-                                        1,
-                                        {x = pom.x, y = pom.y, z = pom.z}
+									mainGroundItemId,
+									1,
+									{x = pom.x, y = pom.y, z = pom.z}
                                 )
                             else
                                 doCreateItemMock(
-                                        mainGroundItemId,
-                                        1,
-                                        {x = pom.x - 1, y = pom.y + 1, z = pom.z}
+									mainGroundItemId,
+									1,
+									{x = pom.x - 1, y = pom.y + 1, z = pom.z}
                                 )
                             end
                             --	print("ID 5  Pos :  x - " .. pom.x .. ", y - " .. pom.y)
                         else
                             if math.random(0,1) == 0 then
                                 doCreateItemMock(
-                                        mainGroundItemId,
-                                        1,
-                                        {x = pom.x, y = pom.y, z = pom.z}
+									mainGroundItemId,
+									1,
+									{x = pom.x, y = pom.y, z = pom.z}
                                 )
                             else
                                 doCreateItemMock(
-                                        mainGroundItemId,
-                                        1,
-                                        {x = pom.x - 1, y = pom.y - 1, z = pom.z}
+									mainGroundItemId,
+									1,
+									{x = pom.x - 1, y = pom.y - 1, z = pom.z}
                                 )
                             end
                             --	print("ID 6  Pos :  x - " .. pom.x .. ", y - " .. pom.y)
@@ -771,7 +773,7 @@ function CaveGroundMapper:correctBackgroundShapes(
 
     pom.x = self.mainPos.x
     pom.y = self.mainPos.y
-    pom.z = self.mainPos.z
+    pom.z = currentFloor
     for i = self.mainPos.y, self.mainPos.y + self.sizeY do
         for j = self.mainPos.x, self.mainPos.x + self.sizeX do
             local mapItemItemId = getThingFromPosMock({x = pom.x, y = pom.y, z = pom.z, stackpos = 0}).itemid
@@ -792,7 +794,7 @@ function CaveGroundMapper:correctBackgroundShapes(
                     for ai = 1, #correctBackgroundShapes[id] do
                         for aj = 1, #correctBackgroundShapes[id][ai] do
                             local mapItem2ItemId = getThingFromPosMock(
-                                    {x = pom2.x, y = pom2.y, z = pom2.z, stackpos = 0}
+								{x = pom2.x, y = pom2.y, z = pom2.z, stackpos = 0}
                             ).itemid
 
                             if (correctBackgroundShapes[id][ai][aj] == 0) then
@@ -816,9 +818,9 @@ function CaveGroundMapper:correctBackgroundShapes(
                         --	print("ID 11|12  Counter : " .. counter)
                         --if (id == 11) then
                         doCreateItemMock(
-                                mainGroundItemId,
-                                1,
-                                pom
+							mainGroundItemId,
+							1,
+							pom
                         )
                         --end
                     end

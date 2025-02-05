@@ -91,7 +91,7 @@ function Brush:doBrushSquares(itemsTab, size, centerPos)
     end
 end
 
-function Brush:doBrush(
+function Brush:doCarpetBrush(
         markersTab,
         badGroundItemId,
         brushShapes,

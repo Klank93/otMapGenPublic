@@ -126,7 +126,7 @@ function script.run()
 	print('> 11 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
 
 	local brush = Brush.new()
-	brush:doBrush(
+	brush:doCarpetBrush(
 			marker.markersTab,
 			ITEMS_TABLE[0][1],
 			BRUSH_BORDER_SHAPES,

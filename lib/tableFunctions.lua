@@ -300,7 +300,7 @@ function findCentralWayPoint(wayPoints)
     local n = #wayPoints
 
     for i = 1, n do
-        local point = wayPoints[i][1]
+        local point = wayPoints[i]["pos"]
         sumX = sumX + point.x
         sumY = sumY + point.y
         sumZ = sumZ + point.z
@@ -311,9 +311,9 @@ function findCentralWayPoint(wayPoints)
     local minDist = math.huge
 
     for i = 1, n do
-        local point = wayPoints[i][1]
+        local point = wayPoints[i]["pos"]
         local dist = math.sqrt(
-                (point.x - centerX)^2 + (point.y - centerY)^2 + (point.z - centerZ)^2
+			(point.x - centerX)^2 + (point.y - centerY)^2 + (point.z - centerZ)^2
         )
         if dist < minDist then
             minDist = dist

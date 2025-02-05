@@ -124,7 +124,7 @@ function script.run()
 	print('> 11 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
 
 	local brush = Brush.new()
-	brush:doBrush(
+	brush:doCarpetBrush(
 		marker.markersTab,
 		ITEMS_TABLE[0][1],
 		BRUSH_BORDER_SHAPES,
@@ -173,10 +173,10 @@ function script.run()
 	detailer:createDetailsOnMap(ITEMS_TABLE[9][1], 2)
 
 	detailer:createHangableDetails(
-			ITEMS_TABLE[0][1],
-			TOMB_SAND_WALL_BORDER,
-			ITEMS_TABLE,
-			15
+		ITEMS_TABLE[0][1],
+		TOMB_SAND_WALL_BORDER,
+		ITEMS_TABLE,
+		15
 	)
 	print("Combined creation of the details done, execution time: " .. os.clock() - startTime)
 

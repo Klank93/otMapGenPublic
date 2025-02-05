@@ -1,5 +1,5 @@
 # Abcq/Acedb Map Generator
-### version 0.0.6 (alpha)
+### version 0.0.7 (alpha)
 
 ## The Goal:
 The goal of this script/app is to provide a tool for map generation for Open Tibia Servers.
@@ -60,6 +60,9 @@ Which way to use depends on your specific needs (tableMode is incredibly faster)
 #### Erasing generated map (only in TFS, you need to provide generation script file - the same, which was used for generation):
 - ```/genMap test40,erase```
 
+### Running unit tests:
+- ```Lua tests/unit/testMockOperations.lua```
+
 ### Credentials of resources used:
 - Zbizu: https://github.com/Zbizu/map_generator-old-/tree/master (file loader code)
 - Capaverde, Zbizu: https://otland.net/threads/savemap-function-saves-it-to-a-new-otbm.193781 (saving maps to .otbm)
@@ -74,14 +77,12 @@ print(ANSICOLORS('%{red}hello'))\
 print(ANSICOLORS('%{redbg}hello%{reset}'))\
 print(ANSICOLORS('%{bright red underline}hello'))
 
-- the ability to erase the generated map area (actually a way to restart the process in running TFS)
 - add more generation scripts
 - ensure OOP MapSaver works
 - more optimization
-- more functionalities like for example creating small architectures
+- more functionalities like for example creating small architecture
 - isles generation
 - whole mountains generation with caves/tunnels
-- multi-floor map generation
 - saving map does not work, when generation script is written
 to be run "without-tfs-freeze" way - saves the map before any item is being created.
 - remove many unnecessary prints from the code
@@ -93,7 +94,6 @@ to be run "without-tfs-freeze" way - saves the map before any item is being crea
 - in some cases, structures may partially block the player's path:
 ![wall border bug](images/structureOnTheWay01.png)
 In some rare edge cases it can generate the dungeon, which can not be explored fully
-- don't know why, but tableMode in TFS does not work in some scenarios (have no time to investigate it)
 
 ## How to develop / modify / extend generation scripts:
 I suggest to start with copying some existing file inside data/genScripts and then modifying it up to your preferences.

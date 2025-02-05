@@ -120,7 +120,8 @@ end
 
 function WayPointer:createWaypointsAlternatively(pointsAmount, currentFloor) -- performance improvement ~40% in comparison to original method
 	currentFloor = currentFloor or self.map.mainPos.z
-	if (self.wayPoints[currentFloor] ~= nil and
+	if (self.wayPoints ~= nil and
+		self.wayPoints[currentFloor] ~= nil and
 		#self.wayPoints[currentFloor] > 0
 	) then
 		-- multi-floor, respect waypoints already present
@@ -185,31 +186,31 @@ function WayPointer:createWaypointsAlternatively(pointsAmount, currentFloor) -- 
 	end
 end
 
-function WayPointer:createPathBetweenWps(itemsTab) -- old, initial own, custom implementation (without tsp usage), deprecated
-    local startTime = os.clock()
+function WayPointer:createPathBetweenWps(itemsTab, currentFloor) -- old, initial own, custom implementation (without tsp usage), deprecated
+	currentFloor = currentFloor or self.map.mainPos.z
+	local startTime = os.clock()
     local minDist = 9999
-    -- pointDistance2(self.wayPoints[1][1], self.wayPoints[2][1])
     -- distance between first point and the second, before starting loop
-    local point1 = self.wayPoints[1][1]
-    local point2 = self.wayPoints[2][1]
+    local point1 = self.wayPoints[currentFloor][1]["pos"]
+    local point2 = self.wayPoints[currentFloor][2]["pos"]
 
     print("Creating paths...")
-    for i=1, #self.wayPoints do
-        for j=i+1, #self.wayPoints do
+    for i=1, #self.wayPoints[currentFloor] do
+        for j=i+1, #self.wayPoints[currentFloor] do
             -- loop checking all distances for point "i"
             -- with the rest of the points
             if (minDist >= pointDistance2(
-                    self.wayPoints[i][1],
-                    self.wayPoints[j][1]
+                    self.wayPoints[currentFloor][i]["pos"],
+                    self.wayPoints[currentFloor][j]["pos"]
                 )
             ) then
                 -- todo: to reconsider is the a point to add equal case
                 minDist = pointDistance2(
-                        self.wayPoints[i][1],
-                        self.wayPoints[j][1]
+					self.wayPoints[currentFloor][i]["pos"],
+					self.wayPoints[currentFloor][j]["pos"]
                 )
-                point1 = self.wayPoints[i][1]
-                point2 = self.wayPoints[j][1]
+                point1 = self.wayPoints[currentFloor][i]["pos"]
+                point2 = self.wayPoints[currentFloor][j]["pos"]
                 -- print("Connection i-" ..i.. " z  j-" ..j.. ", distance between them: "..minDist)
             end
         end
@@ -217,13 +218,13 @@ function WayPointer:createPathBetweenWps(itemsTab) -- old, initial own, custom i
         --print('__________ Connecting: ')
         --print(dumpVar(point1))
         --print(dumpVar(point2))
-        self:_createPathBetweenTwoPoints(itemsTab, point1, point2)
+        self:_createPathBetweenTwoPoints(itemsTab, point1, point2, currentFloor)
     end
     print("Paths between waypoints created, execution time: " .. os.clock() - startTime)
 end
 
 -- private
-function WayPointer:_createPathBetweenTwoPoints(itemsTab, pos1, pos2)
+function WayPointer:_createPathBetweenTwoPoints(itemsTab, pos1, pos2, currentFloor)
     -- todo: BUG, something in this function sometimes goes outside the expected ground area
     -- todo: most likely in fact it does not create paths as expected
     local case = math.random(1,2)
@@ -238,15 +239,15 @@ function WayPointer:_createPathBetweenTwoPoints(itemsTab, pos1, pos2)
             pom = cr.pos.x - pos2.x
             if (pom < 0) then
                 cr:right(1)
-                for i=1, #self.wayPoints do
-                    if (cr.pos ~= self.wayPoints[i][1]) then
+                for i=1, #self.wayPoints[currentFloor] do
+                    if (cr.pos ~= self.wayPoints[currentFloor][i]["pos"]) then
                         brush:doBrushLines(itemsTab, 3, cr.pos, 0)
                     end
                 end
             elseif (pom > 0) then
                 cr:left(1)
-                for i=1, #self.wayPoints do
-                    if (cr.pos ~= self.wayPoints[i][1]) then
+                for i=1, #self.wayPoints[currentFloor] do
+                    if (cr.pos ~= self.wayPoints[currentFloor][i]["pos"]) then
                         brush:doBrushLines(itemsTab, 3, cr.pos, 0)
                     end
                 end
@@ -264,15 +265,15 @@ function WayPointer:_createPathBetweenTwoPoints(itemsTab, pos1, pos2)
             pom = cr.pos.y - pos2.y
             if (pom < 0) then
                 cr:down(1)
-                for i=1, #self.wayPoints do
-                    if (cr.pos ~= self.wayPoints[i][1]) then
+                for i=1, #self.wayPoints[currentFloor] do
+                    if (cr.pos ~= self.wayPoints[currentFloor][i]["pos"]) then
                         brush:doBrushLines(itemsTab, 3, cr.pos, 1)
                     end
                 end
             elseif (pom > 0) then
                 cr:up(1)
-                for i=1, #self.wayPoints do
-                    if (cr.pos ~= self.wayPoints[i][1]) then
+                for i=1, #self.wayPoints[currentFloor] do
+                    if (cr.pos ~= self.wayPoints[currentFloor][i]["pos"]) then
                         brush:doBrushLines(itemsTab, 3, cr.pos, 1)
                     end
                 end
@@ -292,15 +293,15 @@ function WayPointer:_createPathBetweenTwoPoints(itemsTab, pos1, pos2)
             pom = cr.pos.y - pos2.y
             if (pom < 0) then
                 cr:down(1) -- todo: there can be an issue in method, with parameters
-                for i=1, #self.wayPoints do
-                    if (cr.pos ~= self.wayPoints[i][1]) then
+                for i=1, #self.wayPoints[currentFloor] do
+                    if (cr.pos ~= self.wayPoints[currentFloor][i]["pos"]) then
                         brush:doBrushLines(itemsTab, 3, cr.pos, 1)
                     end
                 end
             elseif (pom > 0) then
                 cr:up(1)
-                for i=1, #self.wayPoints do
-                    if (cr.pos ~= self.wayPoints[i][1]) then
+                for i=1, #self.wayPoints[currentFloor] do
+                    if (cr.pos ~= self.wayPoints[currentFloor][i]["pos"]) then
                         brush:doBrushLines(itemsTab, 3, cr.pos, 1)
                     end
                 end
@@ -319,15 +320,15 @@ function WayPointer:_createPathBetweenTwoPoints(itemsTab, pos1, pos2)
             pom = cr.pos.x - pos2.x
             if (pom < 0) then
                 cr:right(1)
-                for i=1, #self.wayPoints do
-                    if (cr.pos ~= self.wayPoints[i][1]) then
+                for i=1, #self.wayPoints[currentFloor] do
+                    if (cr.pos ~= self.wayPoints[currentFloor][i]["pos"]) then
                         brush:doBrushLines(itemsTab, 3, cr.pos, 0)
                     end
                 end
             elseif (pom > 0) then
                 cr:left(1)
-                for i=1, #self.wayPoints do
-                    if (cr.pos ~= self.wayPoints[i][1]) then
+                for i=1, #self.wayPoints[currentFloor] do
+                    if (cr.pos ~= self.wayPoints[currentFloor][i]["pos"]) then
                         brush:doBrushLines(itemsTab, 3, cr.pos, 0)
                     end
                 end
@@ -360,8 +361,8 @@ function WayPointer:createPathBetweenWpsTSP(itemsTab, brushSize, currentFloor)
     end
 
     -- Connect the last point to the first to complete the cycle
-    --local lastPos = self.wayPoints[currentFloor][bestPaths[#bestPaths]][1]
-    --local firstPos = self.wayPoints[currentFloor][bestPaths[1]][1]
+    --local lastPos = self.wayPoints[currentFloor][bestPaths[#bestPaths]]["pos"]
+    --local firstPos = self.wayPoints[currentFloor][bestPaths[1]]["pos"]
     --self:_createPathBetweenTwoPointsTSP(itemsTab, lastPos, firstPos)
     print("Paths between waypoints for floor: " .. currentFloor .. " created, execution time: " .. os.clock() - startTime)
 end

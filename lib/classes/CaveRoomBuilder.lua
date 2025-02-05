@@ -9,9 +9,9 @@ function CaveRoomBuilder.new(wayPoints)
 end
 
 function CaveRoomBuilder:createRooms(
-        itemsTab,
-        approximatedWidth,
-        approximatedHeight
+	itemsTab,
+	approximatedWidth,
+	approximatedHeight
 )
     local startTime = os.clock()
     for i = 1, #self.wayPoints do
@@ -22,7 +22,7 @@ function CaveRoomBuilder:createRooms(
 
         local newWidth = math.random(newWidthMin, newWidthMax)
         local newHeight = math.random(newHeightMin, newHeightMax)
-        self:_createRoom(itemsTab, self.wayPoints[i][1], newWidth, newHeight)
+        self:_createRoom(itemsTab, self.wayPoints[i]["pos"], newWidth, newHeight)
     end
 
     print("Rooms created, execution time: " .. os.clock() - startTime)

@@ -125,7 +125,7 @@ function script.run()
 
 			print('> 9 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
 		elseif (step == 10) then
-			brush:doBrush(
+			brush:doCarpetBrush(
 				marker.markersTab,
 				ITEMS_TABLE[0][1],
 				BRUSH_BORDER_SHAPES,

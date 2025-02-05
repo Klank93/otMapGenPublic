@@ -7,6 +7,7 @@ function CaveWayPointer.new(map, cursor, wayPoints, brush)
     instance.cursor = cursor
     instance.wayPoints = wayPoints
     instance.brush = brush
+
     return instance
 end
 
@@ -30,12 +31,14 @@ function CaveWayPointer:createPathBetweenWpsTSP(itemsTab, brushSize)
     print("Paths created in " .. os.clock() - startTime .. " seconds.")
 end
 
-function CaveWayPointer:createPathBetweenWpsTSPMS(itemsTab, brushSize, travellersCount)
+function CaveWayPointer:createPathBetweenWpsTSPMS(itemsTab, brushSize, travellersCount, currentFloor)
+	currentFloor = currentFloor or self.map.mainPos.z
     local startTime = os.clock()
-
     -- Uses the TSP class for multiple salesmen, to find the most optimal paths between wayPoints
-    --print(dumpVar(self.wayPoints))
-    local tspms = TSPMS.new(self.wayPoints, travellersCount, findCentralWayPoint(self.wayPoints))
+
+	local centralPoint = findCentralWayPoint(self.wayPoints[currentFloor])
+
+    local tspms = TSPMS.new(self.wayPoints[currentFloor], travellersCount, centralPoint)
     print("TSPMS running...")
     local bestPaths, minDistances = tspms:solve()
 
@@ -44,8 +47,8 @@ function CaveWayPointer:createPathBetweenWpsTSPMS(itemsTab, brushSize, traveller
     print("Creating paths...")
     for _, path in ipairs(bestPaths) do
         for i = 1, #path - 1 do
-            local point1 = self.wayPoints[path[i]][1]
-            local point2 = self.wayPoints[path[i + 1]][1]
+            local point1 = self.wayPoints[currentFloor][path[i]]["pos"]
+            local point2 = self.wayPoints[currentFloor][path[i + 1]]["pos"]
 
             self:_connectTwoPoints(itemsTab, point1, point2, brushSize)
         end

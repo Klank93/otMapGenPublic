@@ -70,8 +70,8 @@ end
          stackPos = pos.stackpos or 0
      else
          local currentLastStackPos = getLastStackPos(
-                 CLI_FINAL_MAP_TABLE,
-                 {x = pos.x, y = pos.y, z = pos.z}
+			 CLI_FINAL_MAP_TABLE,
+			 {x = pos.x, y = pos.y, z = pos.z}
          )
          if (isGround(itemId)) then
              stackPos = 1
@@ -89,8 +89,8 @@ end
          }
 
          currentLastStackPos = getLastStackPos(
-                 CLI_FINAL_MAP_TABLE,
-                 {x = pos.x, y = pos.y, z = pos.z}
+			 CLI_FINAL_MAP_TABLE,
+			 {x = pos.x, y = pos.y, z = pos.z}
          )
      end
 

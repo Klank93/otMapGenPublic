@@ -24,6 +24,7 @@ function Marker:createMarkers(
         minDistanceBetweenTwoMarkers,
 		currentFloor
 ) -- deprecated!
+	currentFloor = currentFloor or self.map.mainPos.z
     local startTime = os.clock()
     local counter = 0
     local status = true
@@ -139,12 +140,12 @@ function Marker:createMarkersAlternatively( -- performance improvement ~40% in c
         for j = self.map.pos.x, self.map.pos.x + self.map.sizeX - 1 do
             if (acceptedGroundItemId == 0) then
                 local isWalkable = isWalkable(
-                        {x = j, y = i, z = currentFloor}
+					{x = j, y = i, z = currentFloor}
                 )
                 if (isWalkable) then
                     table.insert(
-                            acceptedMapTilesTab,
-                            {x = j, y = i, z = currentFloor}
+						acceptedMapTilesTab,
+						{x = j, y = i, z = currentFloor}
                     )
                 end
             elseif (getThingFromPosMock(
@@ -152,8 +153,8 @@ function Marker:createMarkersAlternatively( -- performance improvement ~40% in c
                 ).itemid == acceptedGroundItemId
             ) then
                 table.insert(
-                        acceptedMapTilesTab,
-                        {x = j, y = i, z = currentFloor}
+					acceptedMapTilesTab,
+					{x = j, y = i, z = currentFloor}
                 )
             end
         end
