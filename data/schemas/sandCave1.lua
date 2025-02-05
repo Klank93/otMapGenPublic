@@ -61,7 +61,7 @@ ITEMS_TABLE = {
         {3649,3650,3651,3652}, --wieksze
         {3648} -- unwalkable
     },
-    [9] = { -- szare oste kamienie
+    [9] = { -- szare ostre kamienie
         {8220,8221,8222,8223,8224}, -- walkable
         {8224,8225,8238,8240}, -- male, unwalkable
         {8214,8215,8216,8217,8218,8219} -- duze, unwalkable
