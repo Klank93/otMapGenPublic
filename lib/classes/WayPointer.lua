@@ -179,7 +179,7 @@ function WayPointer:createWaypointsAlternatively(pointsAmount, currentFloor) -- 
     -- /\ if #availableMapTilesTab is near to 0, reconsider decreasing the value of wpMinDist or increase the map size
     print("Waypoints created alternatively, execution time: ".. os.clock() - startTime)
 
-	if (self.map.sizeZ == 1) then
+	if (self.map.sizeZ == 1 and currentFloor == nil) then
 		return self.wayPoints[currentFloor] -- backward compatibility
 	else
 		return self.wayPoints
