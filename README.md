@@ -120,7 +120,7 @@ repeating successful generation results.
 If it is too high, increase the number of rooms (wayPointsCount) or decrease the minimal distance between them (wpMinDist).
 Otherwise, if it's too low, decrease the number of rooms or increase the minimal distance between them.
 
-Other similar issue can happen if it wont be able to create requested by you markers count in generation script -
+Other similar issue can happen if it won't be able to create requested by you markers count in generation script -
 calls of the ``Marker:createMarkersAlternatively(...)`` function.
 
 Example output (if it happens rarely, you can test your luck and generate map again, from scratch):

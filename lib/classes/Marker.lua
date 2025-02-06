@@ -125,7 +125,7 @@ end
 
 function Marker:createMarkersAlternatively( -- performance improvement ~40% in comparison to original method
         acceptedGroundItemId, -- if set to 0, it will create markers on all walkable tiles (not on just one ground)
-        -- otherwise only on the map tiles with ground itemid == acceptedGroundItemId
+        -- otherwise only on the map tiles with ground itemid == acceptedGroundItemId will be reconsidered
         markersAmount,
         minDistanceBetweenTwoMarkers,
 		currentFloor
@@ -133,21 +133,24 @@ function Marker:createMarkersAlternatively( -- performance improvement ~40% in c
 	currentFloor = currentFloor or self.map.mainPos.z
     local startTime = os.clock()
     local acceptedMapTilesTab = {}
-    print("Creating " .. markersAmount .. " markers alternatively, on floor: " .. currentFloor .. ", #acceptedMapTilesTab: " .. #acceptedMapTilesTab)
+    print("Creating " .. markersAmount .. " markers alternatively, on floor: " .. currentFloor .. ".")
     self:_cleanMarkers()
 
     for i = self.map.pos.y, self.map.pos.y + self.map.sizeY - 1 do
         for j = self.map.pos.x, self.map.pos.x + self.map.sizeX - 1 do
-            if (acceptedGroundItemId == 0) then
+            if (acceptedGroundItemId == 0) then -- todo: input "0" does not work without tableMode in TFS flow
                 local isWalkable = isWalkable(
 					{x = j, y = i, z = currentFloor}
                 )
-                if (isWalkable) then
-                    table.insert(
+				if (isWalkable) then
+					--print("WALKABLE !")
+					table.insert(
 						acceptedMapTilesTab,
 						{x = j, y = i, z = currentFloor}
-                    )
-                end
+					)
+				else
+					--print("unwalkable pos: " .. dumpVar({x = j, y = i, z = currentFloor}))
+				end
             elseif (getThingFromPosMock(
                     {x = j, y = i, z = currentFloor, stackpos = 0}
                 ).itemid == acceptedGroundItemId
@@ -160,7 +163,7 @@ function Marker:createMarkersAlternatively( -- performance improvement ~40% in c
         end
     end
 
-    print("Initial acceptedMapTilesTab length: " .. #acceptedMapTilesTab)
+    print("Initially acceptedMapTilesTab length: " .. #acceptedMapTilesTab)
 
     local markersCounter = 1
     repeat
@@ -202,5 +205,5 @@ function Marker:createMarkersAlternatively( -- performance improvement ~40% in c
     print("Available map tiles for potential new markers count: " .. #acceptedMapTilesTab .. " after the procedure.")
     -- /\ if #acceptedMapTilesTab is near to 0, reconsider decreasing
     -- the value of minDistanceBetweenTwoMarkers or increase the map size
-    print("Markers created alternatively on floor: " .. currentFloor .. ", execution time: ".. os.clock() - startTime)
+    print(#self.markersTab .. " markers created alternatively on floor: " .. currentFloor .. ", execution time: ".. os.clock() - startTime)
 end

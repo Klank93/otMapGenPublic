@@ -13,6 +13,7 @@ function MapCreator:drawMap(currentFloor)
         do return end
     end
 
+	local startTime = os.clock()
 	PRECREATION_TABLE_MODE = false -- disable to be able to actually create map finally
 	local drawning = function (i, j, floor)
 		if (CLI_FINAL_MAP_TABLE[i][j][floor][1].itemid ~= nil) then
@@ -26,8 +27,14 @@ function MapCreator:drawMap(currentFloor)
 		end
 	end
 
-    local startTime = os.clock()
-	for k = self.map.mainPos.z - self.map.sizeZ, self.map.mainPos.z do
+	local startingFloor = self.map.mainPos.z - (self.map.sizeZ - 1)
+	local endingFloor = self.map.mainPos.z
+	if (currentFloor ~= nil) then
+		startingFloor = currentFloor
+		endingFloor = currentFloor
+	end
+
+	for k = startingFloor, endingFloor do
 		print('Drawning floor: ' .. k)
 		for i = self.map.mainPos.x, self.map.mainPos.x + self.map.sizeX do -- todo: watchout, there was an issue with additional 1 sqm
 			for j = self.map.mainPos.y, self.map.mainPos.y + self.map.sizeY do -- todo: watchout, there was an issue with additional 1 sqm

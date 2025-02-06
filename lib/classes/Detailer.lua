@@ -403,12 +403,12 @@ function Detailer:createDetailsOnMapAlternatively(itemsTab, chance, currentFloor
             local currentPos = {x = j, y = i, z = currentFloor}
             local isWalkable = isWalkable(
 				currentPos
-            ) -- todo: always returns false in CLI
+            ) -- todo: always returns false in CLI (is this still actual?)
             if (isWalkable and not inArray(self.alreadyUsedTilesForDetails, currentPos)) then
                 table.insert(
 					acceptedMapTilesTab,
 					currentPos
-                ) -- todo: no multi-floor
+                )
             end
         end
     end

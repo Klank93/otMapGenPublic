@@ -32,11 +32,11 @@ loadSchemaFile() -- loads the schema file from map configuration with specific g
 function script.run()
 	------ Base stuff
 
-	local cursor = Cursor.new(mainPos)
 	local generatedMap = GroundMapper.new(mainPos, mapSizeX, mapSizeY, mapSizeZ, wpMinDist)
 
 	generatedMap:doMainGround(ITEMS_TABLE)
 
+	local cursor = Cursor.new(mainPos)
 	local wayPointer = WayPointer.new(generatedMap, cursor)
 	wayPoints = wayPointer:createWaypointsAlternatively(wayPointsCount)
 
@@ -94,7 +94,7 @@ function script.run()
 		ITEMS_TABLE[0][1],
 		BRUSH_BORDER_SHAPES,
 		GRAVEL_BRONZE_BASE_BRUSH
-	) -- it has to be executed before the base autoBorder, otherwise there are issues with stackpos
+	) -- WARNING! it has to be executed before the base autoBorder, otherwise there are issues with stackpos
 
 	local groundAutoBorder = GroundAutoBorder.new(generatedMap)
 	groundAutoBorder:doGround(

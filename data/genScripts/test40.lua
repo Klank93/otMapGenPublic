@@ -6,7 +6,7 @@ MAP_CONFIGURATION = {
     mainPos = {x = 145, y = 145, z = 7},
     mapSizeX = 40,
     mapSizeY = 40,
-	mapSizeZ = 3, -- multi-floor
+	mapSizeZ = 2, -- if set to greater than 1 => multi floor
     wpMinDist = 8,
     wayPointsCount = 7
 }
@@ -32,10 +32,9 @@ loadSchemaFile() -- loads the schema file from map configuration with specific g
 
 function script.run()
 	local promotedWaypoints = {}
-	mapSizeZ = mapSizeZ - 1
 	generatedMap = GroundMapper.new(mainPos, mapSizeX, mapSizeY, mapSizeZ, wpMinDist)
-	for currentFloor = mainPos.z - mapSizeZ, mainPos.z do -- multi-floor (it's working in ascending order, from upper floors to lower ones)
-		print('#########>>> Processing Floor: ' .. currentFloor)
+	for currentFloor = mainPos.z - (mapSizeZ - 1), mainPos.z do -- multi-floor (it's working in ascending order, from upper floors to lower ones)
+		print('\n###########################>>>> Processing Floor: ' .. currentFloor)
 
 		------ Base stuff
 		print('> 1 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
@@ -44,7 +43,7 @@ function script.run()
 
 		print('> 2 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
 
-		if (promotedWaypoints[currentFloor] ~= nil) then
+		if (promotedWaypoints[currentFloor] ~= nil) then -- unnecessary addition for multi floor
 			wayPoints[currentFloor] = arrayMerge({}, promotedWaypoints[currentFloor])
 		end
 
@@ -123,7 +122,7 @@ function script.run()
 		addRotatedTab(BRUSH_BORDER_SHAPES, 9)
 
 		marker:createMarkersAlternatively(
-			0, -- todo: "0" does not work with CLI, because of the bug in isWalkable function (doCreateItemMock actually)
+			0, -- todo: "0" does not work without tableMode in TFS flow
 			19,
 			4,
 			currentFloor
@@ -137,7 +136,7 @@ function script.run()
 			ITEMS_TABLE[0][1],
 			BRUSH_BORDER_SHAPES,
 			SAND_BASE_BRUSH
-		) -- it has to be executed before the base autoBorder, otherwise there are issues with stackpos
+		) -- WARNING! it has to be executed before the base autoBorder, otherwise there are issues with stackpos
 
 		print('> 12 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
 
@@ -158,7 +157,7 @@ function script.run()
 			TOMB_SAND_WALL_BORDER,
 			ITEMS_TABLE[12][1],
 			BORDER_CORRECT_SHAPES,
-			30,
+			45,
 			currentFloor
 		)
 
@@ -201,9 +200,9 @@ function script.run()
 		end
 	end
 
-	local elevator = ElevationManager.new(generatedMap, promotedWaypoints, TOMB_SAND_WALL_BORDER)
-	--elevator:createRopeLadders()
-	elevator:createDesertRamps()
+	local elevator = ElevationBuilder.new(generatedMap, promotedWaypoints, TOMB_SAND_WALL_BORDER)
+	--elevator:createRopeLadders("north") -- just example
+	elevator:createDesertRamps("random", 4837)
 
 	print('> 17 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
 

@@ -7,7 +7,7 @@ ROPE_LADDER_SCHEMA = {
 				{0,0,0}
 			},
 			['itemId'] = {
-				[1] = 3135
+				[1] = 3135 -- default upper floor ground item id, can be overridden by param
 			}
 		}
 	},

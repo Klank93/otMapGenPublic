@@ -225,7 +225,7 @@ function isGround(itemId)
     return false
 end
 
-function explode(inputstr, sep)
+function explode(inputstr, sep) -- php like function
     if sep == nil then
         sep = "%s"  -- space is default separator
     end
@@ -237,6 +237,20 @@ function explode(inputstr, sep)
 
     return t
 end
+
+function implode(delimiter, tableData) -- php like function
+	if type(tableData) ~= "table" then
+		error("Second argument must be a table")
+	end
+
+	local result = {}
+	for _, value in ipairs(tableData) do
+		table.insert(result, tostring(value)) -- Ensure all values are strings
+	end
+
+	return table.concat(result, delimiter)
+end
+
 
 function removeWhitespace(inputstr)
     local result = inputstr:gsub("%s+", "")

@@ -7,7 +7,7 @@ DESERT_RAMP_SCHEMA = {
 				{0,0,0}
 			},
 			['itemId'] = {
-				[1] = 4837
+				[1] = 459 -- default upper floor ground item id, can be overridden by param
 			}
 		},
 		["east"] = {
@@ -17,7 +17,7 @@ DESERT_RAMP_SCHEMA = {
 				{0,0,0}
 			},
 			['itemId'] = {
-				[1] = 4837
+				[1] = 459 -- default upper floor ground item id, can be overridden by param
 			}
 		},
 		["south"] = {
@@ -27,7 +27,7 @@ DESERT_RAMP_SCHEMA = {
 				{0,0,0}
 			},
 			['itemId'] = {
-				[1] = 4837
+				[1] = 459 -- default upper floor ground item id, can be overridden by param
 			}
 		},
 		["west"] = {
@@ -37,7 +37,7 @@ DESERT_RAMP_SCHEMA = {
 				{0,0,0}
 			},
 			['itemId'] = {
-				[1] = 4837
+				[1] = 459 -- default upper floor ground item id, can be overridden by param
 			}
 		},
 	},

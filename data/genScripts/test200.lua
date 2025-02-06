@@ -34,13 +34,13 @@ function script.run()
 
 	print('> 1 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
 
-	local cursor = Cursor.new(mainPos)
 	local generatedMap = GroundMapper.new(mainPos, mapSizeX, mapSizeY, mapSizeZ, wpMinDist)
 
 	generatedMap:doMainGround(ITEMS_TABLE)
 
 	print('> 2 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
 
+	local cursor = Cursor.new(mainPos)
 	local wayPointer = WayPointer.new(generatedMap, cursor)
 	wayPoints = wayPointer:createWaypointsAlternatively(wayPointsCount)
 
@@ -118,7 +118,7 @@ function script.run()
 	addRotatedTab(BRUSH_BORDER_SHAPES, 9)
 
 	marker:createMarkersAlternatively(
-			0, -- todo: "0" does not work with CLI, because of the bug in isWalkable function (doCreateItemMock actually)
+			0, -- todo: "0" does not work without tableMode in TFS flow
 			100,
 			4
 	)
@@ -131,7 +131,7 @@ function script.run()
 			ITEMS_TABLE[0][1],
 			BRUSH_BORDER_SHAPES,
 			SAND_BASE_BRUSH
-	) -- it has to be executed before the base autoBorder, otherwise there are issues with stackpos
+	) -- WARNING! it has to be executed before the base autoBorder, otherwise there are issues with stackpos
 
 	print('> 12 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
 
