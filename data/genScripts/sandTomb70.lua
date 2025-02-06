@@ -120,9 +120,6 @@ function script.run()
 		30
 	)
 
-	--local groundRandomizer = GroundRandomizer.new(generatedMap)
-	--groundRandomizer:randomize(ITEMS_TABLE, 40)
-
 	------ Detailing Map
 
 	local detailer = Detailer.new(generatedMap, wayPoints)
@@ -141,6 +138,9 @@ function script.run()
 		ITEMS_TABLE,
 		15
 	)
+
+	--local groundRandomizer = GroundRandomizer.new(generatedMap)
+	--groundRandomizer:randomize(ITEMS_TABLE, 40)
 
 	------ Additional Actions (old step 4) \/ not need for simple tomb
 

@@ -83,7 +83,7 @@ function pointDistance2(pos1, pos2, isPrintingEnabled)
 end
 
 function isWalkable(pos) -- ORIGINAL FUNCTION CHECKS ALL THE STACKPOSES
-    local geItemUid = getThingFromPosMock(
+	local geItemUid = getThingFromPosMock(
 		{x = pos.x, y = pos.y, z = pos.z, stackpos = 0}
 	).uid
 

@@ -40,10 +40,9 @@ function onSay(player, words, param) -- todo: mess, to refactor (there is also s
 			return
 		end
 
-        if (params[2] == 'tableMode') then -- simulates running through CLI in TFS todo: bug in running in CLI
-            PRECREATION_TABLE_MODE = true
-            RETURNVALUE_NOERROR = 1
-        end
+		if (params[2] == 'tableMode') then -- simulates running through CLI in TFS
+			PRECREATION_TABLE_MODE = true
+		end
 
         local generationScriptFilePath = loadScriptFile(params, generalStartTime)
         local runningScript = dofile(generationScriptFilePath)

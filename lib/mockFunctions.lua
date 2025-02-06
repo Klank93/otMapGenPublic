@@ -214,7 +214,7 @@ queryTileAddThingMock = function(uid, pos)
         result = queryTileAddThing(uid, pos) -- tfs function call, depends on tfs version
     else
         if (isEmpty(CLI_FINAL_MAP_TABLE, pos.x, pos.y, pos.z)) then -- not existing position
-            result = 0
+            result = 1
         else
             -- check all the items on the tile, if they are walkable
             local tileItems = {}
@@ -230,10 +230,10 @@ queryTileAddThingMock = function(uid, pos)
                     flattenArray(CAVE_BASE_BORDER)
             )
 
-            result = 1 -- assume success RETURNVALUE_NOERROR = 1
+            result = 0 -- assume success RETURNVALUE_NOERROR = 0
             for i = 1, #tileItems do
                 if (inArray(unwalkableItems, tileItems[i])) then
-                    result = 0 -- error
+                    result = 1 -- error
                     break
                 end
             end
@@ -242,7 +242,7 @@ queryTileAddThingMock = function(uid, pos)
 
     if (LOG_TO_FILE and DEBUG_OUTPUT) then
         local isWalkableStr = 'walkable'
-        if (result == 0) then
+        if (result == 1) then
             isWalkableStr = 'unwalkable'
         end
         logger:debug(

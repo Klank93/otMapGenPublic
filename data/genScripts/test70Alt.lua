@@ -118,7 +118,7 @@ function script.run()
 		elseif (step == 9) then
 			addRotatedTab(BRUSH_BORDER_SHAPES, 9)
 			marker:createMarkersAlternatively(
-				0, -- todo: "0" does not work without tableMode in TFS flow
+				0,
 				70,
 				4
 			)

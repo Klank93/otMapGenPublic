@@ -325,6 +325,7 @@ function Detailer:createDetailsOnMap(itemsTab, chance, currentFloor) -- chance i
     pom.y = self.map.mainPos.y
     pom.z = currentFloor
 
+	local counter = 0
     for i = self.map.mainPos.y, self.map.mainPos.y + self.map.sizeY do
         for j = self.map.mainPos.x, self.map.mainPos.x + self.map.sizeX do
             if (isWalkable(pom)) then
@@ -379,6 +380,7 @@ function Detailer:createDetailsOnMap(itemsTab, chance, currentFloor) -- chance i
 
                         if state2 == true then
                             doCreateItemMock(item, 1, pom)
+							counter = counter + 1
                         end
                     end
                 end
@@ -389,7 +391,10 @@ function Detailer:createDetailsOnMap(itemsTab, chance, currentFloor) -- chance i
         pom.x = self.map.mainPos.x
         pom.y = pom.y + 1
     end
-    print("Creating details on floor: " .. currentFloor .. " done, execution time: " .. os.clock() - startTime)
+    print("Creating details on floor: " .. currentFloor ..
+		" done, created " .. counter ..
+		" items, execution time: " .. os.clock() - startTime
+	)
 end
 
 function Detailer:createDetailsOnMapAlternatively(itemsTab, chance, currentFloor) -- chance is int, percentage in range 1%-100%
@@ -427,18 +432,18 @@ function Detailer:createDetailsOnMapAlternatively(itemsTab, chance, currentFloor
         )
     end
 
-    print("Creating " .. #tilesToAddDetails ..
+    print("Created " .. #tilesToAddDetails ..
 		" details on map alternatively done, execution time: " ..
 		os.clock() - startTime
     )
 end
 
 function Detailer:createHangableDetails(
-        mainGroundItemId,
-        wallBorder,
-        itemsTab,
-        chance,
-		currentFloor
+	mainGroundItemId,
+	wallBorder,
+	itemsTab,
+	chance,
+	currentFloor
 ) -- chance is int, percentage in range 1%-100%
 	currentFloor = currentFloor or self.map.mainPos.z
     local startTime = os.clock()
@@ -447,6 +452,7 @@ function Detailer:createHangableDetails(
     pom.y = self.map.mainPos.y
     pom.z = currentFloor
 
+	local counter = 0
     for i = self.map.mainPos.y, self.map.mainPos.y + self.map.sizeY - 1 do -- todo: can be out of map (CLI in original version crashes, out of tab)
         for j = self.map.mainPos.x, self.map.mainPos.x + self.map.sizeX - 1 do -- todo: can be out of map (CLI in original version crashes, out of tab)
             --print(dumpVar({x = pom.x, y = pom.y, z = pom.z, stackpos = 0}))
@@ -467,6 +473,7 @@ function Detailer:createHangableDetails(
 								1,
 								pom
                             )
+							counter = counter + 1
                         end
                     end
                 end
@@ -478,6 +485,7 @@ function Detailer:createHangableDetails(
 								1,
 								pom
                             )
+							counter = counter + 1
                         end
                     end
                 end
@@ -497,6 +505,7 @@ function Detailer:createHangableDetails(
 									pom
                                 )
                             end
+							counter = counter + 1
                         end
                     end
                 end
@@ -507,16 +516,20 @@ function Detailer:createHangableDetails(
         pom.x = pom.x - self.map.sizeX
         pom.y = pom.y + 1
     end
-    print("Creating details on walls, on floor: " .. currentFloor .. " done, execution time: " .. os.clock() - startTime)
+    print("Creating details on walls, on floor: " .. currentFloor ..
+		" done, created " .. counter ..
+		" items, execution time: " .. os.clock() - startTime
+	)
 end
 
 function Detailer:createDetailsInCave(
-        markersTab,
-        itemsTab,
-        detailsSpawnSize,
-        chance
+	markersTab,
+	itemsTab,
+	detailsSpawnSize,
+	chance
 )
     local startTime = os.clock()
+	local counter = 0
     local walkableTabY = {}
     for i = 1, detailsSpawnSize do
         table.insert(walkableTabY , i, 0)
@@ -601,6 +614,7 @@ function Detailer:createDetailsInCave(
                         )
                         walkableX = walkableX - 3
                         walkableTabY[cj] = walkableTabY[cj] - 3
+						counter = counter + 1
                     end
                     pom3.x = pom3.x + 1
                 end
@@ -614,4 +628,8 @@ function Detailer:createDetailsInCave(
             walkableTabY[azi] = 0
         end
     end
+
+	print("Creating details in cave done, created " .. counter ..
+		" items, execution time: " .. os.clock() - startTime
+	)
 end

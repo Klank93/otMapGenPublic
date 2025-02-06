@@ -167,31 +167,31 @@ function TestMockOperations:testQueryTileAddThing1()
     mapItem = getThingFromPosMock(testPos)
     mapItemUid = mapItem.uid
     result = queryTileAddThingMock(mapItemUid, testPos)
-    lu.assertEquals(result, 1) -- happy flow scenario, tile is walkable
+    lu.assertEquals(result, 0) -- happy flow scenario, tile is walkable
 
     testPos = mapItems[4].pos
     mapItem = getThingFromPosMock(testPos)
     mapItemUid = mapItem.uid
     result = queryTileAddThingMock(mapItemUid, testPos)
-    lu.assertEquals(result, 0) -- unhappy flow scenario, just ground on the tile,  tile is unwalkable
+    lu.assertEquals(result, 1) -- unhappy flow scenario, just ground on the tile,  tile is unwalkable
 
     testPos = mapItems[5].pos
     mapItem = getThingFromPosMock(testPos)
     mapItemUid = mapItem.uid
     result = queryTileAddThingMock(mapItemUid, testPos)
-    lu.assertEquals(result, 0) -- unhappy flow scenario, tile is unwalkable
+    lu.assertEquals(result, 1) -- unhappy flow scenario, tile is unwalkable
 
     testPos = mapItems[7].pos
     mapItem = getThingFromPosMock(testPos)
     mapItemUid = mapItem.uid
     result = queryTileAddThingMock(mapItemUid, testPos)
-    lu.assertEquals(result, 0) -- unhappy flow scenario, tile is unwalkable
+    lu.assertEquals(result, 1) -- unhappy flow scenario, tile is unwalkable
 
     testPos = mapItems[10].pos
     mapItem = getThingFromPosMock(testPos)
     mapItemUid = mapItem.uid
     result = queryTileAddThingMock(mapItemUid, testPos)
-    lu.assertEquals(result, 0) -- unhappy flow scenario, tile is unwalkable
+    lu.assertEquals(result, 1) -- unhappy flow scenario, tile is unwalkable
 end
 
 os.exit(lu.run())

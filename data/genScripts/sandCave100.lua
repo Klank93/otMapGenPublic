@@ -156,9 +156,6 @@ function script.run()
 		25
 	)
 
-	local groundRandomizer = GroundRandomizer.new(generatedMap)
-	groundRandomizer:randomizeByIds(ITEMS_TABLE[1], 40)
-
 	detailer:createDetailsOnMap(ITEMS_TABLE[11][1], 4)
 	detailer:createDetailsOnMap(ITEMS_TABLE[8][1], 10)
 	detailer:createDetailsOnMap(ITEMS_TABLE[8][2], 4)
@@ -166,6 +163,8 @@ function script.run()
 	detailer:createDetailsOnMap(ITEMS_TABLE[9][2], 4)
 	detailer:createDetailsOnMap(ITEMS_TABLE[9][1], 2)
 
+	local groundRandomizer = GroundRandomizer.new(generatedMap)
+	groundRandomizer:randomizeByIds(ITEMS_TABLE[1], 40)
 	groundRandomizer:randomizeByIds(ITEMS_TABLE[0], 40)
 
 	if (PRECREATION_TABLE_MODE and RUNNING_MODE == 'tfs') then
