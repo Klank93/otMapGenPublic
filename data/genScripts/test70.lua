@@ -54,7 +54,7 @@ function script.run()
 	wayPointer:createPathBetweenWpsTSP(ITEMS_TABLE)
 	-- wayPointer:createPathBetweenWpsTSPMS(ITEMS_TABLE)
 
-	local roomBuilder = DungeonRoomBuilder.new(wayPoints)
+	local roomBuilder = DungeonRoomBuilder.new(generatedMap, wayPoints)
 	roomBuilder:createRooms(ITEMS_TABLE, ROOM_SHAPES)
 
 	print('> 4 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')

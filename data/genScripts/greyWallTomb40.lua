@@ -47,7 +47,7 @@ function script.run()
 	wayPointer:createPathBetweenWpsTSP(ITEMS_TABLE)
 	--wayPointer:createPathBetweenWpsTSPMS(ITEMS_TABLE)
 
-	local dungeonRoomBuilder = DungeonRoomBuilder.new(wayPoints)
+	local dungeonRoomBuilder = DungeonRoomBuilder.new(generatedMap, wayPoints)
 	dungeonRoomBuilder:createRooms(ITEMS_TABLE, ROOM_SHAPES)
 
 	local wallAutoBorder = WallAutoBorder.new(generatedMap)

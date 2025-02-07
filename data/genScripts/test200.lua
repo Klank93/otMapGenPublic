@@ -56,7 +56,7 @@ function script.run()
 
 	-- do return end
 
-	local roomBuilder = DungeonRoomBuilder.new(wayPoints)
+	local roomBuilder = DungeonRoomBuilder.new(generatedMap, wayPoints)
 	roomBuilder:createRooms(ITEMS_TABLE, ROOM_SHAPES)
 
 	print('> 4 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')

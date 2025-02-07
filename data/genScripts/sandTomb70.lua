@@ -45,7 +45,7 @@ function script.run()
 
 	wayPointer:createPathBetweenWps(ITEMS_TABLE)
 
-	local dungeonRoomBuilder = DungeonRoomBuilder.new(wayPoints)
+	local dungeonRoomBuilder = DungeonRoomBuilder.new(generatedMap, wayPoints)
 	dungeonRoomBuilder:createRooms(ITEMS_TABLE, ROOM_SHAPES)
 
 	local wallAutoBorder = WallAutoBorder.new(generatedMap)
@@ -103,7 +103,7 @@ function script.run()
 		TOMB_SAND_WALL_BORDER,
 		ITEMS_TABLE[12][1],
 		BORDER_CORRECT_SHAPES,
-		30
+		40
 	)
 
 	addRotatedTab(BRUSH_BORDER_SHAPES, 9)

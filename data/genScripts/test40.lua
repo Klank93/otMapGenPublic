@@ -57,8 +57,8 @@ function script.run()
 		wayPointer:createPathBetweenWpsTSP(ITEMS_TABLE, 3, currentFloor) -- exact one
 		-- wayPointer:createPathBetweenWpsTSPMS(ITEMS_TABLE)
 
-		local roomBuilder = DungeonRoomBuilder.new(wayPoints[currentFloor]) -- todo: an issue when we have multi-floor gen script and we set in it mapSizeZ = 1
-		roomBuilder:createRooms(ITEMS_TABLE, ROOM_SHAPES)
+		local roomBuilder = DungeonRoomBuilder.new(generatedMap, wayPoints)
+		roomBuilder:createRooms(ITEMS_TABLE, ROOM_SHAPES, currentFloor)
 
 		print('> 4 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
 
@@ -169,8 +169,8 @@ function script.run()
 		------ Detailing Map
 
 		local startTime = os.clock()
-		local detailer = Detailer.new(generatedMap, wayPoints[currentFloor])
-		detailer:createDetailsInRooms(ROOM_SHAPES, ITEMS_TABLE, TOMB_SAND_WALL_BORDER)
+		local detailer = Detailer.new(generatedMap, wayPoints)
+		detailer:createDetailsInRooms(ROOM_SHAPES, ITEMS_TABLE, TOMB_SAND_WALL_BORDER, currentFloor)
 
 		print('> 15 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
 

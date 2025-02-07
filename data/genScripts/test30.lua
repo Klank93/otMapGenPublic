@@ -57,7 +57,7 @@ function script.run()
 		wayPointer:createPathBetweenWpsTSP(ITEMS_TABLE, 3, currentFloor) -- exact one
 		-- wayPointer:createPathBetweenWpsTSPMS(ITEMS_TABLE)
 
-		local roomBuilder = DungeonRoomBuilder.new(wayPoints[currentFloor]) -- todo: an issue when we have multi-floor gen script and we set in it mapSizeZ = 1
+		local roomBuilder = DungeonRoomBuilder.new(wayPoints[currentFloor])
 		roomBuilder:createRooms(ITEMS_TABLE, ROOM_SHAPES)
 
 		print('> 4 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')

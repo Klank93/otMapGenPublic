@@ -48,7 +48,7 @@ function script.run()
 	--caveWayPointer:createPathBetweenWpsTSP(ITEMS_TABLE, 5)
 	caveWayPointer:createPathBetweenWpsTSPMS(ITEMS_TABLE, 6, 3)
 
-	local caveRoomBuilder = CaveRoomBuilder.new(wayPoints)
+	local caveRoomBuilder = CaveRoomBuilder.new(generatedMap, wayPoints)
 	caveRoomBuilder:createRooms(ITEMS_TABLE, 11, 11)
 
 	generatedMap:correctCaveShapes(

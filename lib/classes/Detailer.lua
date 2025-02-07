@@ -10,9 +10,16 @@ function Detailer.new(map, wayPoints)
     return instance
 end
 
-function Detailer:createDetailsInRooms(rmsh, itemsTab, wallBorder)
+function Detailer:createDetailsInRooms(rmsh, itemsTab, wallBorder, currentFloor)
     local startTime = os.clock()
-    for _, waypoint in pairs(self.wayPoints) do
+	local wayPoints = self.wayPoints
+	if (self.map.sizeZ > 1 and
+		currentFloor ~= nil and
+		self.wayPoints[currentFloor] ~= nil
+	) then
+		wayPoints = self.wayPoints[currentFloor]
+	end
+    for _, waypoint in pairs(wayPoints) do
         local pillar = math.random(1,#itemsTab[5]) -- chooses pillars for specific room
         local fountain = math.random(1,#itemsTab[17])
         local pom = {}
