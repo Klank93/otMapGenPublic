@@ -88,12 +88,11 @@ to be run "without-tfs-freeze" way - saves the map before any item is being crea
 - remove many unnecessary prints from the code
 
 ### Known bugs:
-- when run in CLI mode borders are placed over carpet brushes
 - wall border bug occurs when generating small maps with rooms close to each other:
 ![wall border bug](images/wallBug01.png)
 - in some cases, structures may partially block the player's path:
 ![wall border bug](images/structureOnTheWay01.png)
-In some rare edge cases it can generate the dungeon, which can not be explored fully
+In rare edge cases it can generate the dungeon, which can not be explored fully
 
 ## How to develop / modify / extend generation scripts:
 I suggest to start with copying some existing file inside data/genScripts and then modifying it up to your preferences.
