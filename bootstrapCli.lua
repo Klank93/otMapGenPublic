@@ -19,6 +19,7 @@ local folders = {
     'lib/data',
     'lib/data/borders',
     'lib/data/brushes',
+	'lib/data/elevation',
     'lib/data/shapes',
 	'lib/commonScripts'
 }
@@ -43,4 +44,4 @@ for i = 1, #folders do
 end
 
 PRECREATION_TABLE_MODE = true
-RETURNVALUE_NOERROR = 1
+RETURNVALUE_NOERROR = 0

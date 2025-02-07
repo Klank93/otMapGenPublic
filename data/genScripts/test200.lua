@@ -1,14 +1,14 @@
 -- script for testing new solutions
 MAP_CONFIGURATION = {
     schemaFile = 'test1.lua',
-    saveMapFilename = 'test100',
+    saveMapFilename = 'test200',
     logToFile = true,
     mainPos = {x = 145, y = 145, z = 7},
-    mapSizeX = 100,
-    mapSizeY = 100,
+    mapSizeX = 200,
+    mapSizeY = 200,
 	mapSizeZ = 1, -- no multi-floor for now
     wpMinDist = 13,
-    wayPointsCount = 30
+    wayPointsCount = 110
 }
 LOG_TO_FILE = MAP_GEN_CFG.logToFile -- can be overridden for specific script
 DEBUG_OUTPUT = MAP_GEN_CFG.debugOutput -- can be overridden for specific script
@@ -51,7 +51,7 @@ function script.run()
 	--print(dumpVar(wayPoints))
 
 	-- wayPointer:createPathBetweenWps(ITEMS_TABLE)
-	wayPointer:createPathBetweenWpsTSP(ITEMS_TABLE)
+	wayPointer:createPathBetweenWpsTSP(ITEMS_TABLE, 4)
 	-- wayPointer:createPathBetweenWpsTSPMS(ITEMS_TABLE)
 
 	-- do return end
@@ -63,29 +63,29 @@ function script.run()
 
 	local wallAutoBorder = WallAutoBorder.new(generatedMap)
 	wallAutoBorder:doWalls(
-		ITEMS_TABLE[1][1],
-		ITEMS_TABLE[0][1],
-		TOMB_SAND_WALL_BORDER
+			ITEMS_TABLE[1][1],
+			ITEMS_TABLE[0][1],
+			TOMB_SAND_WALL_BORDER
 	)
 
 	print('> 5 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
 
 	local marker = Marker.new(generatedMap)
 	marker:createMarkersAlternatively(
-		ITEMS_TABLE[1][1],
-		35,
-		6
+			ITEMS_TABLE[1][1],
+			35,
+			6
 	)
 
 	print('> 6 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
 
 	generatedMap:doGround2(
-		marker.markersTab,
-		cursor,
-		ITEMS_TABLE[1][1],
-		ITEMS_TABLE[12][1],
-		1,
-		6
+			marker.markersTab,
+			cursor,
+			ITEMS_TABLE[1][1],
+			ITEMS_TABLE[12][1],
+			1,
+			6
 	)
 
 	print('> 7 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
@@ -93,20 +93,20 @@ function script.run()
 	------ repeat createMarkers & doGround2
 
 	marker:createMarkersAlternatively(
-		ITEMS_TABLE[1][1],
-		75,
-		6
+			ITEMS_TABLE[1][1],
+			75,
+			6
 	)
 
 	print('> 8 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
 
 	generatedMap:doGround2(
-		marker.markersTab,
-		cursor,
-		ITEMS_TABLE[1][1],
-		ITEMS_TABLE[12][1],
-		1,
-		6
+			marker.markersTab,
+			cursor,
+			ITEMS_TABLE[1][1],
+			ITEMS_TABLE[12][1],
+			1,
+			6
 	)
 
 	print('> 9 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
@@ -117,21 +117,21 @@ function script.run()
 
 	local groundAutoBorder = GroundAutoBorder.new(generatedMap)
 	groundAutoBorder:doGround(
-		ITEMS_TABLE[12][1],
-		ITEMS_TABLE[1][1],
-		ITEMS_TABLE[0][1],
-		SAND_GROUND_BASE_BORDER
+			ITEMS_TABLE[12][1],
+			ITEMS_TABLE[1][1],
+			ITEMS_TABLE[0][1],
+			SAND_GROUND_BASE_BORDER
 	)
 
 	print('> 11 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
 
 	groundAutoBorder:correctBorders(
-		ITEMS_TABLE[0][1],
-		SAND_GROUND_BASE_BORDER,
-		TOMB_SAND_WALL_BORDER,
-		ITEMS_TABLE[12][1],
-		BORDER_CORRECT_SHAPES,
-		30
+			ITEMS_TABLE[0][1],
+			SAND_GROUND_BASE_BORDER,
+			TOMB_SAND_WALL_BORDER,
+			ITEMS_TABLE[12][1],
+			BORDER_CORRECT_SHAPES,
+			30
 	)
 
 	print('> 12 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
@@ -175,10 +175,10 @@ function script.run()
 	detailer:createDetailsOnMap(ITEMS_TABLE[9][1], 2)
 
 	detailer:createHangableDetails(
-		ITEMS_TABLE[0][1],
-		TOMB_SAND_WALL_BORDER,
-		ITEMS_TABLE,
-		15
+			ITEMS_TABLE[0][1],
+			TOMB_SAND_WALL_BORDER,
+			ITEMS_TABLE,
+			15
 	)
 	print("Combined creation of the details done, execution time: " .. os.clock() - startTime)
 

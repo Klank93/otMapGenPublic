@@ -32,14 +32,14 @@ loadSchemaFile() -- loads the schema file from map configuration with specific g
 function script.run()
 	------ Base stuff
 
-	local cursor = Cursor.new(mainPos)
 	local generatedMap = CaveGroundMapper.new(mainPos, mapSizeX, mapSizeY, mapSizeZ, wpMinDist)
 
 	generatedMap:doMainGround(ITEMS_TABLE)
 
+	local cursor = Cursor.new(mainPos)
 	local brush = Brush.new()
-	local caveWayPointer = CaveWayPointer.new(generatedMap, cursor, nil, brush)
-	caveWayPointer:createWaypointsAlternatively(wayPoints, wayPointsCount)
+	local caveWayPointer = CaveWayPointer.new(generatedMap, cursor, wayPoints, brush)
+	wayPoints = caveWayPointer:createWaypointsAlternatively(wayPointsCount)
 
 	--print('Length: ' .. #wayPoints)
 	sortWaypoints(wayPoints)
@@ -52,77 +52,63 @@ function script.run()
 	caveRoomBuilder:createRooms(ITEMS_TABLE, 11, 11)
 
 	generatedMap:correctCaveShapes(
-			ITEMS_TABLE[0][1],
-			ITEMS_TABLE[1][1],
-			CAVE_LINE_SHAPES
+		ITEMS_TABLE[0][1],
+		ITEMS_TABLE[1][1],
+		CAVE_LINE_SHAPES
 	) -- todo: method completely not optimised, terrible performance
 
 	generatedMap:correctBackgroundShapes(
-			ITEMS_TABLE[0][1],
-			ITEMS_TABLE[1][1],
-			CAVE_BACKGROUND_CORRECT_SHAPES
+		ITEMS_TABLE[0][1],
+		ITEMS_TABLE[1][1],
+		CAVE_BACKGROUND_CORRECT_SHAPES
 	) -- todo: method completely not optimised, terrible performance
 
 	local groundAutoBorder = GroundAutoBorder.new(generatedMap)
 	groundAutoBorder:doGround(
-			ITEMS_TABLE[0][1],
-			ITEMS_TABLE[1][1],
-			ITEMS_TABLE[0][1],
-			CAVE_BASE_BORDER
+		ITEMS_TABLE[0][1],
+		ITEMS_TABLE[1][1],
+		ITEMS_TABLE[0][1],
+		CAVE_BASE_BORDER
 	)
 
 	local marker = Marker.new(generatedMap)
 	marker:createMarkersAlternatively(
-			ITEMS_TABLE[1][1],
-			55,
-			6
+		ITEMS_TABLE[1][1],
+		55,
+		6
 	)
 	generatedMap:doGround2(
-			marker.markersTab,
-			cursor,
-			ITEMS_TABLE[1][1],
-			ITEMS_TABLE[12][1],
-			2,
-			8
+		marker.markersTab,
+		cursor,
+		ITEMS_TABLE[1][1],
+		ITEMS_TABLE[12][1],
+		2,
+		8
 	)
 
 	------ repeat createMarkersAlternatively & doGround2
 
 	marker:createMarkersAlternatively(
-			ITEMS_TABLE[1][1],
-			30,
-			6
+		ITEMS_TABLE[1][1],
+		30,
+		6
 	)
 	generatedMap:doGround2(
-			marker.markersTab,
-			cursor,
-			ITEMS_TABLE[1][1],
-			ITEMS_TABLE[12][1],
-			2,
-			8
+		marker.markersTab,
+		cursor,
+		ITEMS_TABLE[1][1],
+		ITEMS_TABLE[12][1],
+		2,
+		8
 	)
 
 	generatedMap:correctGround(ITEMS_TABLE[1][1], ITEMS_TABLE[12][1])
 
-	addRotatedTab(BRUSH_BORDER_SHAPES, 9)
-	marker:createMarkersAlternatively(
-			ITEMS_TABLE[1][1],
-			110,
-			4
-	)
-
-	brush:doBrush(
-			marker.markersTab,
-			ITEMS_TABLE[0][1],
-			BRUSH_BORDER_SHAPES,
-			SAND_BASE_BRUSH
-	) -- it has to be executed before the base autoBorder, otherwise there are issues with stackpos
-
 	groundAutoBorder:doGround(
-			ITEMS_TABLE[12][1],
-			ITEMS_TABLE[1][1],
-			ITEMS_TABLE[0][1],
-			SAND_GROUND_BASE_BORDER
+		ITEMS_TABLE[12][1],
+		ITEMS_TABLE[1][1],
+		ITEMS_TABLE[0][1],
+		SAND_GROUND_BASE_BORDER
 	)
 
 	local tmpWallBorderTable = { -- todo: refactor, should not be needed
@@ -133,31 +119,41 @@ function script.run()
 	}
 	-- todo: not need to pass TOMB_SAND_WALL_BORDER in this, cave generation case
 	groundAutoBorder:correctBorders(
-			ITEMS_TABLE[0][1],
-			SAND_GROUND_BASE_BORDER,
-			tmpWallBorderTable,
-			ITEMS_TABLE[12][1],
-			BORDER_CORRECT_SHAPES,
-			30
+		ITEMS_TABLE[0][1],
+		SAND_GROUND_BASE_BORDER,
+		tmpWallBorderTable,
+		ITEMS_TABLE[12][1],
+		BORDER_CORRECT_SHAPES,
+		30
+	)
+
+	addRotatedTab(BRUSH_BORDER_SHAPES, 9)
+	marker:createMarkersAlternatively(
+		ITEMS_TABLE[1][1],
+		110,
+		4
+	)
+	brush:doCarpetBrush(
+		marker.markersTab,
+		ITEMS_TABLE[0][1],
+		BRUSH_BORDER_SHAPES,
+		SAND_BASE_BRUSH
 	)
 
 	------ Detailing Map
 
 	marker:createMarkersAlternatively(
-			ITEMS_TABLE[1][1],
-			55,
-			6
+		ITEMS_TABLE[1][1],
+		55,
+		6
 	)
 	local detailer = Detailer.new(generatedMap, wayPoints)
 	detailer:createDetailsInCave(
-			marker.markersTab,
-			ITEMS_TABLE[10],
-			4,
-			25
+		marker.markersTab,
+		ITEMS_TABLE[10],
+		4,
+		25
 	)
-
-	local groundRandomizer = GroundRandomizer.new(generatedMap)
-	groundRandomizer:randomizeByIds(ITEMS_TABLE[1], 40)
 
 	detailer:createDetailsOnMap(ITEMS_TABLE[11][1], 4)
 	detailer:createDetailsOnMap(ITEMS_TABLE[8][1], 10)
@@ -166,7 +162,14 @@ function script.run()
 	detailer:createDetailsOnMap(ITEMS_TABLE[9][2], 4)
 	detailer:createDetailsOnMap(ITEMS_TABLE[9][1], 2)
 
+	local groundRandomizer = GroundRandomizer.new(generatedMap)
+	groundRandomizer:randomizeByIds(ITEMS_TABLE[1], 40)
 	groundRandomizer:randomizeByIds(ITEMS_TABLE[0], 40)
+
+	if (PRECREATION_TABLE_MODE and RUNNING_MODE == 'tfs') then
+		local mapCreator = MapCreator.new(generatedMap)
+		mapCreator:drawMap()
+	end
 end
 
 return script

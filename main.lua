@@ -40,10 +40,9 @@ function onSay(player, words, param) -- todo: mess, to refactor (there is also s
 			return
 		end
 
-        if (params[2] == 'tableMode') then -- simulates running through CLI in TFS todo: bug in running in CLI
-            PRECREATION_TABLE_MODE = true
-            RETURNVALUE_NOERROR = 1
-        end
+		if (params[2] == 'tableMode') then -- simulates running through CLI in TFS
+			PRECREATION_TABLE_MODE = true
+		end
 
         local generationScriptFilePath = loadScriptFile(params, generalStartTime)
         local runningScript = dofile(generationScriptFilePath)
@@ -67,8 +66,9 @@ function onSay(player, words, param) -- todo: mess, to refactor (there is also s
                     string.format('-%s.otbm', os.date('%S'))
             local mainPos = MAP_CONFIGURATION.mainPos
             local mapSizeX = MAP_CONFIGURATION.mapSizeX
-            local mapSizeY = MAP_CONFIGURATION.mapSizeY
-            local fromPos = {x = mainPos.x - 5, y = mainPos.y - 5, z = 7}
+			local mapSizeY = MAP_CONFIGURATION.mapSizeY
+			local mapSizeZ = MAP_CONFIGURATION.mapSizeZ - 1
+            local fromPos = {x = mainPos.x - 5, y = mainPos.y - 5, z = mainPos.z - mapSizeZ}
             local toPos = {x = mainPos.x + mapSizeX + 5, y = mainPos.y + mapSizeY + 5, z = mainPos.z}
 
             print('Running saving map: ' .. filename)

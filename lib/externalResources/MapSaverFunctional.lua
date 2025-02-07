@@ -152,7 +152,9 @@ function saveMap3(name, frompos, topos) --e.g. "map.otbm"
     for z=frompos.z,topos.z do
         for x=frompos.x,topos.x do
             local prog = (x - frompos.x) * 100 / (topos.x - frompos.x)
-            print("Saving " .. name .. ", level " .. z + 1 - frompos.z .. "/" .. topos.z - frompos.z + 1 .. "(" .. math.floor(prog) .. "%) ... [" .. math.floor((prog + 100 * (z - frompos.z)) / (topos.z - frompos.z + 1)) .. "%]")
+			if prog % 10 == 0 then
+				print("Saving " .. name .. ", level " .. z + 1 - frompos.z .. "/" .. topos.z - frompos.z + 1 .. "(" .. math.floor(prog) .. "%) ... [" .. math.floor((prog + 100 * (z - frompos.z)) / (topos.z - frompos.z + 1)) .. "%]")
+			end
 
             for y=frompos.y,topos.y do
 

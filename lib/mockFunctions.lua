@@ -34,7 +34,39 @@ end
 
 ---
 
- doCreateItemMock = function(itemId, typeOrCount, pos)
+doCreateNoTileItem = function(itemId, count, pos, stackPosSafe) -- watch-out TFS 1.x only!
+	-- creates an item at the position, regardless of whether a tile exist there or not
+	local tile = Tile(pos)
+	if not tile then
+		Game.createTile(pos, true) -- creates new Tile, if it does not exist
+	end
+
+	local reversedItemIds = {}
+	if (stackPosSafe == true) then -- workaround fix for on issue with stackpos (borders over the brushes)
+		for _, item in pairs(Tile(pos):getItems() or {}) do
+			table.insert(reversedItemIds, 1, item:getId())
+			item:remove()
+		end
+	end
+
+	local item = Game.createItem(itemId, count, pos)
+	if item then
+		if (#reversedItemIds > 0) then -- workaround fix for on issue with stackpos (borders over the brushes)
+			for _, itemId in pairs(reversedItemIds) do
+				--print('recreating itemid: ' .. itemId)
+				Game.createItem(itemId, 1, pos)
+			end
+		end
+
+		return item:getUniqueId()
+	end
+end
+
+ doCreateItemMock = function(itemId, typeOrCount, pos, stackPosSafe)
+	 -- stackPosSafe is workaround fix for incorrect borders / carpet brushes stackpos order issue
+	 -- should be set to true only for creation of those items
+	 -- do not use for creation of other items, because there is no need and it kills performance
+	 stackPosSafe = defaultParam(stackPosSafe, false)
      if (itemId == nil) then
          error('Incorrect data, itemId is nil')
      end
@@ -52,12 +84,17 @@ end
      local stackPos
      local uid
      if not (PRECREATION_TABLE_MODE) then
-         doCreateItem(itemId, typeOrCount, pos) -- tfs function call, depends on tfs version
+		 doCreateNoTileItem(itemId, typeOrCount, pos, stackPosSafe)
+		 -- workaround for multi-floor purpose,
+		 -- for lower TFS versions than 1.X comment above line and uncomment below (you will lose multi-floor feature, unfortunately)
+		 -- but you can fix it on your own - you just need to have a map with tiles already created (map filled with void / water ground items)
+		 -- that's because TFS does not allow to create items at position if there is no tile there already
+         -- doCreateItem(itemId, typeOrCount, pos) -- tfs function call, depends on tfs version
          stackPos = pos.stackpos or 0
      else
          local currentLastStackPos = getLastStackPos(
-                 CLI_FINAL_MAP_TABLE,
-                 {x = pos.x, y = pos.y, z = pos.z}
+			 CLI_FINAL_MAP_TABLE,
+			 {x = pos.x, y = pos.y, z = pos.z}
          )
          if (isGround(itemId)) then
              stackPos = 1
@@ -71,26 +108,27 @@ end
          CLI_FINAL_MAP_TABLE[pos.x][pos.y][pos.z][stackPos] = {
              ["itemid"] = itemId,
              ["typeOrCount"] = typeOrCount,
-             ["uid"] = uid
+             ["uid"] = uid,
+			 ["stackPosSafe"] = stackPosSafe
          }
 
          currentLastStackPos = getLastStackPos(
-                 CLI_FINAL_MAP_TABLE,
-                 {x = pos.x, y = pos.y, z = pos.z}
+			 CLI_FINAL_MAP_TABLE,
+			 {x = pos.x, y = pos.y, z = pos.z}
          )
      end
 
      if (LOG_TO_FILE and DEBUG_OUTPUT) then
          logger:debug(
-                 getFunctionCallerInfo(3) ..
-                         'Created itemId: %s, uid: %s, type/count: %s, on {x = %s, y = %s, z = %s, stackpos = %s}',
-                 itemId,
-                 uid or 'nil',
-                 typeOrCount,
-                 pos.x,
-                 pos.y,
-                 pos.z,
-                 stackPos
+			 getFunctionCallerInfo(3) ..
+					 'Created itemId: %s, uid: %s, type/count: %s, on {x = %s, y = %s, z = %s, stackpos = %s}',
+			 itemId,
+			 uid or 'nil',
+			 typeOrCount,
+			 pos.x,
+			 pos.y,
+			 pos.z,
+			 stackPos
          )
      end
  end
@@ -116,7 +154,7 @@ getThingFromPosMock = function(pos)
             }
             stackPos = 0
         elseif (pos.stackpos ~= nil and
-                not isEmpty(CLI_FINAL_MAP_TABLE, pos.x, pos.y, pos.z, pos.stackpos + 1)
+			not isEmpty(CLI_FINAL_MAP_TABLE, pos.x, pos.y, pos.z, pos.stackpos + 1)
         ) then
             result = CLI_FINAL_MAP_TABLE[pos.x][pos.y][pos.z][pos.stackpos + 1]
             stackPos = pos.stackpos + 1
@@ -200,7 +238,7 @@ queryTileAddThingMock = function(uid, pos)
         result = queryTileAddThing(uid, pos) -- tfs function call, depends on tfs version
     else
         if (isEmpty(CLI_FINAL_MAP_TABLE, pos.x, pos.y, pos.z)) then -- not existing position
-            result = 0
+            result = 1
         else
             -- check all the items on the tile, if they are walkable
             local tileItems = {}
@@ -216,10 +254,10 @@ queryTileAddThingMock = function(uid, pos)
                     flattenArray(CAVE_BASE_BORDER)
             )
 
-            result = 1 -- assume success RETURNVALUE_NOERROR = 1
+            result = 0 -- assume success RETURNVALUE_NOERROR = 0
             for i = 1, #tileItems do
                 if (inArray(unwalkableItems, tileItems[i])) then
-                    result = 0 -- error
+                    result = 1 -- error
                     break
                 end
             end
@@ -228,16 +266,16 @@ queryTileAddThingMock = function(uid, pos)
 
     if (LOG_TO_FILE and DEBUG_OUTPUT) then
         local isWalkableStr = 'walkable'
-        if (result == 0) then
+        if (result == 1) then
             isWalkableStr = 'unwalkable'
         end
         logger:debug(
-                getFunctionCallerInfo(3) .. 'Tile pos: {x = %s, y = %s, z = %s} is %s, returned: %s',
-                pos.x,
-                pos.y,
-                pos.z,
-                isWalkableStr,
-                result
+			getFunctionCallerInfo(3) .. 'Tile pos: {x = %s, y = %s, z = %s} is %s, returned: %s',
+			pos.x,
+			pos.y,
+			pos.z,
+			isWalkableStr,
+			result
         )
     end
 

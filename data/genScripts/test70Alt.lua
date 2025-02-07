@@ -32,8 +32,8 @@ loadSchemaFile() -- loads the schema file from map configuration with specific g
 function script.run()
 	print('> 1 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
 
-	local cursor = Cursor.new(mainPos)
 	local generatedMap = GroundMapper.new(mainPos, mapSizeX, mapSizeY, mapSizeZ, wpMinDist)
+	local cursor = Cursor.new(mainPos)
 	local wayPointer = WayPointer.new(generatedMap, cursor)
 	local roomBuilder
 	local wallAutoBorder = WallAutoBorder.new(generatedMap)
@@ -50,18 +50,18 @@ function script.run()
 		print('Running step: ' .. step)
 		if (step == 1) then
 			doPlayerSendTextMessageMock(
-					TFS_CID,
-					TFS_MESSAGE_CLASSES,
-					string.format(
-							'Generation of the map, with schema: %s has started.',
-							MAP_CONFIGURATION.saveMapFilename
-					)
+				TFS_CID,
+				TFS_MESSAGE_CLASSES,
+				string.format(
+						'Generation of the map, with schema: %s has started.',
+						MAP_CONFIGURATION.saveMapFilename
+				)
 			)
 			generatedMap:doMainGround(ITEMS_TABLE)
 
 			print('> 2 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
 		elseif (step == 2) then
-			wayPointer:createWaypointsAlternatively(wayPoints, wayPointsCount)
+			wayPoints = wayPointer:createWaypointsAlternatively(wayPointsCount)
 			print('> 3 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
 
 			print('Length: ' .. #wayPoints)
@@ -77,9 +77,9 @@ function script.run()
 			print('> 4 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
 		elseif (step == 5) then
 			wallAutoBorder:doWalls(
-					ITEMS_TABLE[1][1],
-					ITEMS_TABLE[0][1],
-					TOMB_SAND_WALL_BORDER
+				ITEMS_TABLE[1][1],
+				ITEMS_TABLE[0][1],
+				TOMB_SAND_WALL_BORDER
 			)
 			print('> 5 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
 		elseif (step == 6) then
@@ -89,67 +89,67 @@ function script.run()
 					6
 			)
 			generatedMap:doGround2(
-					marker.markersTab,
-					cursor,
-					ITEMS_TABLE[1][1],
-					ITEMS_TABLE[12][1],
-					1,
-					6
+				marker.markersTab,
+				cursor,
+				ITEMS_TABLE[1][1],
+				ITEMS_TABLE[12][1],
+				1,
+				6
 			)
 			print('> 6 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
 		elseif (step == 7) then
 			marker:createMarkersAlternatively(
-					ITEMS_TABLE[1][1],
-					20,
-					6
+				ITEMS_TABLE[1][1],
+				20,
+				6
 			)
 			generatedMap:doGround2(
-					marker.markersTab,
-					cursor,
-					ITEMS_TABLE[1][1],
-					ITEMS_TABLE[12][1],
-					1,
-					6
+				marker.markersTab,
+				cursor,
+				ITEMS_TABLE[1][1],
+				ITEMS_TABLE[12][1],
+				1,
+				6
 			)
 			print('> 7 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
 		elseif (step == 8) then
 			generatedMap:correctGround(ITEMS_TABLE[1][1], ITEMS_TABLE[12][1])
 			print('> 8 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
 		elseif (step == 9) then
-			addRotatedTab(BRUSH_BORDER_SHAPES, 9)
-			marker:createMarkersAlternatively(
-					0,
-					70,
-					4
+			groundAutoBorder:doGround(
+				ITEMS_TABLE[12][1],
+				ITEMS_TABLE[1][1],
+				ITEMS_TABLE[0][1],
+				SAND_GROUND_BASE_BORDER
 			)
 
 			print('> 9 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
 		elseif (step == 10) then
-			brush:doBrush(
-					marker.markersTab,
-					ITEMS_TABLE[0][1],
-					BRUSH_BORDER_SHAPES,
-					SAND_BASE_BRUSH
-			) -- it has to be executed before the base autoBorder, otherwise there are issues with stackpos
+			groundAutoBorder:correctBorders(
+				ITEMS_TABLE[0][1],
+				SAND_GROUND_BASE_BORDER,
+				TOMB_SAND_WALL_BORDER,
+				ITEMS_TABLE[12][1],
+				BORDER_CORRECT_SHAPES,
+				30
+			)
 
 			print('> 10 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
 		elseif (step == 11) then
-			groundAutoBorder:doGround(
-					ITEMS_TABLE[12][1],
-					ITEMS_TABLE[1][1],
-					ITEMS_TABLE[0][1],
-					SAND_GROUND_BASE_BORDER
+			addRotatedTab(BRUSH_BORDER_SHAPES, 9)
+			marker:createMarkersAlternatively(
+				0,
+				70,
+				4
 			)
 
 			print('> 11 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
 		elseif (step == 12) then
-			groundAutoBorder:correctBorders(
-					ITEMS_TABLE[0][1],
-					SAND_GROUND_BASE_BORDER,
-					TOMB_SAND_WALL_BORDER,
-					ITEMS_TABLE[12][1],
-					BORDER_CORRECT_SHAPES,
-					30
+			brush:doCarpetBrush(
+				marker.markersTab,
+				ITEMS_TABLE[0][1],
+				BRUSH_BORDER_SHAPES,
+				SAND_BASE_BRUSH
 			)
 
 			print('> 12 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
@@ -176,10 +176,10 @@ function script.run()
 			detailer:createDetailsOnMapAlternatively(ITEMS_TABLE[9][1], 2)
 		elseif (step == 21) then
 			detailer:createHangableDetails(
-					ITEMS_TABLE[0][1],
-					TOMB_SAND_WALL_BORDER,
-					ITEMS_TABLE,
-					15
+				ITEMS_TABLE[0][1],
+				TOMB_SAND_WALL_BORDER,
+				ITEMS_TABLE,
+				15
 			)
 
 			print('> 16 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
@@ -189,13 +189,13 @@ function script.run()
 
 			local diffTime = os.clock() - startTime
 			doPlayerSendTextMessageMock( -- todo: does not work
-					TFS_CID,
-					TFS_MESSAGE_CLASSES,
-					string.format(
-							'Generation of the map, with schema: %s FINISHED in %s seconds.',
-							MAP_CONFIGURATION.saveMapFilename,
-							diffTime
-					)
+				TFS_CID,
+				TFS_MESSAGE_CLASSES,
+				string.format(
+						'Generation of the map, with schema: %s FINISHED in %s seconds.',
+						MAP_CONFIGURATION.saveMapFilename,
+						diffTime
+				)
 			)
 
 			print('> 17 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')

@@ -12,19 +12,19 @@ end
 
 function Detailer:createDetailsInRooms(rmsh, itemsTab, wallBorder)
     local startTime = os.clock()
-    for a=1, #self.wayPoints do
+    for _, waypoint in pairs(self.wayPoints) do
         local pillar = math.random(1,#itemsTab[5]) -- chooses pillars for specific room
         local fountain = math.random(1,#itemsTab[17])
         local pom = {}
-        local heightEven = (self.wayPoints[a][4] % 2)
-        local widthEven = (self.wayPoints[a][5] % 2)
-        local shapeId = self.wayPoints[a][3]
-        local height = self.wayPoints[a][4]
-        local width = self.wayPoints[a][5]
+        local heightEven = (waypoint["room_height"] % 2)
+        local widthEven = (waypoint["room_width"] % 2)
+        local shapeId = waypoint["room_shape"]
+        local height = waypoint["room_height"]
+        local width = waypoint["room_width"]
 
-        pom.x = self.wayPoints[a][1].x
-        pom.y = self.wayPoints[a][1].y
-        pom.z = self.wayPoints[a][1].z
+        pom.x = waypoint["pos"].x
+        pom.y = waypoint["pos"].y
+        pom.z = waypoint["pos"].z
 
         -- sets pom
         if (heightEven == 0) then -- even height of the room
@@ -52,19 +52,19 @@ function Detailer:createDetailsInRooms(rmsh, itemsTab, wallBorder)
                         pom2.x = pom.x - 1
                         pom2.y = pom.y - 1
                         pom2.z = pom.z
-    
+
                         for i1 = 0,2 do
                             for j1 = 0,2 do
                                 local identify = getThingFromPosMock(
-                                        {x = pom2.x + j1, y = pom2.y + i1, z = pom2.z, stackpos = 1}
-                                ).itemid
+									{x = pom2.x + j1, y = pom2.y + i1, z = pom2.z, stackpos = 1}
+                                	).itemid
                                 if (pom == pom2) then
                                     break
                                 end
                                 if ((identify == wallBorder[1][1])
-                                        or (identify == wallBorder[2][1])
-                                        or (identify == wallBorder[3][1])
-                                        or (identify == wallBorder[4][1])
+									or (identify == wallBorder[2][1])
+									or (identify == wallBorder[3][1])
+									or (identify == wallBorder[4][1])
                                 ) then
                                     counter = counter + 1
                                 end
@@ -76,7 +76,7 @@ function Detailer:createDetailsInRooms(rmsh, itemsTab, wallBorder)
                         end
                     end
                 elseif (valueInShapeTable == 3) then
-                    --- poprawki sprawdzania do okola pol, petla po height - 4, 
+                    --- poprawki sprawdzania do okola pol, petla po height - 4,
                     --- width - 3, tworzy jesli licznik >= 4 i (pom ~= pom2 oraz pom2.y+1)
                     local rand = math.random(1,#itemsTab[3])
                     local itemsTabItem11 = itemsTab[3][rand][1]
@@ -89,12 +89,12 @@ function Detailer:createDetailsInRooms(rmsh, itemsTab, wallBorder)
 
                     for i1 = 0,1 do
                         local identify = getThingFromPosMock(
-                                {x = pom2.x, y = pom2.y + i1, z = pom2.z, stackpos = 1}
-                        ).itemid
+							{x = pom2.x, y = pom2.y + i1, z = pom2.z, stackpos = 1}
+                        	).itemid
                         if ((identify == wallBorder[1][1])
-                                or (identify == wallBorder[2][1])
-                                or (identify == wallBorder[3][1])
-                                or (identify == wallBorder[4][1])
+							or (identify == wallBorder[2][1])
+							or (identify == wallBorder[3][1])
+							or (identify == wallBorder[4][1])
                         ) then
                             counter = counter + 1
                         end
@@ -105,12 +105,12 @@ function Detailer:createDetailsInRooms(rmsh, itemsTab, wallBorder)
 
                     for i1 = 0,1 do
                         local identify = getThingFromPosMock(
-                                {x = pom2.x, y = pom2.y + i1, z = pom2.z, stackpos = 1}
-                        ).itemid
+							{x = pom2.x, y = pom2.y + i1, z = pom2.z, stackpos = 1}
+                        	).itemid
                         if ((identify == wallBorder[1][1])
-                                or (identify == wallBorder[2][1])
-                                or (identify == wallBorder[3][1])
-                                or (identify == wallBorder[4][1])
+							or (identify == wallBorder[2][1])
+							or (identify == wallBorder[3][1])
+							or (identify == wallBorder[4][1])
                         ) then
                             counter = counter + 1
                         end
@@ -119,9 +119,9 @@ function Detailer:createDetailsInRooms(rmsh, itemsTab, wallBorder)
                         --print("Counter 3 : " .. counter)
                         doCreateItemMock(itemsTabItem11, 1, pom)
                         doCreateItemMock(
-                                itemsTabItem12,
-                                1,
-                                {x = pom.x, y = pom.y + 1, z = pom.z}
+							itemsTabItem12,
+							1,
+							{x = pom.x, y = pom.y + 1, z = pom.z}
                         )
                     end
                 elseif (valueInShapeTable == 4) then
@@ -139,12 +139,12 @@ function Detailer:createDetailsInRooms(rmsh, itemsTab, wallBorder)
 
                     for i1 = 0,1 do
                         local identify = getThingFromPosMock(
-                                {x = pom2.x + i1, y = pom2.y, z = pom2.z, stackpos = 1}
-                        ).itemid
+							{x = pom2.x + i1, y = pom2.y, z = pom2.z, stackpos = 1}
+                        	).itemid
                         if ((identify == wallBorder[1][1])
-                                or (identify == wallBorder[2][1])
-                                or (identify == wallBorder[3][1])
-                                or (identify == wallBorder[4][1])
+							or (identify == wallBorder[2][1])
+							or (identify == wallBorder[3][1])
+							or (identify == wallBorder[4][1])
                         ) then
                             counter = counter + 1
                         end
@@ -155,8 +155,8 @@ function Detailer:createDetailsInRooms(rmsh, itemsTab, wallBorder)
 
                     for i1 = 0,1 do
                         local identify = getThingFromPosMock(
-                                {x = pom2.x + i1, y = pom2.y, z = pom2.z, stackpos = 1}
-                        ).itemid
+							{x = pom2.x + i1, y = pom2.y, z = pom2.z, stackpos = 1}
+                        	).itemid
                         if ((identify == wallBorder[1][1])
                                 or (identify == wallBorder[2][1])
                                 or (identify == wallBorder[3][1])
@@ -167,12 +167,11 @@ function Detailer:createDetailsInRooms(rmsh, itemsTab, wallBorder)
                     end
 
                     if (counter >= 2) then
-                        --	print("Licznik 4 : " .. counter)
                         doCreateItemMock(itemsTabItem21, 1, pom)
                         doCreateItemMock(
-                                itemsTabItem22,
-                                1,
-                                {x = pom.x + 1, y = pom.y, z = pom.z}
+							itemsTabItem22,
+							1,
+							{x = pom.x + 1, y = pom.y, z = pom.z}
                         )
                     end
                 elseif (valueInShapeTable == 5) then
@@ -215,9 +214,6 @@ function Detailer:createDetailsInRooms(rmsh, itemsTab, wallBorder)
                         local itemsTabItem4 = itemsTab[15][statue1][rand]
 
                         doCreateItemMock(itemsTabItem4, 1, pom)
-                        -- print("rm: ".. a .. "  15: STWORZYLO")
-                    else
-                        -- print("rm: ".. a .. "  15: NIE STWORZYLO")
                     end
                 elseif (valueInShapeTable == 16) then
                     if not (isWalkable({x = pom.x - 1, y = pom.y, z = pom.z, stackpos = 1})) then
@@ -226,9 +222,6 @@ function Detailer:createDetailsInRooms(rmsh, itemsTab, wallBorder)
                         local itemsTabItem4 = itemsTab[16][statue1][rand]
 
                         doCreateItemMock(itemsTabItem4, 1, pom)
-                        -- print("rm: ".. a .. "  16: STWORZYLO")
-                    else
-                        -- print("rm: ".. a .. "  16: NIE STWORZYLO")
                     end
                 elseif (valueInShapeTable == 17) then
                     --local rand = math.random(1,#itemsTab[17][fountain])
@@ -240,11 +233,11 @@ function Detailer:createDetailsInRooms(rmsh, itemsTab, wallBorder)
 
                     for i1 = 0,3 do
                         local identify = getThingFromPosMock(
-                                {x = pom3.x + i1, y = pom3.y, z = pom3.z, stackpos = 1}
-                        ).itemid
+							{x = pom3.x + i1, y = pom3.y, z = pom3.z, stackpos = 1}
+                        	).itemid
                         local identify2 = getThingFromPosMock(
-                                {x = pom3.x + i1, y = pom3.y + 3, z = pom3.z, stackpos = 1}
-                        ).itemid
+							{x = pom3.x + i1, y = pom3.y + 3, z = pom3.z, stackpos = 1}
+                        	).itemid
                         if ((identify == wallBorder[1][1])
                                 or (identify == wallBorder[2][1])
                                 or (identify == wallBorder[3][1])
@@ -265,11 +258,11 @@ function Detailer:createDetailsInRooms(rmsh, itemsTab, wallBorder)
 
                     for i1 = 0,1 do
                         local identify = getThingFromPosMock(
-                                {x = pom3.x , y = pom3.y + i1, z = pom3.z, stackpos = 1}
-                        ).itemid
+							{x = pom3.x , y = pom3.y + i1, z = pom3.z, stackpos = 1}
+                        	).itemid
                         local identify2 = getThingFromPosMock(
-                                {x = pom3.x + 3, y = pom3.y + i1, z = pom3.z, stackpos = 1}
-                        ).itemid
+							{x = pom3.x + 3, y = pom3.y + i1, z = pom3.z, stackpos = 1}
+                        	).itemid
                         if ((identify == wallBorder[1][1])
                                 or (identify == wallBorder[2][1])
                                 or (identify == wallBorder[3][1])
@@ -321,23 +314,25 @@ function Detailer:createDetailsInRooms(rmsh, itemsTab, wallBorder)
     print("Making details in rooms done, execution time: " .. os.clock() - startTime)
 end
 
-function Detailer:createDetailsOnMap(itemsTab, chance) -- chance is int, percentage in range 1%-100%
+function Detailer:createDetailsOnMap(itemsTab, chance, currentFloor) -- chance is int, percentage in range 1%-100%
     -- add details, trashes on the walkable tiles, which have less than 3 stackpos items on it
     -- todo: refactor, takes to much time
+	currentFloor = currentFloor or self.map.mainPos.z
     local startTime = os.clock()
     local pom = {}
     local randomChance = 0
     pom.x = self.map.mainPos.x
     pom.y = self.map.mainPos.y
-    pom.z = self.map.mainPos.z
+    pom.z = currentFloor
 
+	local counter = 0
     for i = self.map.mainPos.y, self.map.mainPos.y + self.map.sizeY do
         for j = self.map.mainPos.x, self.map.mainPos.x + self.map.sizeX do
             if (isWalkable(pom)) then
                 local state = true
                 for stack_i = 0, 8 do
                     local mapItem = getThingFromPosMock(
-                            {x = pom.x, y = pom.y, z = pom.z, stackpos = stack_i}
+						{x = pom.x, y = pom.y, z = pom.z, stackpos = stack_i}
                     )
                     if (mapItem.uid == 0) then
                         -- print("Stack - " .. stack_i)
@@ -364,7 +359,7 @@ function Detailer:createDetailsOnMap(itemsTab, chance) -- chance is int, percent
                                 if (pom2 ~= pom) then
                                     for stack_xi = 0, 5 do
                                         local mapItem = getThingFromPosMock(
-                                                {x = pom2.x, y = pom2.y, z = pom2.z, stackpos = stack_xi}
+											{x = pom2.x, y = pom2.y, z = pom2.z, stackpos = stack_xi}
                                         )
                                         if (mapItem.itemid == item) then
                                             state2 = false
@@ -385,6 +380,7 @@ function Detailer:createDetailsOnMap(itemsTab, chance) -- chance is int, percent
 
                         if state2 == true then
                             doCreateItemMock(item, 1, pom)
+							counter = counter + 1
                         end
                     end
                 end
@@ -395,25 +391,29 @@ function Detailer:createDetailsOnMap(itemsTab, chance) -- chance is int, percent
         pom.x = self.map.mainPos.x
         pom.y = pom.y + 1
     end
-    print("Creating details on map done, execution time: " .. os.clock() - startTime)
+    print("Creating details on floor: " .. currentFloor ..
+		" done, created " .. counter ..
+		" items, execution time: " .. os.clock() - startTime
+	)
 end
 
-function Detailer:createDetailsOnMapAlternatively(itemsTab, chance) -- chance is int, percentage in range 1%-100%
+function Detailer:createDetailsOnMapAlternatively(itemsTab, chance, currentFloor) -- chance is int, percentage in range 1%-100%
     -- add details, trashes on the walkable tiles, which have less than 3 stackpos items on it
+	currentFloor = currentFloor or self.map.mainPos.z
     local startTime = os.clock()
     local acceptedMapTilesTab = {}
 
     for i = self.map.mainPos.y, self.map.mainPos.y + self.map.sizeY do
         for j = self.map.mainPos.x, self.map.mainPos.x + self.map.sizeX do
-            local currentPos = {x = j, y = i, z = self.map.mainPos.z}
+            local currentPos = {x = j, y = i, z = currentFloor}
             local isWalkable = isWalkable(
-                    currentPos
-            ) -- todo: always returns false in CLI
+				currentPos
+            ) -- todo: always returns false in CLI (is this still actual?)
             if (isWalkable and not inArray(self.alreadyUsedTilesForDetails, currentPos)) then
                 table.insert(
-                        acceptedMapTilesTab,
-                        currentPos
-                ) -- todo: no multi-floor
+					acceptedMapTilesTab,
+					currentPos
+                )
             end
         end
     end
@@ -422,55 +422,58 @@ function Detailer:createDetailsOnMapAlternatively(itemsTab, chance) -- chance is
     for i = 1, #tilesToAddDetails do
         local detailItem = itemsTab[math.random(1,#itemsTab)]
         doCreateItemMock(
-                detailItem,
-                1,
-                tilesToAddDetails[i]
+			detailItem,
+			1,
+			tilesToAddDetails[i]
         )
         table.insert(
-                self.alreadyUsedTilesForDetails,
-                tilesToAddDetails[i]
+			self.alreadyUsedTilesForDetails,
+			tilesToAddDetails[i]
         )
     end
 
-    print("Creating " .. #tilesToAddDetails ..
-            " details on map alternatively done, execution time: " ..
-            os.clock() - startTime
+    print("Created " .. #tilesToAddDetails ..
+		" details on map alternatively done, execution time: " ..
+		os.clock() - startTime
     )
 end
 
 function Detailer:createHangableDetails(
-        mainGroundItemId,
-        wallBorder,
-        itemsTab,
-        chance
+	mainGroundItemId,
+	wallBorder,
+	itemsTab,
+	chance,
+	currentFloor
 ) -- chance is int, percentage in range 1%-100%
+	currentFloor = currentFloor or self.map.mainPos.z
     local startTime = os.clock()
     local pom = {}
     pom.x = self.map.mainPos.x
     pom.y = self.map.mainPos.y
-    pom.z = self.map.mainPos.z
+    pom.z = currentFloor
 
+	local counter = 0
     for i = self.map.mainPos.y, self.map.mainPos.y + self.map.sizeY - 1 do -- todo: can be out of map (CLI in original version crashes, out of tab)
         for j = self.map.mainPos.x, self.map.mainPos.x + self.map.sizeX - 1 do -- todo: can be out of map (CLI in original version crashes, out of tab)
             --print(dumpVar({x = pom.x, y = pom.y, z = pom.z, stackpos = 0}))
             --print('Test ' .. dumpVar(getThingFromPosMock({x = pom.x, y = pom.y, z = pom.z, stackpos = 0})))
             if (getThingFromPosMock(
-                    {x = pom.x, y = pom.y, z = pom.z, stackpos = 0})
-                    .itemid == mainGroundItemId
+				{x = pom.x, y = pom.y, z = pom.z, stackpos = 0}
+				).itemid == mainGroundItemId
             ) then
                 local mapItem = getThingFromPosMock(
-                        {x = pom.x, y = pom.y, z = pom.z, stackpos = 1}
+					{x = pom.x, y = pom.y, z = pom.z, stackpos = 1}
                 )
                 local randomChance = math.random(1,100)
                 for ax = 1, #wallBorder[1] do
                     if (mapItem.itemid == wallBorder[1][ax]) then
                         if (randomChance <= chance) then
                             doCreateItemMock(
-                                    itemsTab[18][math.random(1,#itemsTab[18])],
-                                    1,
-                                    pom
+								itemsTab[18][math.random(1,#itemsTab[18])],
+								1,
+								pom
                             )
-                            --	print("1 Created x:  " .. pom.x .. ",  y:  " .. pom.y ..  ",  itemid - ")
+							counter = counter + 1
                         end
                     end
                 end
@@ -478,11 +481,11 @@ function Detailer:createHangableDetails(
                     if (mapItem.itemid == wallBorder[2][ax]) then
                         if (randomChance <= chance) then
                             doCreateItemMock(
-                                    itemsTab[19][math.random(1,#itemsTab[19])],
-                                    1,
-                                    pom
+								itemsTab[19][math.random(1,#itemsTab[19])],
+								1,
+								pom
                             )
-                            --	print("2 Created x:  " .. pom.x .. ",  y:  " .. pom.y ..  ",  itemid - ")
+							counter = counter + 1
                         end
                     end
                 end
@@ -491,19 +494,18 @@ function Detailer:createHangableDetails(
                         if (randomChance <= chance) then
                             if (math.random(1,2) == 1) then
                                 doCreateItemMock(
-                                        itemsTab[18][math.random(1,#itemsTab[18])],
-                                        1,
-                                        pom
+									itemsTab[18][math.random(1,#itemsTab[18])],
+									1,
+									pom
                                 )
-                                --	print("3 Created x:  " .. pom.x .. ",  y:  " .. pom.y ..  ",  itemid - ")
                             else
                                 doCreateItemMock(
-                                        itemsTab[19][math.random(1,#itemsTab[19])],
-                                        1,
-                                        pom
+									itemsTab[19][math.random(1,#itemsTab[19])],
+									1,
+									pom
                                 )
-                                --	print("4 Created x:  " .. pom.x .. ",  y:  " .. pom.y ..  ",  itemid - ")
                             end
+							counter = counter + 1
                         end
                     end
                 end
@@ -514,16 +516,20 @@ function Detailer:createHangableDetails(
         pom.x = pom.x - self.map.sizeX
         pom.y = pom.y + 1
     end
-    print("Creating details on walls done, execution time: " .. os.clock() - startTime)
+    print("Creating details on walls, on floor: " .. currentFloor ..
+		" done, created " .. counter ..
+		" items, execution time: " .. os.clock() - startTime
+	)
 end
 
 function Detailer:createDetailsInCave(
-        markersTab,
-        itemsTab,
-        detailsSpawnSize,
-        chance
+	markersTab,
+	itemsTab,
+	detailsSpawnSize,
+	chance
 )
     local startTime = os.clock()
+	local counter = 0
     local walkableTabY = {}
     for i = 1, detailsSpawnSize do
         table.insert(walkableTabY , i, 0)
@@ -535,9 +541,9 @@ function Detailer:createDetailsInCave(
             table.insert(pom_tab, i, {})
             for j = 1, detailsSpawnSize do
                 table.insert(
-                        pom_tab[i],
-                        j,
-                        itemsTab[1][math.random(1, #itemsTab[1])]
+					pom_tab[i],
+					j,
+					itemsTab[1][math.random(1, #itemsTab[1])]
                 )
             end
         end
@@ -608,6 +614,7 @@ function Detailer:createDetailsInCave(
                         )
                         walkableX = walkableX - 3
                         walkableTabY[cj] = walkableTabY[cj] - 3
+						counter = counter + 1
                     end
                     pom3.x = pom3.x + 1
                 end
@@ -621,4 +628,8 @@ function Detailer:createDetailsInCave(
             walkableTabY[azi] = 0
         end
     end
+
+	print("Creating details in cave done, created " .. counter ..
+		" items, execution time: " .. os.clock() - startTime
+	)
 end

@@ -14,7 +14,7 @@ end
 
 -- Method to calculate the distance between two points (ignoring z coordinate)
 function TSPSA:distance(point1, point2)
-    return math.sqrt((point1[1].x - point2[1].x)^2 + (point1[1].y - point2[1].y)^2)
+    return math.sqrt((point1["pos"].x - point2["pos"].x)^2 + (point1["pos"].y - point2["pos"].y)^2)
 end
 
 -- Method to calculate the total distance of a given path
@@ -22,13 +22,13 @@ function TSPSA:calculateTotalDistance(path)
     local totalDistance = 0
     for i = 1, #path - 1 do
         totalDistance = totalDistance + self:distance(
-                self.wayPoints[path[i]],
-                self.wayPoints[path[i + 1]]
+			self.wayPoints[path[i]],
+			self.wayPoints[path[i + 1]]
         )
     end
     totalDistance = totalDistance + self:distance(
-            self.wayPoints[path[#path]],
-            self.wayPoints[path[1]]
+		self.wayPoints[path[#path]],
+		self.wayPoints[path[1]]
     )
     return totalDistance
 end
@@ -65,7 +65,7 @@ function TSPSA:solve()
 
         local newDistance = self:calculateTotalDistance(newPath)
         if newDistance < currentDistance or
-                math.exp((currentDistance - newDistance) / temperature) > math.random()
+			math.exp((currentDistance - newDistance) / temperature) > math.random()
         then
             currentPath = newPath
             currentDistance = newDistance
@@ -89,7 +89,7 @@ end
 function TSPSA:printResult()
     print("Best path:")
     for _, index in pairs(self.bestPath) do
-        local point = self.wayPoints[index][1]
+        local point = self.wayPoints[index]["pos"]
         print(string.format("Waypoint: %s - (%d, %d, %d)", index, point.x, point.y, point.z))
     end
     print("Minimum distance: " .. self.minDistance)

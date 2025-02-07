@@ -41,7 +41,7 @@ function TSPMS:solve()
         local nearest, nearestDist = nil, math.huge
         for i = 1, n do
             if not visited[i] then
-                local dist = pointDistance(self.wayPoints[last][1], self.wayPoints[i][1])
+                local dist = pointDistance(self.wayPoints[last]["pos"], self.wayPoints[i]["pos"])
                 if dist < nearestDist then
                     nearest, nearestDist = i, dist
                 end
@@ -62,8 +62,8 @@ function TSPMS:solve()
         local last = self.bestPaths[i][#self.bestPaths[i]]
         if last ~= nil then
             totalDistances[i] = totalDistances[i] + pointDistance(
-                    self.wayPoints[last][1],
-                    self.wayPoints[self.startPoint][1]
+				self.wayPoints[last]["pos"],
+				self.wayPoints[self.startPoint]["pos"]
             )
             table.insert(self.bestPaths[i], self.startPoint)
         end

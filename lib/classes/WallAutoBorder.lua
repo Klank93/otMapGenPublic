@@ -9,13 +9,13 @@ function WallAutoBorder.new(map)
     return instance
 end
 
-function WallAutoBorder:doWalls(ground1, ground2, border)
+function WallAutoBorder:doWalls(ground1, ground2, border, currentFloor)
     print("Bordering walls...")
     local startTime = os.clock()
     local pom = {}
     pom.x = self.map.mainPos.x
     pom.y = self.map.mainPos.y
-    pom.z = self.map.mainPos.z
+    pom.z = currentFloor or self.map.mainPos.z
 
     for i = self.map.mainPos.y, self.map.mainPos.y + self.map.sizeY do
         for j = self.map.mainPos.x, self.map.mainPos.x + self.map.sizeX do
@@ -174,7 +174,7 @@ function WallAutoBorder:createArchways(wallBorder)
                             {x = pom.x, y = pom.y + 3, z = pom.z, stackpos = 1}
                     )
 
-                    if( (pomitem2.itemid  == wallBorder[2][1]) and (getThingFromPosMock(
+                    if ( (pomitem2.itemid  == wallBorder[2][1]) and (getThingFromPosMock(
                             {x = pom.x + 4, y = pom.y, z = pom.z, stackpos = 1}
                     ).itemid == wallBorder[1][1])
                     ) then

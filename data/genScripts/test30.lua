@@ -1,14 +1,14 @@
 -- script for testing new solutions
 MAP_CONFIGURATION = {
     schemaFile = 'test1.lua',
-    saveMapFilename = 'test40',
+    saveMapFilename = 'test30',
     logToFile = true,
     mainPos = {x = 145, y = 145, z = 7},
-    mapSizeX = 40,
-    mapSizeY = 40,
-	mapSizeZ = 3, -- if set to greater than 1 => multi floor
-    wpMinDist = 8,
-    wayPointsCount = 7
+    mapSizeX = 30,
+    mapSizeY = 30,
+	mapSizeZ = 2, -- if set to greater than 1 => multi floor
+    wpMinDist = 6,
+    wayPointsCount = 3
 }
 LOG_TO_FILE = true --MAP_GEN_CFG.logToFile -- can be overridden for specific script
 DEBUG_OUTPUT = true --MAP_GEN_CFG.debugOutput -- can be overridden for specific script
@@ -75,8 +75,8 @@ function script.run()
 		local marker = Marker.new(generatedMap)
 		marker:createMarkersAlternatively(
 			ITEMS_TABLE[1][1],
-			12,
 			5,
+			4,
 			currentFloor
 		)
 
@@ -88,7 +88,7 @@ function script.run()
 			ITEMS_TABLE[1][1],
 			ITEMS_TABLE[12][1],
 			1,
-			6
+			4
 		)
 
 		print('> 7 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
@@ -97,8 +97,8 @@ function script.run()
 
 		marker:createMarkersAlternatively(
 			ITEMS_TABLE[1][1],
-			8,
-			6,
+			4,
+			4,
 			currentFloor
 		)
 
@@ -110,7 +110,7 @@ function script.run()
 			ITEMS_TABLE[1][1],
 			ITEMS_TABLE[12][1],
 			1,
-			6
+			4
 		)
 
 		print('> 9 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
@@ -146,7 +146,7 @@ function script.run()
 
 		marker:createMarkersAlternatively(
 			0,
-			18,
+			4,
 			4,
 			currentFloor
 		)

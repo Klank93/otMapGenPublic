@@ -8,28 +8,47 @@ function MapCreator.new(map)
     return instance
 end
 
-function MapCreator:drawMap()
+function MapCreator:drawMap(currentFloor)
     if not (PRECREATION_TABLE_MODE) then
         do return end
     end
 
-    local startTime = os.clock()
+	local startTime = os.clock()
+	PRECREATION_TABLE_MODE = false -- disable to be able to finally create actual map
+	local drawning = function (i, j, floor)
+		if (CLI_FINAL_MAP_TABLE[i][j][floor][1].itemid ~= nil) then
+			for key, value in pairs(CLI_FINAL_MAP_TABLE[i][j][floor]) do
+				doCreateItemMock(
+					value.itemid,
+					value.typeOrCount,
+					{x = i, y = j, z = floor, stackpos = (key - 1)},
+					value.stackPosSafe
+				)
+			end
+		end
+	end
 
-    for i = self.map.mainPos.x, self.map.mainPos.x + self.map.sizeX do -- todo: watchout, there was an issue with additional 1 sqm
-        for j = self.map.mainPos.y, self.map.mainPos.y + self.map.sizeY do -- todo: watchout, there was an issue with additional 1 sqm
-            if (CLI_FINAL_MAP_TABLE[i][j][7][1].itemid ~= nil) then
-                for key, value in pairs(CLI_FINAL_MAP_TABLE[i][j][7]) do
-                    doCreateItem(
-                            CLI_FINAL_MAP_TABLE[i][j][7][key].itemid,
-                            CLI_FINAL_MAP_TABLE[i][j][7][key].typeOrCount,
-                            {x = i, y = j, z = 7, stackpos = (key - 1)}
-                    )
-                end
-            end
-        end
-    end
+	local startingFloor = self.map.mainPos.z - (self.map.sizeZ - 1)
+	local endingFloor = self.map.mainPos.z
+	if (currentFloor ~= nil) then
+		startingFloor = currentFloor
+		endingFloor = currentFloor
+	end
 
-    print("Map tiles created, execution time: " .. os.clock() - startTime)
+	for k = startingFloor, endingFloor do
+		print('Drawning floor: ' .. k)
+		for i = self.map.mainPos.x, self.map.mainPos.x + self.map.sizeX do -- todo: watchout, there was an issue with additional 1 sqm
+			for j = self.map.mainPos.y, self.map.mainPos.y + self.map.sizeY do -- todo: watchout, there was an issue with additional 1 sqm
+				drawning(i, j, k)
+			end
+		end
+	end
+
+	if (currentFloor ~= nil) then
+		print("Map tiles created for floor: " .. currentFloor .. ", execution time: " .. os.clock() - startTime)
+	else
+		print("Map tiles created, execution time: " .. os.clock() - startTime)
+	end
 end
 
 function MapCreator:drawChunk(iterationStepsCountPerChunk) -- todo !!!
@@ -46,7 +65,6 @@ function MapCreator:drawChunk(iterationStepsCountPerChunk) -- todo !!!
 			end
 		end
 	end
-
 
 	-- Iterating function, which go through all table elements
 	function iterateNSteps(tbl, n)
