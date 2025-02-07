@@ -14,14 +14,15 @@ function MapCreator:drawMap(currentFloor)
     end
 
 	local startTime = os.clock()
-	PRECREATION_TABLE_MODE = false -- disable to be able to actually create map finally
+	PRECREATION_TABLE_MODE = false -- disable to be able to finally create actual map
 	local drawning = function (i, j, floor)
 		if (CLI_FINAL_MAP_TABLE[i][j][floor][1].itemid ~= nil) then
 			for key, value in pairs(CLI_FINAL_MAP_TABLE[i][j][floor]) do
 				doCreateItemMock(
 					value.itemid,
 					value.typeOrCount,
-					{x = i, y = j, z = floor, stackpos = (key - 1)}
+					{x = i, y = j, z = floor, stackpos = (key - 1)},
+					value.stackPosSafe
 				)
 			end
 		end

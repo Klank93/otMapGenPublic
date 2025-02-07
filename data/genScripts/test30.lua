@@ -6,7 +6,7 @@ MAP_CONFIGURATION = {
     mainPos = {x = 145, y = 145, z = 7},
     mapSizeX = 30,
     mapSizeY = 30,
-	mapSizeZ = 11, -- if set to greater than 1 => multi floor
+	mapSizeZ = 2, -- if set to greater than 1 => multi floor
     wpMinDist = 6,
     wayPointsCount = 3
 }
@@ -43,7 +43,7 @@ function script.run()
 
 		print('> 2 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
 
-		if (promotedWaypoints[currentFloor] ~= nil) then -- unnecessary addition for multi floor
+		if (promotedWaypoints[currentFloor] ~= nil) then -- necessary addition for multi floor
 			wayPoints[currentFloor] = arrayMerge({}, promotedWaypoints[currentFloor])
 		end
 
@@ -57,9 +57,7 @@ function script.run()
 		wayPointer:createPathBetweenWpsTSP(ITEMS_TABLE, 3, currentFloor) -- exact one
 		-- wayPointer:createPathBetweenWpsTSPMS(ITEMS_TABLE)
 
-		print("wayPoints: " .. dumpVar(wayPoints))
-
-		local roomBuilder = DungeonRoomBuilder.new(wayPoints[currentFloor])
+		local roomBuilder = DungeonRoomBuilder.new(wayPoints[currentFloor]) -- todo: an issue when we have multi-floor gen script and we set in it mapSizeZ = 1
 		roomBuilder:createRooms(ITEMS_TABLE, ROOM_SHAPES)
 
 		print('> 4 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
@@ -121,27 +119,6 @@ function script.run()
 
 		print('> 10 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
 
-		addRotatedTab(BRUSH_BORDER_SHAPES, 9)
-
-		marker:createMarkersAlternatively(
-			0,
-			4,
-			4,
-			currentFloor
-		)
-
-		print('> 11 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
-
-		local brush = Brush.new()
-		brush:doCarpetBrush(
-			marker.markersTab,
-			ITEMS_TABLE[0][1],
-			BRUSH_BORDER_SHAPES,
-			SAND_BASE_BRUSH
-		) -- WARNING! it has to be executed before the base autoBorder, otherwise there are issues with stackpos
-
-		print('> 12 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
-
 		local groundAutoBorder = GroundAutoBorder.new(generatedMap)
 		groundAutoBorder:doGround(
 			ITEMS_TABLE[12][1],
@@ -151,7 +128,7 @@ function script.run()
 			currentFloor
 		)
 
-		print('> 13 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
+		print('> 11 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
 
 		groundAutoBorder:correctBorders(
 			ITEMS_TABLE[0][1],
@@ -161,6 +138,27 @@ function script.run()
 			BORDER_CORRECT_SHAPES,
 			45,
 			currentFloor
+		)
+
+		print('> 12 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
+
+		addRotatedTab(BRUSH_BORDER_SHAPES, 9)
+
+		marker:createMarkersAlternatively(
+			0,
+			4,
+			4,
+			currentFloor
+		)
+
+		print('> 13 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
+
+		local brush = Brush.new()
+		brush:doCarpetBrush(
+			marker.markersTab,
+			ITEMS_TABLE[0][1],
+			BRUSH_BORDER_SHAPES,
+			SAND_BASE_BRUSH
 		)
 
 		print('> 14 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')

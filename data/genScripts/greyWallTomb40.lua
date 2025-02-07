@@ -81,21 +81,6 @@ function script.run()
 		ITEMS_TABLE[12][1]
 	)
 
-	addRotatedTab(BRUSH_BORDER_SHAPES, 9)
-
-	marker:createMarkersAlternatively(
-		ITEMS_TABLE[1][1],
-		20,
-		4
-	)
-	local brush = Brush.new()
-	brush:doCarpetBrush(
-		marker.markersTab,
-		ITEMS_TABLE[0][1],
-		BRUSH_BORDER_SHAPES,
-		GRAVEL_BRONZE_BASE_BRUSH
-	) -- WARNING! it has to be executed before the base autoBorder, otherwise there are issues with stackpos
-
 	local groundAutoBorder = GroundAutoBorder.new(generatedMap)
 	groundAutoBorder:doGround(
 		ITEMS_TABLE[12][1],
@@ -109,7 +94,21 @@ function script.run()
 		GREY_WALL_BORDER,
 		ITEMS_TABLE[12][1],
 		BORDER_CORRECT_SHAPES,
-		30
+		45
+	)
+
+	addRotatedTab(BRUSH_BORDER_SHAPES, 9)
+	marker:createMarkersAlternatively(
+		ITEMS_TABLE[1][1],
+		20,
+		4
+	)
+	local brush = Brush.new()
+	brush:doCarpetBrush(
+		marker.markersTab,
+		ITEMS_TABLE[0][1],
+		BRUSH_BORDER_SHAPES,
+		GRAVEL_BRONZE_BASE_BRUSH
 	)
 
 	------ Detailing Map

@@ -96,9 +96,9 @@ function Brush:doCarpetBrush(
         badGroundItemId,
         brushShapes,
         brushTab
-) -- it has to be executed before the autoborder, otherwise there is an issue with stackpos and brush is under borders
+) -- originally it had be executed before the autoborder (stackpos issue), but currently it is workarounded/fixed in core files
     local startTime = os.clock()
-    for i = 1, #markersTab do -- todo: some issue
+    for i = 1, #markersTab do
         local los = math.random(0, #brushShapes)
         local pom = {}
 
@@ -128,16 +128,17 @@ function Brush:doCarpetBrush(
         for i2 = 1, height do
             for j2 = 1, width do
                 local itemId = getThingFromPosMock(
-                        {x = pom.x, y = pom.y, z = pom.z, stackpos = 0}
+					{x = pom.x, y = pom.y, z = pom.z, stackpos = 0}
                 ).itemid
                 if (itemId ~= badGroundItemId) then
                     for id = 1, 13 do
                         if (brushShapes[los].shape[i2][j2] == id) then
                             doCreateItemMock(
-                                    brushTab[id][1],
-                                    1,
-                                    {x = pom.x, y = pom.y, z = pom.z, stackpos = 3}
-                            )  -- todo: issue with stackpos (borders over the brushes), to fix
+								brushTab[id][1],
+								1,
+								{x = pom.x, y = pom.y, z = pom.z},
+								true
+                            )
                         end
                     end
                 end

@@ -116,26 +116,6 @@ function script.run()
 			generatedMap:correctGround(ITEMS_TABLE[1][1], ITEMS_TABLE[12][1])
 			print('> 8 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
 		elseif (step == 9) then
-			addRotatedTab(BRUSH_BORDER_SHAPES, 9)
-			marker:createMarkersAlternatively(
-				0,
-				70,
-				4
-			)
-
-			do return end
-
-			print('> 9 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
-		elseif (step == 10) then
-			brush:doCarpetBrush(
-				marker.markersTab,
-				ITEMS_TABLE[0][1],
-				BRUSH_BORDER_SHAPES,
-				SAND_BASE_BRUSH
-			) -- WARNING! it has to be executed before the base autoBorder, otherwise there are issues with stackpos
-
-			print('> 10 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
-		elseif (step == 11) then
 			groundAutoBorder:doGround(
 				ITEMS_TABLE[12][1],
 				ITEMS_TABLE[1][1],
@@ -143,8 +123,8 @@ function script.run()
 				SAND_GROUND_BASE_BORDER
 			)
 
-			print('> 11 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
-		elseif (step == 12) then
+			print('> 9 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
+		elseif (step == 10) then
 			groundAutoBorder:correctBorders(
 				ITEMS_TABLE[0][1],
 				SAND_GROUND_BASE_BORDER,
@@ -152,6 +132,24 @@ function script.run()
 				ITEMS_TABLE[12][1],
 				BORDER_CORRECT_SHAPES,
 				30
+			)
+
+			print('> 10 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
+		elseif (step == 11) then
+			addRotatedTab(BRUSH_BORDER_SHAPES, 9)
+			marker:createMarkersAlternatively(
+				0,
+				70,
+				4
+			)
+
+			print('> 11 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
+		elseif (step == 12) then
+			brush:doCarpetBrush(
+				marker.markersTab,
+				ITEMS_TABLE[0][1],
+				BRUSH_BORDER_SHAPES,
+				SAND_BASE_BRUSH
 			)
 
 			print('> 12 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')

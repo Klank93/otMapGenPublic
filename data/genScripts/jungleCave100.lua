@@ -120,20 +120,6 @@ function script.run()
 
 	generatedMap:correctGround(ITEMS_TABLE[1][1], ITEMS_TABLE[12][1])
 
-	addRotatedTab(BRUSH_BORDER_SHAPES, 9)
-	marker:createMarkersAlternatively(
-		ITEMS_TABLE[1][1],
-		110,
-		4
-	)
-
-	brush:doCarpetBrush(
-		marker.markersTab,
-		ITEMS_TABLE[0][1],
-		BRUSH_BORDER_SHAPES,
-		GRAVEL_GREY_BASE_BRUSH
-	) -- WARNING! it has to be executed before the base autoBorder, otherwise there are issues with stackpos
-
 	groundAutoBorder:doGround(
 		ITEMS_TABLE[12][1],
 		ITEMS_TABLE[1][1],
@@ -155,6 +141,19 @@ function script.run()
 		ITEMS_TABLE[12][1],
 		BORDER_CORRECT_SHAPES,
 		50
+	)
+
+	addRotatedTab(BRUSH_BORDER_SHAPES, 9)
+	marker:createMarkersAlternatively(
+		ITEMS_TABLE[1][1],
+		110,
+		4
+	)
+	brush:doCarpetBrush(
+		marker.markersTab,
+		ITEMS_TABLE[0][1],
+		BRUSH_BORDER_SHAPES,
+		GRAVEL_GREY_BASE_BRUSH
 	)
 
 	------ Detailing Map

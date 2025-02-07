@@ -212,7 +212,7 @@ function GroundAutoBorder:doGround(ground1, ground2, badGround, border, currentF
 end
 
 function GroundAutoBorder:doGround2(ground1, ground2, badGround1, badGround2, border, currentFloor)
-    -- ground1 is the one by which it's bordering and for ground1 the borders have to chosen
+    -- ground1 is the one by which it's bordering and for ground1 borders have to be chosen
 	currentFloor = currentFloor or self.map.mainPos.z
     local startTime = os.clock()
     local pom = {}
