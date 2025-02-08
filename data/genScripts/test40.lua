@@ -6,7 +6,7 @@ MAP_CONFIGURATION = {
     mainPos = {x = 145, y = 145, z = 7},
     mapSizeX = 40,
     mapSizeY = 40,
-	mapSizeZ = 3, -- if set to greater than 1 => multi floor
+	mapSizeZ = 4, -- if set to greater than 1 => multi floor
     wpMinDist = 8,
     wayPointsCount = 7
 }
@@ -146,7 +146,7 @@ function script.run()
 
 		marker:createMarkersAlternatively(
 			0,
-			18,
+			17,
 			4,
 			currentFloor
 		)
@@ -194,15 +194,23 @@ function script.run()
 
 		-- multi-floor
 		if (currentFloor ~= mainPos.z) then
+			-- Central Points
 			--promotedWaypoints[currentFloor + 1] = {
-			--	WayPointer:getCentralWaypointForNextFloor(promotedWaypoints, wayPoints, currentFloor, true)
+			--	wayPointer:getCentralWaypointForNextFloor(promotedWaypoints, wayPoints, currentFloor)
 			--}
+			--promotedWaypoints[currentFloor + 1] = {
+			--	wayPointer:getCentralWaypointForNextFloor(promotedWaypoints, wayPoints, currentFloor, true)
+			--}
+
+			-- External Points
 			promotedWaypoints[currentFloor + 1] = {
-				WayPointer:getExternalWaypointForNextFloor(promotedWaypoints, wayPoints, currentFloor, math.random(1,4))
+				WayPointer:getExternalWaypointForNextFloor(promotedWaypoints, wayPoints, currentFloor)
 			}
 			--promotedWaypoints[currentFloor + 1] = {
-			--	WayPointer:getExternalWaypointForNextFloor(promotedWaypoints, wayPoints, currentFloor, 3)
+			--	WayPointer:getExternalWaypointForNextFloor(promotedWaypoints, wayPoints, currentFloor, math.random(1,4))
 			--}
+
+			print('> 17 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
 		else
 			print("No waypoints to promote for next floor - last floor processed.")
 		end
@@ -212,13 +220,13 @@ function script.run()
 	--elevator:createRopeLadders("north") -- just example
 	elevator:createDesertRamps("random", 4837)
 
-	print('> 17 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
+	print('> 18 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
 
 	if (PRECREATION_TABLE_MODE and RUNNING_MODE == 'tfs') then
 		local mapCreator = MapCreator.new(generatedMap)
 		mapCreator:drawMap()
 
-		print('> 18 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
+		print('> 19 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
 	end
 end
 

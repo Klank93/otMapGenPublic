@@ -199,15 +199,23 @@ function script.run()
 
 		-- multi-floor
 		if (currentFloor ~= mainPos.z) then
+			-- Central Points
 			--promotedWaypoints[currentFloor + 1] = {
-			--	WayPointer:getCentralWaypointForNextFloor(promotedWaypoints, wayPoints, currentFloor, true)
+			--	wayPointer:getCentralWaypointForNextFloor(promotedWaypoints, wayPoints, currentFloor)
 			--}
 			--promotedWaypoints[currentFloor + 1] = {
-			--	WayPointer:getExternalWaypointForNextFloor(promotedWaypoints, wayPoints, currentFloor, math.random(1,4))
+			--	wayPointer:getCentralWaypointForNextFloor(promotedWaypoints, wayPoints, currentFloor, true)
+			--}
+
+			-- External Points
+			--promotedWaypoints[currentFloor + 1] = {
+			--	WayPointer:getExternalWaypointForNextFloor(promotedWaypoints, wayPoints, currentFloor)
 			--}
 			promotedWaypoints[currentFloor + 1] = {
-				WayPointer:getExternalWaypointForNextFloor(promotedWaypoints, wayPoints, currentFloor)
+				WayPointer:getExternalWaypointForNextFloor(promotedWaypoints, wayPoints, currentFloor, math.random(1,4))
 			}
+
+			print('> 17 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
 		else
 			print("No waypoints to promote for next floor - last floor processed.")
 		end
@@ -217,13 +225,13 @@ function script.run()
 	--elevator:createRopeLadders("north") -- just example
 	elevator:createDesertRamps("random", 4837)
 
-	print('> 17 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
+	print('> 18 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
 
 	if (PRECREATION_TABLE_MODE and RUNNING_MODE == 'tfs') then
 		local mapCreator = MapCreator.new(generatedMap)
 		mapCreator:drawMap()
 
-		print('> 18 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
+		print('> 19 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
 	end
 end
 

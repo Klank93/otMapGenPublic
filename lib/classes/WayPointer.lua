@@ -391,22 +391,22 @@ function WayPointer:createPathBetweenWpsTSPMS(itemsTab, brushSize)
 end
 
 function WayPointer:getCentralWaypointForNextFloor(promotedWaypoints, wayPoints, currentFloor, isRandomQuadrant)
-	-- todo: issue, it can rarely create two stairs on close floor, at the same positions (e.g. elevation between floors: 5,6,7...)
 	-- return wayPoint nearest to the center, from random quadrant if requested
 	if (isRandomQuadrant == true) then
 		return self:_promoteCentralWaypoint(promotedWaypoints, wayPoints, currentFloor, math.random(1,4))
 	end
 
+	-- without reconsidering quadrants, just nearest to center
 	return self:_promoteClosestToCenter(promotedWaypoints, wayPoints, currentFloor)
 end
 
 function WayPointer:getExternalWaypointForNextFloor(promotedWaypoints, wayPoints, currentFloor, quadrantNumber)
-	-- todo: issue, it can rarely create two stairs on close floor, at the same positions (e.g. elevation between floors: 5,6,7...)
 	-- return wayPoint further from the center, from specific quadrant if requested
 	if (quadrantNumber ~= nil) then
 		return self:_promoteExternalWaypoint(promotedWaypoints, wayPoints, currentFloor, quadrantNumber)
 	end
 
+	-- without reconsidering quadrants, just furthest from center
 	return self:_promoteFurtherFromCenter(promotedWaypoints, wayPoints, currentFloor)
 end
 
@@ -447,70 +447,109 @@ function WayPointer:_createPathBetweenTwoPointsTSP(itemsTab, pos1, pos2, brushSi
 end
 
 function WayPointer:_promoteCentralWaypoint(promotedWaypoints, wayPoints, currentFloor, quadrantNumber)
-	if #wayPoints[currentFloor] == 0 then
-		error("Empty input wayPoints array.")
+	local startTime = os.clock()
+	if not wayPoints[currentFloor] or #wayPoints[currentFloor] == 0 then
+		error("Empty input wayPoints array for floor " .. tostring(currentFloor))
 	end
+
 	local centerX, centerY = self:_getCentralAxes(wayPoints[currentFloor])
+	local bestPoint = nil
+	local minDistance = math.huge
 
+	-- Ensure promotedWaypoints[currentFloor + 1] exists
+	if not promotedWaypoints[currentFloor + 1] then
+		promotedWaypoints[currentFloor + 1] = {}
+	end
+
+	-- Find the best central point in the specified quadrant
 	for _, waypoint in ipairs(wayPoints[currentFloor]) do
-		local centralPoint = nil
 		local x, y = waypoint.pos.x, waypoint.pos.y
-		if quadrantNumber == 1 and x >= centerX and y <= centerY then
-			centralPoint = waypoint
-		elseif quadrantNumber == 2 and x <= centerX and y <= centerY then
-			centralPoint = waypoint
-		elseif quadrantNumber == 3 and x <= centerX and y >= centerY then
-			centralPoint = waypoint
-		elseif quadrantNumber == 4 and x >= centerX and y >= centerY then
-			centralPoint = waypoint
-		end
+		local inQuadrant =
+		(quadrantNumber == 1 and x >= centerX and y <= centerY) or
+			(quadrantNumber == 2 and x <= centerX and y <= centerY) or
+			(quadrantNumber == 3 and x <= centerX and y >= centerY) or
+			(quadrantNumber == 4 and x >= centerX and y >= centerY)
 
-		-- todo: fix
+		local distance = (x - centerX)^2 + (y - centerY)^2 -- Squared distance for efficiency
 
-		if (centralPoint ~= nil) then
-			return {
-				["pos"] = {
-					x = centralPoint.pos.x,
-					y = centralPoint.pos.y,
-					z = centralPoint.pos.z + 1
-				},
-				["room_shape"] = nil,
-				["room_height"] = nil,
-				["room_width"] = nil
-			}
+		if (inQuadrant and
+			distance < minDistance and
+			not self:_isPointTooClose(promotedWaypoints, currentFloor, x, y) and
+			not self:_isPointAlreadyPromoted(promotedWaypoints[currentFloor + 1], x, y)
+		) then
+			minDistance = distance
+			bestPoint = waypoint
 		end
 	end
 
-	error("Could not get central waypoint for given quadrant: " ..
-		dumpVar(quadrantNumber, true)
-	)
+	if not bestPoint then
+		local newQuadrantNumber = (quadrantNumber + 1) % 5
+		if (newQuadrantNumber == 0) then
+			newQuadrantNumber = 1
+		end
+
+		print("##################### WARNING #####################")
+		print("### WARNING: Could not find a valid central waypoint for quadrant " ..
+			tostring(quadrantNumber) .. " on floor " ..
+			tostring(currentFloor) .. " retrying with new quadrant number: " ..
+			newQuadrantNumber
+		)
+
+		return self:_promoteCentralWaypoint(promotedWaypoints, wayPoints, currentFloor, newQuadrantNumber)
+	end
+
+	print("Promoting central waypoint for elevation done, execution time: " .. os.clock() - startTime)
+	return {
+		["pos"] = {
+			x = bestPoint.pos.x,
+			y = bestPoint.pos.y,
+			z = bestPoint.pos.z + 1
+		},
+		["room_shape"] = nil,
+		["room_height"] = nil,
+		["room_width"] = nil
+	}
 end
 
 function WayPointer:_promoteClosestToCenter(promotedWaypoints, wayPoints, currentFloor)
-	if #wayPoints[currentFloor] == 0 then
-		error("Empty input wayPoints array.")
+	local startTime = os.clock()
+	if not wayPoints[currentFloor] or #wayPoints[currentFloor] == 0 then
+		error("Empty input wayPoints array for floor " .. tostring(currentFloor))
 	end
 
 	local centerX, centerY = self:_getCentralAxes(wayPoints[currentFloor])
-	local closestPointToCenter = nil
+	local bestPoint = nil
 	local minDistance = math.huge
 
-	-- Find the closest point to the center
-	for _, point in ipairs(wayPoints[currentFloor]) do
-		local x, y = point.pos.x, point.pos.y
-		local distance = math.sqrt((x - centerX)^2 + (y - centerY)^2)
+	-- Ensure promotedWaypoints[currentFloor + 1] exists
+	if not promotedWaypoints[currentFloor + 1] then
+		promotedWaypoints[currentFloor + 1] = {}
+	end
 
-		if distance < minDistance then
+	-- Find the best central point
+	for _, waypoint in ipairs(wayPoints[currentFloor]) do
+		local x, y = waypoint.pos.x, waypoint.pos.y
+		local distance = (x - centerX)^2 + (y - centerY)^2 -- Squared distance for efficiency
+
+		if (distance < minDistance and
+			not self:_isPointTooClose(promotedWaypoints, currentFloor, x, y) and
+			not self:_isPointAlreadyPromoted(promotedWaypoints[currentFloor + 1], x, y)
+		) then
 			minDistance = distance
-			closestPointToCenter = point
+			bestPoint = waypoint
 		end
 	end
 
+	if not bestPoint then
+		error("Could not find a valid central waypoint for floor " .. tostring(currentFloor))
+	end
+
+	print("Promoting closest central waypoint for elevation done, execution time: " .. os.clock() - startTime)
 	return {
 		["pos"] = {
-			x = closestPointToCenter.pos.x,
-			y = closestPointToCenter.pos.y,
-			z = closestPointToCenter.pos.z + 1
+			x = bestPoint.pos.x,
+			y = bestPoint.pos.y,
+			z = bestPoint.pos.z + 1
 		},
 		["room_shape"] = nil,
 		["room_height"] = nil,
@@ -519,38 +558,58 @@ function WayPointer:_promoteClosestToCenter(promotedWaypoints, wayPoints, curren
 end
 
 function WayPointer:_promoteExternalWaypoint(promotedWaypoints, wayPoints, currentFloor, quadrantNumber)
-	if #wayPoints[currentFloor] == 0 then
-		error("Empty input wayPoints array.")
+	local startTime = os.clock()
+	if not wayPoints[currentFloor] or #wayPoints[currentFloor] == 0 then
+		error("Empty input wayPoints array for floor " .. tostring(currentFloor))
 	end
 
 	local centerX, centerY = self:_getCentralAxes(wayPoints[currentFloor])
 	local farthestPoint = nil
 	local maxDistance = -math.huge
 
+	-- Ensure promotedWaypoints[currentFloor + 1] exists
+	if not promotedWaypoints[currentFloor + 1] then
+		promotedWaypoints[currentFloor + 1] = {}
+	end
+
 	-- Determine the farthest point in the specified quadrant
 	for _, point in ipairs(wayPoints[currentFloor]) do
 		local x, y = point.pos.x, point.pos.y
-		local distance = math.sqrt((x - centerX)^2 + (y - centerY)^2)
+		local distance = (x - centerX)^2 + (y - centerY)^2 -- Squared distance for efficiency
 
-		-- Check if the point is in the specified quadrant
-		local inQuadrant = false
-		if quadrantNumber == 1 and x >= centerX and y <= centerY then
-			inQuadrant = true
-		elseif quadrantNumber == 2 and x <= centerX and y <= centerY then
-			inQuadrant = true
-		elseif quadrantNumber == 3 and x <= centerX and y >= centerY then
-			inQuadrant = true
-		elseif quadrantNumber == 4 and x >= centerX and y >= centerY then
-			inQuadrant = true
-		end
+		if (quadrantNumber == 1 and x >= centerX and y <= centerY) or
+			(quadrantNumber == 2 and x <= centerX and y <= centerY) or
+			(quadrantNumber == 3 and x <= centerX and y >= centerY) or
+			(quadrantNumber == 4 and x >= centerX and y >= centerY) then
 
-		-- If the point is in the quadrant and is the farthest found so far, update the farthest point
-		if inQuadrant and distance > maxDistance then
-			maxDistance = distance
-			farthestPoint = point
+			if (not self:_isPointTooClose(promotedWaypoints, currentFloor, x, y) and
+				not self:_isPointAlreadyPromoted(promotedWaypoints[currentFloor + 1], x, y) and
+				distance > maxDistance
+			) then
+				maxDistance = distance
+				farthestPoint = point
+			end
 		end
 	end
 
+	if not farthestPoint then
+		local newQuadrantNumber = (quadrantNumber + 1) % 5
+		if newQuadrantNumber == 0 then
+			newQuadrantNumber = 1
+		end
+
+		print("##################### WARNING #####################")
+		print("### WARNING: Could not find a valid farthest waypoint in quadrant " ..
+			tostring(quadrantNumber) .. " on floor " ..
+			tostring(currentFloor) .. " retrying with new quadrant number: " ..
+			newQuadrantNumber
+		)
+
+		return self:_promoteExternalWaypoint(promotedWaypoints, wayPoints, currentFloor, newQuadrantNumber)
+	end
+
+	print("Promoting external waypoint from quadrant: " .. quadrantNumber ..
+		" for elevation done, execution time: " .. os.clock() - startTime)
 	return {
 		["pos"] = {
 			x = farthestPoint.pos.x,
@@ -564,25 +623,42 @@ function WayPointer:_promoteExternalWaypoint(promotedWaypoints, wayPoints, curre
 end
 
 function WayPointer:_promoteFurtherFromCenter(promotedWaypoints, wayPoints, currentFloor)
-	if #wayPoints[currentFloor] == 0 then
-		error("Empty input wayPoints array.")
+	local startTime = os.clock()
+	if not wayPoints[currentFloor] or #wayPoints[currentFloor] == 0 then
+		error("Empty input wayPoints array for floor " .. tostring(currentFloor))
 	end
 
 	local centerX, centerY = self:_getCentralAxes(wayPoints[currentFloor])
 	local farthestPoint = nil
 	local maxDistance = -math.huge
 
-	-- Find the further point from the center
+	-- Ensure promotedWaypoints[currentFloor + 1] exists
+	if not promotedWaypoints[currentFloor + 1] then
+		promotedWaypoints[currentFloor + 1] = {}
+	end
+
+	-- Find the farthest point from the center
 	for _, point in ipairs(wayPoints[currentFloor]) do
 		local x, y = point.pos.x, point.pos.y
-		local distance = math.sqrt((x - centerX)^2 + (y - centerY)^2)
+		local distance = (x - centerX)^2 + (y - centerY)^2 -- Squared distance for efficiency
 
-		if distance > maxDistance then
+		-- Check if the point is already promoted on the next floor or too close to previous floor
+		if (not self:_isPointTooClose(promotedWaypoints, currentFloor, x, y) and
+			not self:_isPointAlreadyPromoted(promotedWaypoints[currentFloor + 1], x, y) and
+			distance > maxDistance
+		) then
 			maxDistance = distance
 			farthestPoint = point
 		end
 	end
 
+	if not farthestPoint then
+		print("##################### WARNING #####################")
+		error("WARNING: Could not find a valid farthest waypoint from center on floor " .. tostring(currentFloor))
+		--return nil -- Return nil instead of error to avoid hard crashes
+	end
+
+	print("Promoting furthest external waypoint for elevation done, execution time: " .. os.clock() - startTime)
 	return {
 		["pos"] = {
 			x = farthestPoint.pos.x,
@@ -615,3 +691,30 @@ function WayPointer:_getCentralAxes(points)
 
 	return nil, nil
 end
+
+function WayPointer:_isPointTooClose(promotedWaypoints, prevFloor, x, y, minimumSquareDistance)
+	minimumSquareDistance = defaultParam(minimumSquareDistance, 3)
+	-- Check if a similar point (close one) exists on the previous floor
+	if promotedWaypoints[prevFloor] then
+		for _, prevPoint in ipairs(promotedWaypoints[prevFloor]) do
+			local px, py = prevPoint.pos.x, prevPoint.pos.y
+			if math.abs(px - x) <= minimumSquareDistance and math.abs(py - y) <= minimumSquareDistance then
+				return true
+			end
+		end
+	end
+
+	return false
+end
+
+function WayPointer:_isPointAlreadyPromoted(promotedWaypointsFloor, x, y)
+	if promotedWaypointsFloor then
+		for _, point in ipairs(promotedWaypointsFloor) do
+			if point.pos.x == x and point.pos.y == y then
+				return true
+			end
+		end
+	end
+	return false
+end
+
