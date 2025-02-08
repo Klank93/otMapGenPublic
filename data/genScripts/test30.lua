@@ -201,12 +201,12 @@ function script.run()
 			--promotedWaypoints[currentFloor + 1] = {
 			--	wayPointer:getCentralWaypointForNextFloor(promotedWaypoints, wayPoints, currentFloor, true)
 			--}
-
-			print('> 17 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
 		else
 			print("No waypoints to promote for next floor - last floor processed.")
 		end
 	end
+
+	print('> 17 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
 
 	local elevator = ElevationBuilder.new(generatedMap, promotedWaypoints, TOMB_SAND_WALL_BORDER)
 	--elevator:createRopeLadders("north") -- just example
