@@ -194,8 +194,12 @@ function script.run()
 
 		-- multi-floor
 		if (currentFloor ~= mainPos.z) then
-			promotedWaypoints[currentFloor + 1] = {wayPointer:getCentralWaypointForNextFloor(wayPoints[currentFloor], true)}
-			--promotedWaypoints[currentFloor + 1] = {WayPointer:getExternalWaypointForNextFloor(wayPoints[currentFloor], math.random(1,4))}
+			promotedWaypoints[currentFloor + 1] = {
+				wayPointer:getCentralWaypointForNextFloor(promotedWaypoints, wayPoints, currentFloor, true)
+			}
+			--promotedWaypoints[currentFloor + 1] = {
+			--	WayPointer:getExternalWaypointForNextFloor(promotedWaypoints, wayPoints, currentFloor, math.random(1,4))
+			--}
 		else
 			print("No waypoints to promote for next floor - last floor processed.")
 		end
