@@ -1,5 +1,5 @@
 # Abcq/Acedb Map Generator
-### version 0.0.8 (alpha)
+### version 0.0.9 (alpha)
 
 ## The Goal:
 The goal of this script/app is to provide a tool for map generation for Open Tibia Servers.

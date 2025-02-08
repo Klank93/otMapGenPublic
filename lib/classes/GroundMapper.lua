@@ -10,7 +10,6 @@ function GroundMapper.new(mainPos, sizeX, sizeY, sizeZ, wpMinDist, wpMaxDist)
 	instance.sizeZ = sizeZ
     instance.wpMinDist = wpMinDist
     instance.wpMaxDist = wpMaxDist or 0 -- for middle/large maps the value can be set, other way keep 0 todo: does not work
-    instance.wayPoints = {}
 
     return instance
 end

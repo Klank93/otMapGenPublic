@@ -27,6 +27,20 @@ function ElevationBuilder:createDesertRamps(direction, upperFloorStairsGroundId)
 	print("Creating elevations between floors done, execution time: " .. os.clock() - startTime)
 end
 
+function ElevationBuilder:createGreyMountainRamps(direction, upperFloorStairsGroundId)
+	local startTime = os.clock()
+	self:_createElevation(GREY_MOUNTAIN_RAMP_SCHEMA, direction, upperFloorStairsGroundId)
+
+	print("Creating elevations between floors done, execution time: " .. os.clock() - startTime)
+end
+
+function ElevationBuilder:createRedMountainRamps(direction, upperFloorStairsGroundId)
+	local startTime = os.clock()
+	self:_createElevation(RED_MOUNTAIN_RAMP_SCHEMA, direction, upperFloorStairsGroundId)
+
+	print("Creating elevations between floors done, execution time: " .. os.clock() - startTime)
+end
+
 function ElevationBuilder:_createElevation(elevationSchema, direction, upperFloorStairsGroundId)
 	local availableDirections = {"north","east","south","south","random"}
 	if not inArray(availableDirections, direction) then
