@@ -4,7 +4,7 @@ ElevationBuilder.__index = ElevationBuilder
 function ElevationBuilder.new(map, elevationWaypoints, wallBorder)
 	local instance = setmetatable({}, ElevationBuilder)
 	instance.map = map
-	instance.waypoints = elevationWaypoints or {}
+	instance.wayPoints = elevationWaypoints or {}
 	instance.wallBorder = wallBorder
 
 	return instance
@@ -42,22 +42,23 @@ function ElevationBuilder:createRedMountainRamps(direction, upperFloorStairsGrou
 end
 
 function ElevationBuilder:_createElevation(elevationSchema, direction, upperFloorStairsGroundId)
-	local availableDirections = {"north","east","south","south","random"}
+	local availableDirections = {"north","east","south","west","random"}
 	if not inArray(availableDirections, direction) then
 		error("Incorrect direction argument value. Available directions: " .. implode(', ', availableDirections))
 	end
 
-	for currentFloor, wayPoints in pairs(self.waypoints) do
+	for currentFloor, wayPoints in pairs(self.wayPoints) do
 		for _, waypoint in pairs(wayPoints) do
-			if (direction == 'random') then
-				local directions = {"north","east","south","south"} -- random directions
-				direction = directions[math.random(1, #directions)]
+			local finalDirection = direction
+			if (direction == "random") then
+				local directions = {"north","east","south","west"} -- random directions
+				finalDirection = directions[math.random(1, #directions)]
 			end
 
 			self:_createElevationItems(
 				waypoint.pos,
 				elevationSchema,
-				direction,
+				finalDirection,
 				upperFloorStairsGroundId
 			)
 		end
