@@ -30,10 +30,13 @@ function getFunctionCallerInfo(level)
             currentline .. ': '
 end
 
-function dumpVar(data)
+function dumpVar(data, withOutTrace)
     -- cache of tables already printed, to avoid infinite recursive loops
     local tableCache = {}
     local buffer = getFunctionCallerInfo(3)
+	if (withOutTrace == true) then
+		buffer = ""
+	end
     --local padder = "    "
     local padder = "  "
 

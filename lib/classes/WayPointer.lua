@@ -390,12 +390,22 @@ function WayPointer:createPathBetweenWpsTSPMS(itemsTab, brushSize)
     print("Paths between waypoints created, execution time: " .. os.clock() - startTime)
 end
 
-function WayPointer:getCentralWaypointForNextFloor(waypoints)
-	return self:_promoteWaypoints(waypoints, math.random(1,4), true, 1)
+function WayPointer:getCentralWaypointForNextFloor(wayPoints, isRandomQuadrant)
+	-- return wayPoint nearest to the center, from random quadrant if requested
+	if (isRandomQuadrant == true) then
+		return self:_promoteCentralWaypoint(wayPoints, math.random(1,4))
+	end
+
+	return self:_promoteClosestToCenter(wayPoints)
 end
 
-function WayPointer:getWaypointsForNextFloor(waypoints, quadrantNumber, numToPromote)
-	return self:_promoteWaypoints(waypoints, quadrantNumber, false, numToPromote)
+function WayPointer:getExternalWaypointForNextFloor(wayPoints, quadrantNumber)
+	-- return wayPoint further from the center, from specific quadrant if requested
+	if (quadrantNumber ~= nil) then
+		return self:_promoteExternalWaypoint(wayPoints, quadrantNumber)
+	end
+
+	return self:_promoteFurtherFromCenter(wayPoints)
 end
 
 function WayPointer:_createPathBetweenTwoPointsTSP(itemsTab, pos1, pos2, brushSize, currentFloor)
@@ -434,53 +444,169 @@ function WayPointer:_createPathBetweenTwoPointsTSP(itemsTab, pos1, pos2, brushSi
     moveCursorAndBrush(pos1.y, pos2.y, "y")
 end
 
-function WayPointer:_promoteWaypoints(waypoints, quadrantNumber, useCentralPoint, numToPromote)
+function WayPointer:_promoteCentralWaypoint(wayPoints, quadrantNumber)
 	local filteredWaypoints = {}
+	local centerX, centerY = self:_getCentralAxes(wayPoints)
+
+	for _, waypoint in ipairs(wayPoints) do
+		local centralPoint = nil
+		local x, y = waypoint.pos.x, waypoint.pos.y
+		if quadrantNumber == 1 and x >= centerX and y <= centerY then
+			centralPoint = waypoint
+			table.insert(filteredWaypoints, waypoint)
+		elseif quadrantNumber == 2 and x <= centerX and y <= centerY then
+			centralPoint = waypoint
+		elseif quadrantNumber == 3 and x <= centerX and y >= centerY then
+			centralPoint = waypoint
+		elseif quadrantNumber == 4 and x >= centerX and y >= centerY then
+			centralPoint = waypoint
+		end
+
+		if (centralPoint ~= nil) then
+			return {
+				["pos"] = {
+					x = centralPoint.pos.x,
+					y = centralPoint.pos.y,
+					z = centralPoint.pos.z + 1
+				},
+				["room_shape"] = nil,
+				["room_height"] = nil,
+				["room_width"] = nil
+			}
+		end
+	end
+
+	error("Could not get central waypoint for given quadrant: " ..
+		dumpVar(quadrantNumber, true)
+	)
+end
+
+function WayPointer:_promoteClosestToCenter(wayPoints)
+	if #wayPoints == 0 then
+		error("Empty input wayPoints array.")
+	end
+
+	local centerX, centerY = self:_getCentralAxes()
+	local closestPointToCenter = nil
+	local minDistance = math.huge
+
+	-- Find the closest point to the center
+	for _, point in ipairs(wayPoints) do
+		local x, y = point.pos.x, point.pos.y
+		local distance = math.sqrt((x - centerX)^2 + (y - centerY)^2)
+
+		if distance < minDistance then
+			minDistance = distance
+			closestPointToCenter = point
+		end
+	end
+
+	return {
+		["pos"] = {
+			x = closestPointToCenter.pos.x,
+			y = closestPointToCenter.pos.y,
+			z = closestPointToCenter.pos.z + 1
+		},
+		["room_shape"] = nil,
+		["room_height"] = nil,
+		["room_width"] = nil
+	}
+end
+
+function WayPointer:_promoteExternalWaypoint(wayPoints, quadrantNumber)
+	if #wayPoints == 0 then
+		error("Empty input wayPoints array.")
+	end
+
+	local centerX, centerY = self:_getCentralAxes(wayPoints)
+	local farthestPoint = nil
+	local maxDistance = -math.huge
+
+	-- Determine the farthest point in the specified quadrant
+	for _, point in ipairs(wayPoints) do
+		local x, y = point.pos.x, point.pos.y
+		local distance = math.sqrt((x - centerX)^2 + (y - centerY)^2)
+
+		-- Check if the point is in the specified quadrant
+		local inQuadrant = false
+		if quadrantNumber == 1 and x >= centerX and y <= centerY then
+			inQuadrant = true
+		elseif quadrantNumber == 2 and x <= centerX and y <= centerY then
+			inQuadrant = true
+		elseif quadrantNumber == 3 and x <= centerX and y >= centerY then
+			inQuadrant = true
+		elseif quadrantNumber == 4 and x >= centerX and y >= centerY then
+			inQuadrant = true
+		end
+
+		-- If the point is in the quadrant and is the farthest found so far, update the farthest point
+		if inQuadrant and distance > maxDistance then
+			maxDistance = distance
+			farthestPoint = point
+		end
+	end
+
+	return {
+		["pos"] = {
+			x = farthestPoint.pos.x,
+			y = farthestPoint.pos.y,
+			z = farthestPoint.pos.z + 1
+		},
+		["room_shape"] = nil,
+		["room_height"] = nil,
+		["room_width"] = nil
+	}
+end
+
+function WayPointer:_promoteFurtherFromCenter(wayPoints)
+	if #wayPoints == 0 then
+		error("Empty input wayPoints array.")
+	end
+
+	local centerX, centerY = self:_getCentralAxes()
+	local farthestPoint = nil
+	local maxDistance = -math.huge
+
+	-- Find the further point from the center
+	for _, point in ipairs(wayPoints) do
+		local x, y = point.pos.x, point.pos.y
+		local distance = math.sqrt((x - centerX)^2 + (y - centerY)^2)
+
+		if distance > maxDistance then
+			maxDistance = distance
+			farthestPoint = point
+		end
+	end
+
+	return {
+		["pos"] = {
+			x = farthestPoint.pos.x,
+			y = farthestPoint.pos.y,
+			z = farthestPoint.pos.z + 1
+		},
+		["room_shape"] = nil,
+		["room_height"] = nil,
+		["room_width"] = nil
+	}
+end
+
+function WayPointer:_getCentralAxes(points)
 	local centerX, centerY = 0, 0
 	local totalX, totalY, count = 0, 0, 0
 
 	-- Calculate the center of all waypoints if central point selection is enabled
-	if useCentralPoint == true then
-		for _, waypoint in ipairs(waypoints) do
-			totalX = totalX + waypoint.pos.x
-			totalY = totalY + waypoint.pos.y
-			count = count + 1
-		end
-		if count > 0 then
-			centerX = totalX / count
-			centerY = totalY / count
-		end
+	for _, point in ipairs(points) do
+		totalX = totalX + point.pos.x
+		totalY = totalY + point.pos.y
+		count = count + 1
 	end
 
-	-- Filter waypoints based on the selected quadrantNumber
-	for _, waypoint in ipairs(waypoints) do
-		local x, y = waypoint.pos.x, waypoint.pos.y
-		if quadrantNumber == 1 and x >= centerX and y <= centerY then
-			table.insert(filteredWaypoints, waypoint)
-		elseif quadrantNumber == 2 and x <= centerX and y <= centerY then
-			table.insert(filteredWaypoints, waypoint)
-		elseif quadrantNumber == 3 and x <= centerX and y >= centerY then
-			table.insert(filteredWaypoints, waypoint)
-		elseif quadrantNumber == 4 and x >= centerX and y >= centerY then
-			table.insert(filteredWaypoints, waypoint)
-		end
+	if count > 0 then
+		centerX = totalX / count
+		centerY = totalY / count
+
+		return totalX / count, totalY / count
 	end
 
-	-- Randomly select waypoints to promote if more than the required number are available
-	local promotedWaypoints = {}
-	math.randomseed(os.time())
-	while #filteredWaypoints > 0 and #promotedWaypoints < numToPromote do
-		local index = math.random(1, #filteredWaypoints)
-		local promotedWaypoint = table.remove(filteredWaypoints, index)
-		local waypointCopy = {
-			["pos"] = {x = promotedWaypoint.pos.x, y = promotedWaypoint.pos.y, z = promotedWaypoint.pos.z + 1},
-			["room_shape"] = nil,
-			["room_height"] = nil,
-			["room_width"] = nil
-		}
-
-		table.insert(promotedWaypoints, waypointCopy)
-	end
-
-	return promotedWaypoints
+	return nil, nil
 end

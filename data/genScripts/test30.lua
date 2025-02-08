@@ -57,7 +57,7 @@ function script.run()
 		wayPointer:createPathBetweenWpsTSP(ITEMS_TABLE, 3, currentFloor) -- exact one
 		-- wayPointer:createPathBetweenWpsTSPMS(ITEMS_TABLE)
 
-		local roomBuilder = DungeonRoomBuilder.new(wayPoints[currentFloor])
+		local roomBuilder = DungeonRoomBuilder.new(generatedMap, wayPoints[currentFloor])
 		roomBuilder:createRooms(ITEMS_TABLE, ROOM_SHAPES)
 
 		print('> 4 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
@@ -194,7 +194,8 @@ function script.run()
 
 		-- multi-floor
 		if (currentFloor ~= mainPos.z) then
-			promotedWaypoints[currentFloor + 1] = wayPointer:getCentralWaypointForNextFloor(wayPoints[currentFloor])
+			promotedWaypoints[currentFloor + 1] = {wayPointer:getCentralWaypointForNextFloor(wayPoints[currentFloor], true)}
+			--promotedWaypoints[currentFloor + 1] = {WayPointer:getExternalWaypointForNextFloor(wayPoints[currentFloor], math.random(1,4))}
 		else
 			print("No waypoints to promote for next floor - last floor processed.")
 		end
