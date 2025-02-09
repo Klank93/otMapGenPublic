@@ -6,7 +6,7 @@ MAP_CONFIGURATION = {
     mainPos = {x = 145, y = 145, z = 7},
     mapSizeX = 100,
     mapSizeY = 100,
-	mapSizeZ = 1, -- if set to greater than 1 => multi floor
+	mapSizeZ = 3, -- if set to greater than 1 => multi floor
     wpMinDist = 16,
     wayPointsCount = 16
 }
