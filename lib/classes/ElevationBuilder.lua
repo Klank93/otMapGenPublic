@@ -41,6 +41,13 @@ function ElevationBuilder:createRedMountainRamps(direction, upperFloorStairsGrou
 	print("Creating elevations between floors done, execution time: " .. os.clock() - startTime)
 end
 
+function ElevationBuilder:createCaveRopeSpots(upperFloorStairsGroundId)
+	local startTime = os.clock()
+	self:_createElevation(CAVE_ROPE_SPOT_SCHEMA, "north", upperFloorStairsGroundId)
+
+	print("Creating elevations between floors done, execution time: " .. os.clock() - startTime)
+end
+
 function ElevationBuilder:_createElevation(elevationSchema, direction, upperFloorStairsGroundId)
 	local availableDirections = {"north","east","south","west","random"}
 	if not inArray(availableDirections, direction) then

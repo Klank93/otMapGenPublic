@@ -17,10 +17,10 @@ function CaveGroundMapper.new(mainPos, sizeX, sizeY, sizeZ, wpMinDist, wpMaxDist
 end
 
 function CaveGroundMapper:correctCaveShapes(
-        mainGroundItemId,
-        groundItemId,
-        backGroundShapes,
-		currentFloor
+	mainGroundItemId,
+	groundItemId,
+	backGroundShapes,
+	currentFloor
 )
 	currentFloor = currentFloor or self.mainPos.z
     local startTime = os.clock()
@@ -497,10 +497,10 @@ function CaveGroundMapper:correctCaveShapes(
 end
 
 function CaveGroundMapper:correctBackgroundShapes(
-        mainGroundItemId,
-        groundItemId,
-        correctBackgroundShapes,
-		currentFloor
+	mainGroundItemId,
+	groundItemId,
+	correctBackgroundShapes,
+	currentFloor
 )
 	currentFloor = currentFloor or self.mainPos.z
     local startTime = os.clock()

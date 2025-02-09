@@ -353,7 +353,7 @@ function Detailer:createDetailsOnMap(itemsTab, chance, currentFloor) -- chance i
                 if (state == true) then
                     local state2 = true
                     randomChance = math.random(1,100)
-                    local item = itemsTab[math.random(1,#itemsTab)]
+                    local item = itemsTab and itemsTab[math.random(1,#itemsTab)] or nil
                     if (randomChance <= chance) then
                         -- checking details around the pom,
                         -- to prevent situation when we have the same details nearby

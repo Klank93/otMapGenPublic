@@ -7,7 +7,7 @@ GREY_MOUNTAIN_RAMP_SCHEMA = {
 				{0,0,0}
 			},
 			['itemId'] = {
-				[1] = 459 -- default upper floor ground item id, can be overridden by param
+				[1] = 6128 -- default upper floor ground item id, can be overridden by param
 			}
 		},
 		["east"] = {
@@ -17,7 +17,7 @@ GREY_MOUNTAIN_RAMP_SCHEMA = {
 				{0,0,0}
 			},
 			['itemId'] = {
-				[1] = 459 -- default upper floor ground item id, can be overridden by param
+				[1] = 476 -- default upper floor ground item id, can be overridden by param
 			}
 		},
 		["south"] = {
@@ -27,7 +27,7 @@ GREY_MOUNTAIN_RAMP_SCHEMA = {
 				{0,0,0}
 			},
 			['itemId'] = {
-				[1] = 459 -- default upper floor ground item id, can be overridden by param
+				[1] = 6127 -- default upper floor ground item id, can be overridden by param
 			}
 		},
 		["west"] = {
@@ -37,7 +37,7 @@ GREY_MOUNTAIN_RAMP_SCHEMA = {
 				{0,0,0}
 			},
 			['itemId'] = {
-				[1] = 459 -- default upper floor ground item id, can be overridden by param
+				[1] = 475 -- default upper floor ground item id, can be overridden by param
 			}
 		},
 	},
