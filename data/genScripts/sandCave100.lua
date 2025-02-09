@@ -24,7 +24,7 @@ local mapSizeZ = MAP_CONFIGURATION.mapSizeZ
 local wpMinDist = MAP_CONFIGURATION.wpMinDist
 local wayPointsCount = MAP_CONFIGURATION.wayPointsCount
 local wayPoints = {}
-local generatedMap
+local generatedMap = GroundMapper
 
 local script = {}
 
@@ -84,7 +84,7 @@ function script.run()
 		local marker = Marker.new(generatedMap)
 		marker:createMarkersAlternatively(
 			ITEMS_TABLE[1][1],
-			55,
+			50,
 			6,
 			currentFloor
 		)
@@ -93,8 +93,8 @@ function script.run()
 			cursor,
 			ITEMS_TABLE[1][1],
 			ITEMS_TABLE[12][1],
-			2,
-			8
+			1,
+			3
 		)
 
 		------ repeat createMarkersAlternatively & doGround2
@@ -111,7 +111,7 @@ function script.run()
 			ITEMS_TABLE[1][1],
 			ITEMS_TABLE[12][1],
 			2,
-			8
+			4
 		)
 
 		generatedMap:correctGround(ITEMS_TABLE[1][1], ITEMS_TABLE[12][1], currentFloor)

@@ -3,9 +3,13 @@ Cursor.__index = Cursor
 
 function Cursor.new(pos) -- todo: add params, if needed
     local instance = setmetatable({}, Cursor)
+	instance.initialPos = defaultParam(
+		{x = pos.x, y = pos.y, z = pos.z},
+		{x = 0, y = 0, z = 0}
+	)
     instance.pos = defaultParam(
-            {x = pos.x, y = pos.y, z = pos.z},
-            {x = 0, y = 0, z = 0}
+		{x = pos.x, y = pos.y, z = pos.z},
+		{x = 0, y = 0, z = 0}
     )
 
     return instance
@@ -79,8 +83,22 @@ function Cursor:left(step)
     end
 end
 
+function Cursor:initPos(newX, newY, newZ)
+	self.initialPos.x = newX
+	self.initialPos.y = newY
+	self.initialPos.z = newZ
+
+	self:setPos(newX, newY, newZ)
+end
+
 function Cursor:setPos(newX, newY, newZ)
     self.pos.x = newX
     self.pos.y = newY
     self.pos.z = newZ
+end
+
+function Cursor:resetPos() -- back to initial pos
+	self.pos.x = self.initialPos.x
+	self.pos.y = self.initialPos.y
+	self.pos.z = self.initialPos.z
 end

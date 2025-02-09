@@ -539,7 +539,7 @@ function Detailer:createDetailsInCave(
 	local counter = 0
     local walkableTabY = {}
     for i = 1, detailsSpawnSize do
-        table.insert(walkableTabY , i, 0)
+        table.insert(walkableTabY, i, 0)
     end
 
     for ai = 1, #markersTab do
@@ -610,14 +610,14 @@ function Detailer:createDetailsInCave(
             if (walkableX >= 3) then
                 for cj = 1, detailsSpawnSize do
                     if (walkableTabY[cj] >= 2 and
-                            isWalkable(pom3) and
-                            walkableX > 0 and
-                            math.random(1,100) <= chance
+						isWalkable(pom3) and
+						walkableX > 0 and
+						math.random(1,100) <= chance
                     ) then
                         doCreateItemMock(
-                                pom_tab[bi][cj],
-                                1,
-                                pom3
+							pom_tab[bi][cj],
+							1,
+							pom3
                         )
                         walkableX = walkableX - 3
                         walkableTabY[cj] = walkableTabY[cj] - 3

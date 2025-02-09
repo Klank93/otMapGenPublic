@@ -24,7 +24,7 @@ local mapSizeZ = MAP_CONFIGURATION.mapSizeZ
 local wpMinDist = MAP_CONFIGURATION.wpMinDist
 local wayPointsCount = MAP_CONFIGURATION.wayPointsCount
 local wayPoints = {}
-local generatedMap
+local generatedMap = GroundMapper
 
 local script = {}
 
@@ -75,7 +75,7 @@ function script.run()
 		local marker = Marker.new(generatedMap)
 		marker:createMarkersAlternatively(
 			ITEMS_TABLE[1][1],
-			12,
+			6,
 			5,
 			currentFloor
 		)
@@ -97,7 +97,7 @@ function script.run()
 
 		marker:createMarkersAlternatively(
 			ITEMS_TABLE[1][1],
-			8,
+			5,
 			6,
 			currentFloor
 		)

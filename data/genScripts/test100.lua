@@ -73,7 +73,7 @@ function script.run()
 	local marker = Marker.new(generatedMap)
 	marker:createMarkersAlternatively(
 		ITEMS_TABLE[1][1],
-		35,
+		28,
 		6
 	)
 
@@ -85,7 +85,7 @@ function script.run()
 		ITEMS_TABLE[1][1],
 		ITEMS_TABLE[12][1],
 		1,
-		6
+		4
 	)
 
 	print('> 7 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
@@ -94,7 +94,7 @@ function script.run()
 
 	marker:createMarkersAlternatively(
 		ITEMS_TABLE[1][1],
-		75,
+		60,
 		6
 	)
 
@@ -106,7 +106,7 @@ function script.run()
 		ITEMS_TABLE[1][1],
 		ITEMS_TABLE[12][1],
 		1,
-		6
+		5
 	)
 
 	print('> 9 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
@@ -131,7 +131,7 @@ function script.run()
 		TOMB_SAND_WALL_BORDER,
 		ITEMS_TABLE[12][1],
 		BORDER_CORRECT_SHAPES,
-		30
+		40
 	)
 
 	print('> 12 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')

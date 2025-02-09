@@ -63,29 +63,29 @@ function script.run()
 
 	local wallAutoBorder = WallAutoBorder.new(generatedMap)
 	wallAutoBorder:doWalls(
-			ITEMS_TABLE[1][1],
-			ITEMS_TABLE[0][1],
-			TOMB_SAND_WALL_BORDER
+		ITEMS_TABLE[1][1],
+		ITEMS_TABLE[0][1],
+		TOMB_SAND_WALL_BORDER
 	)
 
 	print('> 5 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
 
 	local marker = Marker.new(generatedMap)
 	marker:createMarkersAlternatively(
-			ITEMS_TABLE[1][1],
-			35,
-			6
+		ITEMS_TABLE[1][1],
+		110,
+		4
 	)
 
 	print('> 6 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
 
 	generatedMap:doGround2(
-			marker.markersTab,
-			cursor,
-			ITEMS_TABLE[1][1],
-			ITEMS_TABLE[12][1],
-			1,
-			6
+		marker.markersTab,
+		cursor,
+		ITEMS_TABLE[1][1],
+		ITEMS_TABLE[12][1],
+		1,
+		5
 	)
 
 	print('> 7 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
@@ -93,20 +93,20 @@ function script.run()
 	------ repeat createMarkers & doGround2
 
 	marker:createMarkersAlternatively(
-			ITEMS_TABLE[1][1],
-			75,
-			6
+		ITEMS_TABLE[1][1],
+		150,
+		5
 	)
 
 	print('> 8 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
 
 	generatedMap:doGround2(
-			marker.markersTab,
-			cursor,
-			ITEMS_TABLE[1][1],
-			ITEMS_TABLE[12][1],
-			1,
-			6
+		marker.markersTab,
+		cursor,
+		ITEMS_TABLE[1][1],
+		ITEMS_TABLE[12][1],
+		1,
+		3
 	)
 
 	print('> 9 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
@@ -117,21 +117,21 @@ function script.run()
 
 	local groundAutoBorder = GroundAutoBorder.new(generatedMap)
 	groundAutoBorder:doGround(
-			ITEMS_TABLE[12][1],
-			ITEMS_TABLE[1][1],
-			ITEMS_TABLE[0][1],
-			SAND_GROUND_BASE_BORDER
+		ITEMS_TABLE[12][1],
+		ITEMS_TABLE[1][1],
+		ITEMS_TABLE[0][1],
+		SAND_GROUND_BASE_BORDER
 	)
 
 	print('> 11 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
 
 	groundAutoBorder:correctBorders(
-			ITEMS_TABLE[0][1],
-			SAND_GROUND_BASE_BORDER,
-			TOMB_SAND_WALL_BORDER,
-			ITEMS_TABLE[12][1],
-			BORDER_CORRECT_SHAPES,
-			30
+		ITEMS_TABLE[0][1],
+		SAND_GROUND_BASE_BORDER,
+		TOMB_SAND_WALL_BORDER,
+		ITEMS_TABLE[12][1],
+		BORDER_CORRECT_SHAPES,
+		30
 	)
 
 	print('> 12 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
@@ -140,7 +140,7 @@ function script.run()
 
 	marker:createMarkersAlternatively(
 		0,
-		100,
+		210,
 		4
 	)
 
@@ -175,10 +175,10 @@ function script.run()
 	detailer:createDetailsOnMap(ITEMS_TABLE[9][1], 2)
 
 	detailer:createHangableDetails(
-			ITEMS_TABLE[0][1],
-			TOMB_SAND_WALL_BORDER,
-			ITEMS_TABLE,
-			15
+		ITEMS_TABLE[0][1],
+		TOMB_SAND_WALL_BORDER,
+		ITEMS_TABLE,
+		15
 	)
 	print("Combined creation of the details done, execution time: " .. os.clock() - startTime)
 

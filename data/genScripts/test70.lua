@@ -6,12 +6,12 @@ MAP_CONFIGURATION = {
     mainPos = {x = 145, y = 145, z = 7},
     mapSizeX = 70,
     mapSizeY = 70,
-	mapSizeZ = 4, -- if set to greater than 1 => multi floor
+	mapSizeZ = 3, -- if set to greater than 1 => multi floor
     wpMinDist = 11,
     wayPointsCount = 18
 }
-LOG_TO_FILE = MAP_GEN_CFG.logToFile -- can be overridden for specific script
-DEBUG_OUTPUT = MAP_GEN_CFG.debugOutput -- can be overridden for specific script
+LOG_TO_FILE = true -- can be overridden for specific script
+DEBUG_OUTPUT = true -- can be overridden for specific script
 
 local mainPos = {
     x = MAP_CONFIGURATION.mainPos.x,
@@ -24,7 +24,7 @@ local mapSizeZ = MAP_CONFIGURATION.mapSizeZ
 local wpMinDist = MAP_CONFIGURATION.wpMinDist
 local wayPointsCount = MAP_CONFIGURATION.wayPointsCount
 local wayPoints = {}
-local generatedMap
+local generatedMap = GroundMapper
 
 local script = {}
 
@@ -79,7 +79,7 @@ function script.run()
 		local marker = Marker.new(generatedMap)
 		marker:createMarkersAlternatively(
 			ITEMS_TABLE[1][1],
-			32,
+			24,
 			6,
 			currentFloor
 		)
@@ -101,7 +101,7 @@ function script.run()
 
 		marker:createMarkersAlternatively(
 			ITEMS_TABLE[1][1],
-			20,
+			16,
 			6,
 			currentFloor
 		)
@@ -197,6 +197,38 @@ function script.run()
 
 		print('> 16 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
 
+		-- adding second background
+		local marker = Marker.new(generatedMap)
+		marker:createMarkersAlternatively(
+			ITEMS_TABLE[0][1],
+			38,
+			4,
+			currentFloor
+		)
+		generatedMap:doGround2(
+			marker.markersTab,
+			cursor,
+			ITEMS_TABLE[0][1],
+			ITEMS_TABLE[22][1],
+			8,
+			12,
+			{2, 3}
+		)
+
+		print('> 17 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
+
+		-- bordering first->second background
+		groundAutoBorder:doGround2( -- creates the border for main and second not walkable ground (e.g. grey and red mountains)
+			ITEMS_TABLE[0][1], -- base red mountain not-walkable ground
+			ITEMS_TABLE[22][1], -- sand yellow, sandcave mountain not-walkable ground
+			ITEMS_TABLE[1][1],
+			ITEMS_TABLE[12][1],
+			RED_MOUNTAIN_TOP_BORDER,
+			currentFloor
+		)
+
+		print('> 18 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
+
 		-- multi-floor
 		if (currentFloor ~= mainPos.z) then
 			-- Central Points
@@ -219,19 +251,19 @@ function script.run()
 		end
 	end
 
-	print('> 17 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
+	print('> 19 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
 
 	local elevator = ElevationBuilder.new(generatedMap, promotedWaypoints, TOMB_SAND_WALL_BORDER)
 	--elevator:createRopeLadders("north") -- just example
 	elevator:createDesertRamps("random", 4837)
 
-	print('> 18 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
+	print('> 20 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
 
 	if (PRECREATION_TABLE_MODE and RUNNING_MODE == 'tfs') then
 		local mapCreator = MapCreator.new(generatedMap)
 		mapCreator:drawMap()
 
-		print('> 19 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
+		print('> 21 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
 	end
 end
 

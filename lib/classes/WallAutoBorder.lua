@@ -21,26 +21,26 @@ function WallAutoBorder:doWalls(ground1, ground2, border, currentFloor)
     for i = self.map.mainPos.y, self.map.mainPos.y + self.map.sizeY do
         for j = self.map.mainPos.x, self.map.mainPos.x + self.map.sizeX do
             local itemId = getThingFromPosMock(
-                    {x = pom.x, y = pom.y, z = pom.z, stackpos = 0}
+				{x = pom.x, y = pom.y, z = pom.z, stackpos = 0}
             ).itemid
 
             if (itemId == ground1) then
                 if (getThingFromPosMock(
-                        {x = pom.x, y = pom.y + 1, z = pom.z, stackpos = 0}
+					{x = pom.x, y = pom.y + 1, z = pom.z, stackpos = 0}
                 ).itemid == ground2) then
                     if (getThingFromPosMock(
-                            {x = pom.x + 1, y = pom.y, z = pom.z, stackpos = 0}
+						{x = pom.x + 1, y = pom.y, z = pom.z, stackpos = 0}
                     ).itemid == ground2) then
                         doCreateItemMock(
-                                border[4][1],
-                                1,
-                                {x = pom.x, y = pom.y, z = pom.z}
+							border[4][1],
+							1,
+							{x = pom.x, y = pom.y, z = pom.z}
                         )
                     else
                         doCreateItemMock(
-                                border[1][1],
-                                1,
-                                {x = pom.x, y = pom.y, z = pom.z}
+							border[1][1],
+							1,
+							{x = pom.x, y = pom.y, z = pom.z}
                         )
                     end
                     --[[ experimental, first four conditions check the cross from ground1,
@@ -58,9 +58,9 @@ function WallAutoBorder:doWalls(ground1, ground2, border, currentFloor)
                                 if (getThingFromPosMock({x = pom.x - 1, y = pom.y + 1, z = pom.z, stackpos = 0}).itemid == ground2) then
                                     if (getThingFromPosMock({x = pom.x + 1, y = pom.y - 1, z = pom.z, stackpos = 0}).itemid == ground2) then
                                         doCreateItemMock(
-                                                border[4][1],
-                                                1,
-                                                {x = pom.x, y = pom.y, z = pom.z}
+											border[4][1],
+											1,
+											{x = pom.x, y = pom.y, z = pom.z}
                                         )
                                     end
                                 end
@@ -73,33 +73,33 @@ function WallAutoBorder:doWalls(ground1, ground2, border, currentFloor)
             if ((itemId == ground1) and (getThingFromPosMock({x = pom.x + 1, y = pom.y, z = pom.z, stackpos = 0}).itemid == ground2)) then
                 if (getThingFromPosMock({x = pom.x, y = pom.y + 1, z = pom.z, stackpos = 0}).itemid ~= ground2) then
                     doCreateItemMock(
-                            border[2][1],
-                            1,
-                            {x = pom.x, y = pom.y, z = pom.z}
+						border[2][1],
+						1,
+						{x = pom.x, y = pom.y, z = pom.z}
                     )
                 end
             end
             if ((itemId == ground1) and (getThingFromPosMock({x = pom.x, y = pom.y - 1, z = pom.z, stackpos = 0}).itemid == ground2)) then
                 if (getThingFromPosMock({x = pom.x + 1, y = pom.y - 1, z = pom.z, stackpos = 0}).itemid == ground1) then
                     doCreateItemMock(
-                            border[4][1],
-                            1,
-                            {x = pom.x, y = pom.y - 1, z = pom.z}
+						border[4][1],
+						1,
+						{x = pom.x, y = pom.y - 1, z = pom.z}
                     )
                 else
                     doCreateItemMock(
-                            border[1][1],
-                            1,
-                            {x = pom.x, y = pom.y-1, z = pom.z}
+						border[1][1],
+						1,
+						{x = pom.x, y = pom.y-1, z = pom.z}
                     )
                 end
             end
             if ((itemId == ground1) and (getThingFromPosMock({x = pom.x - 1, y = pom.y, z = pom.z, stackpos = 0}).itemid == ground2)) then
                 if (getThingFromPosMock({x = pom.x - 1, y = pom.y + 1, z = pom.z, stackpos = 0}).itemid ~= ground1) then
                     doCreateItemMock(
-                            border[2][1],
-                            1,
-                            {x = pom.x - 1, y = pom.y, z = pom.z}
+						border[2][1],
+						1,
+						{x = pom.x - 1, y = pom.y, z = pom.z}
                     )
                 end
             end
@@ -107,21 +107,23 @@ function WallAutoBorder:doWalls(ground1, ground2, border, currentFloor)
             -- "pillars"
             if ((itemId == ground1) and (getThingFromPosMock({x = pom.x + 1, y = pom.y + 1, z = pom.z, stackpos = 0}).itemid == ground2)) then
                 if ((getThingFromPosMock({x = pom.x + 1, y = pom.y, z = pom.z, stackpos = 0}).itemid == ground1 )
-                        and ( getThingFromPosMock({x = pom.x, y = pom.y + 1, z = pom.z, stackpos = 0}).itemid == ground1 )) then
+                        and ( getThingFromPosMock({x = pom.x, y = pom.y + 1, z = pom.z, stackpos = 0}).itemid == ground1 )
+				) then
                     doCreateItemMock(
-                            border[3][1],
-                            1,
-                            {x = pom.x, y = pom.y, z = pom.z}
+						border[3][1],
+						1,
+						{x = pom.x, y = pom.y, z = pom.z}
                     )
                 end
             end
             if ((itemId == ground1) and (getThingFromPosMock({x = pom.x - 1, y = pom.y - 1, z = pom.z, stackpos = 0}).itemid == ground2)) then
                 if ((getThingFromPosMock({x = pom.x - 1, y = pom.y, z = pom.z, stackpos = 0}).itemid == ground2 )
-                        and ( getThingFromPosMock({x = pom.x, y = pom.y - 1, z = pom.z, stackpos = 0}).itemid == ground2 )) then
+                        and ( getThingFromPosMock({x = pom.x, y = pom.y - 1, z = pom.z, stackpos = 0}).itemid == ground2 )
+				) then
                     doCreateItemMock(
-                            border[3][1],
-                            1,
-                            {x = pom.x - 1, y = pom.y - 1, z = pom.z}
+						border[3][1],
+						1,
+						{x = pom.x - 1, y = pom.y - 1, z = pom.z}
                     )
                 end
             end

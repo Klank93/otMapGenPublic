@@ -23,7 +23,7 @@ local mapSizeZ = MAP_CONFIGURATION.mapSizeZ
 local wpMinDist = MAP_CONFIGURATION.wpMinDist
 local wayPointsCount = MAP_CONFIGURATION.wayPointsCount
 local wayPoints = {}
-local generatedMap
+local generatedMap = GroundMapper
 
 local script = {}
 
@@ -66,8 +66,8 @@ function script.run()
 		local marker = Marker.new(generatedMap)
 		marker:createMarkersAlternatively(
 			ITEMS_TABLE[1][1],
-			35,
-			6,
+			30,
+			7,
 			currentFloor
 		)
 		generatedMap:doGround2(
@@ -76,7 +76,7 @@ function script.run()
 			ITEMS_TABLE[1][1],
 			ITEMS_TABLE[12][1],
 			1,
-			6
+			2
 		)
 
 		------ repeat createMarkersAlternatively & doGround2
@@ -93,7 +93,7 @@ function script.run()
 			ITEMS_TABLE[1][1],
 			ITEMS_TABLE[12][1],
 			1,
-			6
+			3
 		)
 
 		generatedMap:correctGround(ITEMS_TABLE[1][1], ITEMS_TABLE[12][1])
@@ -118,8 +118,8 @@ function script.run()
 
 		addRotatedTab(BRUSH_BORDER_SHAPES, 9)
 		marker:createMarkersAlternatively(
-			ITEMS_TABLE[1][1],
-			72,
+			0,
+			70,
 			4,
 			currentFloor
 		)
@@ -151,22 +151,6 @@ function script.run()
 			currentFloor
 		)
 
-		--local groundRandomizer = GroundRandomizer.new(generatedMap)
-		--groundRandomizer:randomize(ITEMS_TABLE, 40)
-
-		------ Additional Actions (old step 4) \/ not need for simple tomb
-
-		--generatedMap:correctGround(ITEMS_TABLE[0][1], ITEMS_TABLE[22][1])
-		---- not exactly sure what was the reason of it /\ and why it is being run twice
-		--
-		--groundAutoBorder:doGround2( -- most likely creates the border for main and second not walkable ground
-		--	ITEMS_TABLE[0][1], -- base red mountain not-walkable ground
-		--	ITEMS_TABLE[22][1], -- sand yellow mountain not-walkable ground
-		--	ITEMS_TABLE[1][1],
-		--	ITEMS_TABLE[12][1],
-		--	RED_MOUNTAIN_TOP_BORDER
-		--)
-		--
 		--local groundRandomizer = GroundRandomizer.new(generatedMap)
 		--groundRandomizer:randomize(ITEMS_TABLE, 40)
 

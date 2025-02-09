@@ -7,7 +7,7 @@ function Brush.new()
     return instance
 end
 
-function Brush:doBrushLines(itemsTab, size, centerPos, dir)
+function Brush:doBrushLines(newGroundItemIds, size, centerPos, dir)
     -- creates lines e.q. 1x4 sqm, 1x3 sqm or 4x1 sqm, 3x1 sqm
     -- direction depends of the parameter dir
 
@@ -18,51 +18,51 @@ function Brush:doBrushLines(itemsTab, size, centerPos, dir)
     ]]--
     if (size == 3) then
         if (dir == 0) then
-            doCreateItemMock(itemsTab[1][1], 1, {x = centerPos.x, y = centerPos.y-1, z = centerPos.z})
-            doCreateItemMock(itemsTab[1][1], 1, centerPos)
-            doCreateItemMock(itemsTab[1][1], 1, {x = centerPos.x, y = centerPos.y+1, z = centerPos.z})
+            doCreateItemMock(newGroundItemIds[1], 1, {x = centerPos.x, y = centerPos.y-1, z = centerPos.z})
+            doCreateItemMock(newGroundItemIds[1], 1, centerPos)
+            doCreateItemMock(newGroundItemIds[1], 1, {x = centerPos.x, y = centerPos.y+1, z = centerPos.z})
         else
-            doCreateItemMock(itemsTab[1][1], 1, {x = centerPos.x-1, y = centerPos.y, z = centerPos.z})
-            doCreateItemMock(itemsTab[1][1], 1, centerPos)
-            doCreateItemMock(itemsTab[1][1], 1, {x = centerPos.x+1, y = centerPos.y, z = centerPos.z})
+            doCreateItemMock(newGroundItemIds[1], 1, {x = centerPos.x-1, y = centerPos.y, z = centerPos.z})
+            doCreateItemMock(newGroundItemIds[1], 1, centerPos)
+            doCreateItemMock(newGroundItemIds[1], 1, {x = centerPos.x+1, y = centerPos.y, z = centerPos.z})
         end
 
     elseif (size == 4) then
         if (dir == 0) then
-            doCreateItemMock(itemsTab[1][1], 1, {x = centerPos.x, y = centerPos.y-2, z = centerPos.z})
-            doCreateItemMock(itemsTab[1][1], 1, {x = centerPos.x, y = centerPos.y-1, z = centerPos.z})
-            doCreateItemMock(itemsTab[1][1], 1, centerPos)
-            doCreateItemMock(itemsTab[1][1], 1, {x = centerPos.x, y = centerPos.y+1, z = centerPos.z})
+            doCreateItemMock(newGroundItemIds[1], 1, {x = centerPos.x, y = centerPos.y-2, z = centerPos.z})
+            doCreateItemMock(newGroundItemIds[1], 1, {x = centerPos.x, y = centerPos.y-1, z = centerPos.z})
+            doCreateItemMock(newGroundItemIds[1], 1, centerPos)
+            doCreateItemMock(newGroundItemIds[1], 1, {x = centerPos.x, y = centerPos.y+1, z = centerPos.z})
         else
-            doCreateItemMock(itemsTab[1][1], 1, {x = centerPos.x-2, y = centerPos.y, z = centerPos.z})
-            doCreateItemMock(itemsTab[1][1], 1, {x = centerPos.x-1, y = centerPos.y, z = centerPos.z})
-            doCreateItemMock(itemsTab[1][1], 1, centerPos)
-            doCreateItemMock(itemsTab[1][1], 1, {x = centerPos.x+1, y = centerPos.y, z = centerPos.z})
+            doCreateItemMock(newGroundItemIds[1], 1, {x = centerPos.x-2, y = centerPos.y, z = centerPos.z})
+            doCreateItemMock(newGroundItemIds[1], 1, {x = centerPos.x-1, y = centerPos.y, z = centerPos.z})
+            doCreateItemMock(newGroundItemIds[1], 1, centerPos)
+            doCreateItemMock(newGroundItemIds[1], 1, {x = centerPos.x+1, y = centerPos.y, z = centerPos.z})
         end
 
     elseif (size == 5) then
         if (dir == 0) then
-            doCreateItemMock(itemsTab[1][math.random(1,#itemsTab[1])], 1, {x = centerPos.x, y = centerPos.y-2, z = centerPos.z})
-            doCreateItemMock(itemsTab[1][math.random(1,#itemsTab[1])], 1, {x = centerPos.x, y = centerPos.y-1, z = centerPos.z})
-            doCreateItemMock(itemsTab[1][math.random(1,#itemsTab[1])], 1, centerPos)
-            doCreateItemMock(itemsTab[1][math.random(1,#itemsTab[1])], 1, {x = centerPos.x, y = centerPos.y+1, z = centerPos.z})
-            doCreateItemMock(itemsTab[1][math.random(1,#itemsTab[1])], 1, {x = centerPos.x, y = centerPos.y+2, z = centerPos.z})
+            doCreateItemMock(newGroundItemIds[math.random(1,#newGroundItemIds)], 1, {x = centerPos.x, y = centerPos.y-2, z = centerPos.z})
+            doCreateItemMock(newGroundItemIds[math.random(1,#newGroundItemIds)], 1, {x = centerPos.x, y = centerPos.y-1, z = centerPos.z})
+            doCreateItemMock(newGroundItemIds[math.random(1,#newGroundItemIds)], 1, centerPos)
+            doCreateItemMock(newGroundItemIds[math.random(1,#newGroundItemIds)], 1, {x = centerPos.x, y = centerPos.y+1, z = centerPos.z})
+            doCreateItemMock(newGroundItemIds[math.random(1,#newGroundItemIds)], 1, {x = centerPos.x, y = centerPos.y+2, z = centerPos.z})
         else
-            doCreateItemMock(itemsTab[1][math.random(1,#itemsTab[1])], 1, {x = centerPos.x-2, y = centerPos.y, z = centerPos.z})
-            doCreateItemMock(itemsTab[1][math.random(1,#itemsTab[1])], 1, {x = centerPos.x-1, y = centerPos.y, z = centerPos.z})
-            doCreateItemMock(itemsTab[1][math.random(1,#itemsTab[1])], 1, centerPos)
-            doCreateItemMock(itemsTab[1][math.random(1,#itemsTab[1])], 1, {x = centerPos.x+1, y = centerPos.y, z = centerPos.z})
-            doCreateItemMock(itemsTab[1][math.random(1,#itemsTab[1])], 1, {x = centerPos.x+2, y = centerPos.y, z = centerPos.z})
+            doCreateItemMock(newGroundItemIds[math.random(1,#newGroundItemIds)], 1, {x = centerPos.x-2, y = centerPos.y, z = centerPos.z})
+            doCreateItemMock(newGroundItemIds[math.random(1,#newGroundItemIds)], 1, {x = centerPos.x-1, y = centerPos.y, z = centerPos.z})
+            doCreateItemMock(newGroundItemIds[math.random(1,#newGroundItemIds)], 1, centerPos)
+            doCreateItemMock(newGroundItemIds[math.random(1,#newGroundItemIds)], 1, {x = centerPos.x+1, y = centerPos.y, z = centerPos.z})
+            doCreateItemMock(newGroundItemIds[math.random(1,#newGroundItemIds)], 1, {x = centerPos.x+2, y = centerPos.y, z = centerPos.z})
         end
     end
 end
 
-function Brush:doBrushSquares(itemsTab, size, centerPos)
+function Brush:doBrushSquares(newGroundItemIds, size, centerPos, goodGroundItemIds)
     local pom = {}
     pom.x = centerPos.x
     pom.y = centerPos.y
     pom.z = centerPos.z
-    if (size == 3) then
+	if (size == 2 or size == 3) then
         pom.x = centerPos.x - 1
         pom.y = centerPos.y - 1
     elseif (size == 4) then
@@ -81,9 +81,32 @@ function Brush:doBrushSquares(itemsTab, size, centerPos)
         --else size - 1 bo pom = centerPos
     end
 
-    for i=1, size do
-        for j=1, size do
-            doCreateItemMock(itemsTab[1][1], 1, pom)
+    for i = 1, size do
+        for j = 1, size do
+			if (type(goodGroundItemIds) == "table" and not isEmpty(goodGroundItemIds)) then
+				local item = getThingFromPosMock({x = pom.x, y = pom.y, z = pom.z, stackpos = 0})
+
+				if (item and inArray({1060,1061,1062,1064}, item.itemid)) then
+					print("GROUND MAPPER FOUND A WALL...")
+				end
+
+				if item and inArray(goodGroundItemIds, item.itemid) then
+					doCreateItemMock(
+						newGroundItemIds[1],
+						1,
+						{x = pom.x, y = pom.y, z = pom.z, stackpos = 0},
+						true
+					)
+				end
+			else
+				doCreateItemMock(
+					newGroundItemIds[1],
+					1,
+					{x = pom.x, y = pom.y, z = pom.z, stackpos = 0},
+					true
+				)
+			end
+
             pom.x = pom.x + 1
         end
         pom.x = pom.x - size -- to start new row beginning from the first element
@@ -92,10 +115,10 @@ function Brush:doBrushSquares(itemsTab, size, centerPos)
 end
 
 function Brush:doCarpetBrush(
-        markersTab,
-        badGroundItemId,
-        brushShapes,
-        brushTab
+	markersTab,
+	badGroundItemId,
+	brushShapes,
+	brushTab
 ) -- originally it had be executed before the autoborder (stackpos issue), but currently it is workarounded/fixed in core files
     local startTime = os.clock()
     for i = 1, #markersTab do

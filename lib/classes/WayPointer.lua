@@ -241,14 +241,14 @@ function WayPointer:_createPathBetweenTwoPoints(itemsTab, pos1, pos2, currentFlo
                 cr:right(1)
                 for i=1, #self.wayPoints[currentFloor] do
                     if (cr.pos ~= self.wayPoints[currentFloor][i]["pos"]) then
-                        brush:doBrushLines(itemsTab, 3, cr.pos, 0)
+                        brush:doBrushLines(itemsTab[1], 3, cr.pos, 0)
                     end
                 end
             elseif (pom > 0) then
                 cr:left(1)
                 for i=1, #self.wayPoints[currentFloor] do
                     if (cr.pos ~= self.wayPoints[currentFloor][i]["pos"]) then
-                        brush:doBrushLines(itemsTab, 3, cr.pos, 0)
+                        brush:doBrushLines(itemsTab[1], 3, cr.pos, 0)
                     end
                 end
             elseif (pom == 0)then
@@ -256,7 +256,7 @@ function WayPointer:_createPathBetweenTwoPoints(itemsTab, pos1, pos2, currentFlo
             end
         until (cr.pos.x == pos2.x)
 
-        brush:doBrushSquares(itemsTab, 3, cr.pos)
+        brush:doBrushSquares(itemsTab[1], 3, cr.pos)
         -- doCreateItemMock(598, 1, cr.pos) -- points the crossing
 
         cr:setPos(pos2.x, pos1.y, pos1.z)
@@ -267,14 +267,14 @@ function WayPointer:_createPathBetweenTwoPoints(itemsTab, pos1, pos2, currentFlo
                 cr:down(1)
                 for i=1, #self.wayPoints[currentFloor] do
                     if (cr.pos ~= self.wayPoints[currentFloor][i]["pos"]) then
-                        brush:doBrushLines(itemsTab, 3, cr.pos, 1)
+                        brush:doBrushLines(itemsTab[1], 3, cr.pos, 1)
                     end
                 end
             elseif (pom > 0) then
                 cr:up(1)
                 for i=1, #self.wayPoints[currentFloor] do
                     if (cr.pos ~= self.wayPoints[currentFloor][i]["pos"]) then
-                        brush:doBrushLines(itemsTab, 3, cr.pos, 1)
+                        brush:doBrushLines(itemsTab[1], 3, cr.pos, 1)
                     end
                 end
             elseif (pom == 0)then
@@ -282,7 +282,7 @@ function WayPointer:_createPathBetweenTwoPoints(itemsTab, pos1, pos2, currentFlo
             end
         until (cr.pos.y == pos2.y)
 
-        brush:doBrushSquares(itemsTab, 3, cr.pos)
+        brush:doBrushSquares(itemsTab[1], 3, cr.pos)
         --doCreateItemMock(598, 1, cr.pos) -- points the crossing
 
     else
@@ -295,14 +295,14 @@ function WayPointer:_createPathBetweenTwoPoints(itemsTab, pos1, pos2, currentFlo
                 cr:down(1) -- todo: there can be an issue in method, with parameters
                 for i=1, #self.wayPoints[currentFloor] do
                     if (cr.pos ~= self.wayPoints[currentFloor][i]["pos"]) then
-                        brush:doBrushLines(itemsTab, 3, cr.pos, 1)
+                        brush:doBrushLines(itemsTab[1], 3, cr.pos, 1)
                     end
                 end
             elseif (pom > 0) then
                 cr:up(1)
                 for i=1, #self.wayPoints[currentFloor] do
                     if (cr.pos ~= self.wayPoints[currentFloor][i]["pos"]) then
-                        brush:doBrushLines(itemsTab, 3, cr.pos, 1)
+                        brush:doBrushLines(itemsTab[1], 3, cr.pos, 1)
                     end
                 end
             elseif (pom == 0) then
@@ -310,7 +310,7 @@ function WayPointer:_createPathBetweenTwoPoints(itemsTab, pos1, pos2, currentFlo
             end
         until (cr.pos.y == pos2.y)
 
-        brush:doBrushSquares(itemsTab, 3, cr.pos)
+        brush:doBrushSquares(itemsTab[1], 3, cr.pos)
 
         --doCreateItemMock(598, 1, cr.pos) -- points the crossing
 
@@ -322,14 +322,14 @@ function WayPointer:_createPathBetweenTwoPoints(itemsTab, pos1, pos2, currentFlo
                 cr:right(1)
                 for i=1, #self.wayPoints[currentFloor] do
                     if (cr.pos ~= self.wayPoints[currentFloor][i]["pos"]) then
-                        brush:doBrushLines(itemsTab, 3, cr.pos, 0)
+                        brush:doBrushLines(itemsTab[1], 3, cr.pos, 0)
                     end
                 end
             elseif (pom > 0) then
                 cr:left(1)
                 for i=1, #self.wayPoints[currentFloor] do
                     if (cr.pos ~= self.wayPoints[currentFloor][i]["pos"]) then
-                        brush:doBrushLines(itemsTab, 3, cr.pos, 0)
+                        brush:doBrushLines(itemsTab[1], 3, cr.pos, 0)
                     end
                 end
             elseif (pom == 0) then
@@ -337,7 +337,7 @@ function WayPointer:_createPathBetweenTwoPoints(itemsTab, pos1, pos2, currentFlo
             end
         until (cr.pos.x == pos2.x)
 
-        brush:doBrushSquares(itemsTab, 3, cr.pos)
+        brush:doBrushSquares(itemsTab[1], 3, cr.pos)
         --doCreateItemMock(598, 1, cr.pos) -- points the crossing
     end
 end
@@ -429,12 +429,12 @@ function WayPointer:_createPathBetweenTwoPointsTSP(itemsTab, pos1, pos2, brushSi
 
             for i = 1, #self.wayPoints[currentFloor] do
                 if cr.pos ~= self.wayPoints[currentFloor][i]["pos"] then
-                    brush:doBrushLines(itemsTab, brushSize, cr.pos, (axis == "x") and 0 or 1)
+                    brush:doBrushLines(itemsTab[1], brushSize, cr.pos, (axis == "x") and 0 or 1)
                 end
             end
         end
 
-        brush:doBrushSquares(itemsTab, brushSize, cr.pos)
+        brush:doBrushSquares(itemsTab[1], brushSize, cr.pos)
     end
 
     cr:setPos(pos1.x, pos1.y, pos1.z)
@@ -465,7 +465,7 @@ function WayPointer:_promoteCentralWaypoint(promotedWaypoints, wayPoints, curren
 	for _, waypoint in ipairs(wayPoints[currentFloor]) do
 		local x, y = waypoint.pos.x, waypoint.pos.y
 		local inQuadrant =
-		(quadrantNumber == 1 and x >= centerX and y <= centerY) or
+			(quadrantNumber == 1 and x >= centerX and y <= centerY) or
 			(quadrantNumber == 2 and x <= centerX and y <= centerY) or
 			(quadrantNumber == 3 and x <= centerX and y >= centerY) or
 			(quadrantNumber == 4 and x >= centerX and y >= centerY)

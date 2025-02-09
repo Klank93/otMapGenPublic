@@ -23,7 +23,7 @@ local mapSizeZ = MAP_CONFIGURATION.mapSizeZ
 local wpMinDist = MAP_CONFIGURATION.wpMinDist
 local wayPointsCount = MAP_CONFIGURATION.wayPointsCount
 local wayPoints = {}
-local generatedMap
+local generatedMap = GroundMapper
 
 local script = {}
 
@@ -65,21 +65,19 @@ function script.run()
 		local marker = Marker.new(generatedMap)
 		marker:createMarkersAlternatively(
 			ITEMS_TABLE[1][1],
-			75,
+			70,
 			6,
 			currentFloor
 		)
-		-- todo: doGround can work incorrectly, differences in original files \/
 		generatedMap:doGround2(
 			marker.markersTab,
 			cursor,
 			ITEMS_TABLE[1][1],
 			ITEMS_TABLE[12][1],
 			1,
-			6
+			3
 		)
 
-		-- todo: can work incorrectly, differences in original files \/
 		generatedMap:correctGround(
 			ITEMS_TABLE[1][1],
 			ITEMS_TABLE[12][1],
@@ -106,8 +104,8 @@ function script.run()
 
 		addRotatedTab(BRUSH_BORDER_SHAPES, 9)
 		marker:createMarkersAlternatively(
-			ITEMS_TABLE[1][1],
-			100,
+			0,
+			130,
 			4,
 			currentFloor
 		)

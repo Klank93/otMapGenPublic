@@ -84,9 +84,9 @@ function script.run()
 			print('> 5 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
 		elseif (step == 6) then
 			marker:createMarkersAlternatively(
-					ITEMS_TABLE[1][1],
-					35,
-					6
+				ITEMS_TABLE[1][1],
+				28,
+				6
 			)
 			generatedMap:doGround2(
 				marker.markersTab,
@@ -100,7 +100,7 @@ function script.run()
 		elseif (step == 7) then
 			marker:createMarkersAlternatively(
 				ITEMS_TABLE[1][1],
-				20,
+				16,
 				6
 			)
 			generatedMap:doGround2(
@@ -131,7 +131,7 @@ function script.run()
 				TOMB_SAND_WALL_BORDER,
 				ITEMS_TABLE[12][1],
 				BORDER_CORRECT_SHAPES,
-				30
+				40
 			)
 
 			print('> 10 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')

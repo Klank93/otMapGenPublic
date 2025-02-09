@@ -36,16 +36,16 @@ function GroundMapper:doMainGround(itemTab, currentFloor) -- creates the backgro
 end
 
 function GroundMapper:doGround(
-        -- it was changed between original "generation_map2 - dobra.lua"
-        -- and "generation_tomb_small.lua"
-        -- todo: check why
-        markersTab,
-        cursor,
-        badGroundItemId,
-        newGroundItemId,
-        minPathSize,
-        maxPathSize
-    ) -- sometimes issues happen, for example goes on the mountains -> badGround
+	-- it was changed between original "generation_map2 - dobra.lua"
+	-- and "generation_tomb_small.lua"
+	-- todo: check why
+	markersTab,
+	cursor,
+	badGroundItemId,
+	newGroundItemId,
+	minPathSize,
+	maxPathSize
+) -- sometimes issues happen, for example goes on the mountains -> badGround
     local startTime = os.clock()
     local lastPos = {}
     local pathSize = 0
@@ -105,64 +105,86 @@ function GroundMapper:doGround(
 end
 
 function GroundMapper:doGround2(
-        markersTab,
-        cursor,
-        goodGroundItemId,
-        newGroundItemId,
-        minPathSize,
-        maxPathSize
+	markersTab,
+	cursor,
+	goodGroundItemId,
+	newGroundItemId,
+	minPathSize,
+	maxPathSize,
+	brushSizes -- optional, input array with brushSizes, allows to achieve more irregular shapes
 )
+	if (brushSizes == nil) then
+		brushSizes = {3}
+	end
+
     local startTime = os.clock()
     local lastPos = {}
     local pathSize = 0
+	local brush = Brush.new()
 
-    for i = 1, #markersTab do
-        pathSize = 0
-        doCreateItemMock(newGroundItemId, 1, markersTab[i][1])
-        cursor:setPos(markersTab[i][1].x, markersTab[i][1].y, markersTab[i][1].z)
+	for i = 1, #markersTab do
+		pathSize = 0
 
-        local safetyFuse = 0
-        repeat
-            if (safetyFuse > 30) then -- todo: issues with infinitive loops ?
-                -- print("Creating ground - safety-fuse kaboom, break the loop. Marker i = " .. i)
-                break
-            end
+		cursor:initPos(markersTab[i][1].x, markersTab[i][1].y, markersTab[i][1].z)
+		brush:doBrushSquares(
+			{newGroundItemId},
+			brushSizes[math.random(1, #brushSizes)],
+			cursor.pos,
+			{goodGroundItemId}
+		)
 
-            lastPos.x = cursor.pos.x
-            lastPos.y = cursor.pos.y
-            lastPos.z = cursor.pos.z
+		local safetyFuse = 0
+		repeat
+			if (safetyFuse > 30) then -- todo: issues with infinitive loops ?
+				--print("Creating ground - safety-fuse kaboom, break the loop. Marker i = " .. i)
+				break
+			end
 
-            local dir = math.random(1,4)
-            if (dir == 1) then
-                cursor:up(1)
-            elseif (dir == 3) then
-                cursor:down(1)
-            elseif (dir == 2) then
-                cursor:right(1)
-            elseif (dir == 4) then
-                cursor:left(1)
-            end
+			lastPos.x = cursor.pos.x
+			lastPos.y = cursor.pos.y
+			lastPos.z = cursor.pos.z
 
-            local itemId = getThingFromPosMock(
-                    {x = cursor.pos.x, y = cursor.pos.y, z = cursor.pos.z, stackpos = 0}
-            ).itemid
-            if (itemId == goodGroundItemId) then
-                doCreateItemMock(newGroundItemId, 1, cursor.pos)
-                pathSize = pathSize + 1
-            else
-                -- print('Wrong itemId: ' .. itemId .. ', when goodItemId: ' .. goodGroundItemId .. ' - move back')
-                -- going into the wrong ground, move back
-                cursor:setPos(lastPos.x, lastPos.y, lastPos.z)
-                safetyFuse = safetyFuse + 1
-            end
+			local dir = math.random(1,4)
+			local baseDir = 1
+			if (dir == 1) then
+				cursor:up(1)
+			elseif (dir == 3) then
+				cursor:down(1)
+			elseif (dir == 2) then
+				cursor:right(1)
+				baseDir = 0
+			elseif (dir == 4) then
+				cursor:left(1)
+				baseDir = 0
+			end
 
-            if (pathSize > minPathSize) then
-                if (math.random(minPathSize, maxPathSize) <= ((minPathSize + maxPathSize)/2)) then
-                    break
-                end
-            end
-        until pathSize >= maxPathSize
-    end
+			local itemId = getThingFromPosMock(
+				{x = cursor.pos.x, y = cursor.pos.y, z = cursor.pos.z, stackpos = 0}
+				).itemid
+			if (itemId == goodGroundItemId or itemId == newGroundItemId) then
+				--brush:doBrushLines({newGroundItemId}, 3, cursor.pos, baseDir)
+				brush:doBrushSquares(
+					{newGroundItemId},
+					brushSizes[math.random(1, #brushSizes)],
+					cursor.pos,
+					{goodGroundItemId}
+				)
+				pathSize = pathSize + 1
+			else
+				--print('Wrong itemId: ' .. itemId .. ', when goodItemId: ' .. goodGroundItemId .. ' - move back')
+				-- going into the wrong ground, move back
+				cursor:setPos(lastPos.x, lastPos.y, lastPos.z)
+				--cursor:resetPos()
+				safetyFuse = safetyFuse + 1
+			end
+
+			if (pathSize > minPathSize) then
+				if (math.random(minPathSize, maxPathSize) <= ((minPathSize + maxPathSize)/2)) then
+					break
+				end
+			end
+		until pathSize >= maxPathSize
+	end
 
     print("Ground created, execution time: " .. os.clock() - startTime)
 end
@@ -175,6 +197,7 @@ function GroundMapper:correctGround(
 	currentFloor = currentFloor or self.mainPos.z
     local startTime = os.clock()
     local pom = {}
+	local brush = Brush.new()
     pom.x = self.mainPos.x
     pom.y = self.mainPos.y
     pom.z = currentFloor
@@ -192,15 +215,18 @@ function GroundMapper:correctGround(
                         {x = pom.x, y = pom.y + 1, z = pom.z, stackpos = 0}
                     ).itemid == newGround)
                 ) then
-                    doCreateItemMock(newGround, 1, pom)
+					brush:doBrushSquares({newGround}, 1, pom, {mainGround})
+                    --doCreateItemMock(newGround, 1, pom)
                 end
+
                 if ((getThingFromPosMock(
                         {x = pom.x - 1, y = pom.y, z = pom.z, stackpos = 0}
                     ).itemid == newGround) and (getThingFromPosMock(
                         {x = pom.x + 1, y = pom.y, z = pom.z, stackpos = 0})
                         .itemid == newGround)
                 ) then
-                    doCreateItemMock(newGround, 1, pom)
+					brush:doBrushSquares({newGround}, 1, pom, {mainGround})
+                    --doCreateItemMock(newGround, 1, pom)
                 end
             end
             pom.x = pom.x + 1
