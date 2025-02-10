@@ -1,4 +1,6 @@
 UNWALKABLE_ITEMS = {
+	-- IMPORTANT! it should contain all item ids of unwalkable items (grounds, details like pillars, statues, just ALL)
+	-- from schema and data files. It's used in tableMode
     8133,
     1407,
     1410,
@@ -74,5 +76,29 @@ UNWALKABLE_ITEMS = {
     1060,
     9132,
     1062,
-    1064
+    1064,
+	4471,
+	4468,
+	4469,
+	4472,
+	4475,
+	4474,
+	4473,
+	4470,
+	4476,
+	4478,
+	4477,
+	4479,
+	3362,
+	3416,
+	3361,
+	3383,
+	3363,
+	3365,
+	9119,
+	9138,
+	9118,
+	9132,
+	9120,
+	9122,
 }

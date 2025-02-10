@@ -138,7 +138,7 @@ function Marker:createMarkersAlternatively( -- performance improvement ~40% in c
 
     for i = self.map.pos.y, self.map.pos.y + self.map.sizeY - 1 do
         for j = self.map.pos.x, self.map.pos.x + self.map.sizeX - 1 do
-            if (acceptedGroundItemId == 0) then -- todo: input "0" does not work without tableMode in TFS flow
+            if (acceptedGroundItemId == 0) then
                 local isWalkable = isWalkable(
 					{x = j, y = i, z = currentFloor}
                 )

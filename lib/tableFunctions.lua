@@ -7,6 +7,12 @@ function arrayKeyExists(lookup) -- php like function
 end
 
 function inArray(tab, val) -- php like function
+	if (type(tab) ~= "table" and DEBUG_OUTPUT) then
+		print("WARNING: input tab value is not a table, value: " .. dumpVar(tab) .. ", backtrace: " .. debug.traceback())
+
+		return false
+	end
+
     for index, value in ipairs(tab) do
         if (type(val) == "table" and type(value) == "table") then -- compares two tables e.g. positions
             for index2, value2 in pairs(value) do

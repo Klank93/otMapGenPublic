@@ -41,44 +41,75 @@ function GroundAutoBorder:doGround(ground1, ground2, badGround, border, currentF
                     if (getThingFromPosMock(
 						{x = pom.x + 1, y = pom.y - 1, z = pom.z, stackpos = 0}).itemid == ground1
                     ) then
-                        doCreateItemMock(
+                        self:_createBorderItem(
 							border[12][1],
 							1,
-							{x = pom.x, y = pom.y - 1, z = pom.z}
+							{x = pom.x, y = pom.y - 1, z = pom.z},
+							true
                         )
+						if (getThingFromPosMock(
+							{x = pom.x - 1, y = pom.y - 1, z = pom.z, stackpos = 0}).itemid == ground1
+						) then
+							self:_createBorderItem(
+								border[11][1],
+								1,
+								{x = pom.x, y = pom.y - 1, z = pom.z},
+								true
+							)
+						end
                     elseif (getThingFromPosMock(
 						{x = pom.x - 1, y = pom.y - 1, z = pom.z, stackpos = 0}).itemid == ground1
                     ) then
-                        doCreateItemMock(
+                        self:_createBorderItem(
 							border[11][1],
 							1,
-							{x = pom.x, y = pom.y - 1, z = pom.z}
+							{x = pom.x, y = pom.y - 1, z = pom.z},
+							true
                         )
+						if (getThingFromPosMock(
+							{x = pom.x + 1, y = pom.y - 1, z = pom.z, stackpos = 0}).itemid == ground1
+						) then
+							self:_createBorderItem(
+								border[12][1],
+								1,
+								{x = pom.x, y = pom.y - 1, z = pom.z},
+								true
+							)
+						end
                     else
-                        doCreateItemMock(
+                        self:_createBorderItem(
 							border[3][1],
 							1,
-							{x = pom.x, y = pom.y - 1, z = pom.z}
+							{x = pom.x, y = pom.y - 1, z = pom.z},
+							true
                         )
                     end
                     -- external top corners
                     if (getThingFromPosMock({x = pom.x + 1, y = pom.y, z = pom.z, stackpos = 0}).itemid ~= ground1) then
-                        if (getThingFromPosMock({x = pom.x + 1, y = pom.y - 1, z = pom.z, stackpos = 0}).itemid ~= badGround) then
-                            doCreateItemMock(
+						-- todo: to check, probably does not work as expected (new?)
+                        if (getThingFromPosMock({x = pom.x + 1, y = pom.y - 1, z = pom.z, stackpos = 0}).itemid ~= badGround and
+							getThingFromPosMock({x = pom.x + 1, y = pom.y - 1, z = pom.z, stackpos = 0}).itemid ~= ground1
+						) then
+                            self:_createBorderItem(
 								border[7][1],
 								1,
-								{x = pom.x + 1, y = pom.y - 1, z = pom.z}
+								{x = pom.x + 1, y = pom.y - 1, z = pom.z},
+								true
                             )
                             ne = 1
-                            --doCreateItemMock(2349, 1, {x = pom.x + 1, y = pom.y - 1, z = pom.z, stackpos = 1})
+                            --self:_createBorderItem(2349, 1, {x = pom.x + 1, y = pom.y - 1, z = pom.z, stackpos = 1})
                         end
                     end
                     if (getThingFromPosMock({x = pom.x - 1, y = pom.y, z = pom.z, stackpos = 0}).itemid ~= ground1) then
-                        if (getThingFromPosMock({x = pom.x - 1, y = pom.y - 1, z = pom.z, stackpos = 0}).itemid ~= badGround) then
-                            doCreateItemMock(
+						-- todo: to check
+                        if (getThingFromPosMock({x = pom.x - 1, y = pom.y - 1, z = pom.z, stackpos = 0}).itemid ~= badGround and
+							getThingFromPosMock({x = pom.x - 1, y = pom.y - 1, z = pom.z, stackpos = 0}).itemid ~= ground1
+						) then
+                            self:_createBorderItem(
 								border[8][1],
 								1,
-								{x = pom.x - 1, y = pom.y - 1, z = pom.z}
+								{x = pom.x - 1, y = pom.y - 1, z = pom.z},
+								true
                             )
                             nw = 1
                         end
@@ -87,32 +118,54 @@ function GroundAutoBorder:doGround(ground1, ground2, badGround, border, currentF
 
                 if (getThingFromPosMock({x = pom.x, y = pom.y + 1, z = pom.z, stackpos = 0}).itemid == ground2) then
                     if (getThingFromPosMock({x = pom.x - 1, y = pom.y + 1, z = pom.z, stackpos = 0}).itemid == ground1) then
-                        doCreateItemMock(
+                        self:_createBorderItem(
 							border[9][1],
 							1,
-							{x = pom.x, y = pom.y + 1, z = pom.z}
+							{x = pom.x, y = pom.y + 1, z = pom.z},
+							true
                         )
+						if (getThingFromPosMock({x = pom.x + 1, y = pom.y + 1, z = pom.z, stackpos = 0}).itemid == ground1) then
+							self:_createBorderItem(
+								border[10][1],
+								1,
+								{x = pom.x, y = pom.y + 1, z = pom.z},
+								true
+							)
+						end
                     elseif (getThingFromPosMock({x = pom.x + 1, y = pom.y + 1, z = pom.z, stackpos = 0}).itemid == ground1) then
-                        doCreateItemMock(
+                        self:_createBorderItem(
 							border[10][1],
 							1,
-							{x = pom.x, y = pom.y + 1, z = pom.z}
+							{x = pom.x, y = pom.y + 1, z = pom.z},
+							true
                         )
+						if (getThingFromPosMock({x = pom.x - 1, y = pom.y + 1, z = pom.z, stackpos = 0}).itemid == ground1) then
+							self:_createBorderItem(
+								border[9][1],
+								1,
+								{x = pom.x, y = pom.y + 1, z = pom.z},
+								true
+							)
+						end
                     else
-                        doCreateItemMock(
+                        self:_createBorderItem(
 							border[1][1],
 							1,
-							{x = pom.x, y = pom.y + 1, z = pom.z}
+							{x = pom.x, y = pom.y + 1, z = pom.z},
+							true
                         )
                     end
                     -- external bottom corners
                     if (getThingFromPosMock({x = pom.x + 1, y = pom.y, z = pom.z, stackpos = 0}).itemid ~= ground1) then
                         -- todo: to check
-                        if (getThingFromPosMock({x = pom.x + 1, y = pom.y + 1, z = pom.z, stackpos = 0}).itemid ~= badGround) then
-                            doCreateItemMock(
+                        if (getThingFromPosMock({x = pom.x + 1, y = pom.y + 1, z = pom.z, stackpos = 0}).itemid ~= badGround and
+							getThingFromPosMock({x = pom.x + 1, y = pom.y + 1, z = pom.z, stackpos = 0}).itemid ~= ground1
+						) then
+                            self:_createBorderItem(
 								border[5][1],
 								1,
-								{x = pom.x + 1, y = pom.y + 1, z = pom.z}
+								{x = pom.x + 1, y = pom.y + 1, z = pom.z},
+								true
                             )
                             se = 1
                         end
@@ -120,11 +173,14 @@ function GroundAutoBorder:doGround(ground1, ground2, badGround, border, currentF
                     end
                     if (getThingFromPosMock({x = pom.x - 1, y = pom.y, z = pom.z, stackpos = 0}).itemid ~= ground1) then
                         -- todo: to check
-                        if (getThingFromPosMock({x = pom.x - 1, y = pom.y + 1, z = pom.z, stackpos = 0}).itemid ~= badGround) then
-                            doCreateItemMock(
+                        if (getThingFromPosMock({x = pom.x - 1, y = pom.y + 1, z = pom.z, stackpos = 0}).itemid ~= badGround and
+							getThingFromPosMock({x = pom.x - 1, y = pom.y + 1, z = pom.z, stackpos = 0}).itemid ~= ground1
+						) then
+                            self:_createBorderItem(
 								border[6][1],
 								1,
-								{x = pom.x - 1, y = pom.y + 1, z = pom.z}
+								{x = pom.x - 1, y = pom.y + 1, z = pom.z},
+								true
                             )
                             sw = 1
                         end
@@ -133,21 +189,26 @@ function GroundAutoBorder:doGround(ground1, ground2, badGround, border, currentF
 
                 if (getThingFromPosMock({x = pom.x - 1, y = pom.y, z = pom.z, stackpos = 0}).itemid == ground2) then
                     if ((getThingFromPosMock({x = pom.x - 1, y = pom.y - 1, z = pom.z, stackpos = 0}).itemid ~= ground1)
-                            and (getThingFromPosMock({x = pom.x - 1, y = pom.y + 1, z = pom.z, stackpos = 0}).itemid ~= ground1)) then
-                        doCreateItemMock(
+						and (getThingFromPosMock({x = pom.x - 1, y = pom.y + 1, z = pom.z, stackpos = 0}).itemid ~= ground1)
+					) then
+                        self:_createBorderItem(
 							border[2][1],
 							1,
-							{x = pom.x - 1, y = pom.y, z = pom.z}
+							{x = pom.x - 1, y = pom.y, z = pom.z},
+							true
                         )
-
                     end
                     if (nw == 0) then
                         if (getThingFromPosMock({x = pom.x, y = pom.y - 1, z = pom.z, stackpos = 0}).itemid ~= ground1) then
-                            if (getThingFromPosMock({x = pom.x - 1, y = pom.y - 1, z = pom.z, stackpos = 0}).itemid ~= badGround) then
-                                doCreateItemMock(
+							-- todo: to check
+                            if (getThingFromPosMock({x = pom.x - 1, y = pom.y - 1, z = pom.z, stackpos = 0}).itemid ~= badGround and
+								getThingFromPosMock({x = pom.x - 1, y = pom.y - 1, z = pom.z, stackpos = 0}).itemid ~= ground1
+							) then
+                                self:_createBorderItem(
 									border[8][1],
 									1,
-									{x = pom.x - 1, y = pom.y - 1, z = pom.z}
+									{x = pom.x - 1, y = pom.y - 1, z = pom.z},
+									true
                                 )  -- unlucky corner
                             end
                         end
@@ -155,11 +216,14 @@ function GroundAutoBorder:doGround(ground1, ground2, badGround, border, currentF
                     if (sw == 0) then
                         if (getThingFromPosMock({x = pom.x, y = pom.y + 1, z = pom.z, stackpos = 0}).itemid ~= ground1) then  -- nowe
                             -- todo: to check
-                            if (getThingFromPosMock({x = pom.x - 1, y = pom.y + 1, z = pom.z, stackpos = 0}).itemid ~= badGround) then
-                                doCreateItemMock(
+                            if (getThingFromPosMock({x = pom.x - 1, y = pom.y + 1, z = pom.z, stackpos = 0}).itemid ~= badGround and
+								getThingFromPosMock({x = pom.x - 1, y = pom.y + 1, z = pom.z, stackpos = 0}).itemid ~= ground1
+							) then
+                                self:_createBorderItem(
 									border[6][1],
 									1,
-									{x = pom.x - 1, y = pom.y + 1, z = pom.z}
+									{x = pom.x - 1, y = pom.y + 1, z = pom.z},
+									true
                                 )
                             end
                         end
@@ -167,23 +231,28 @@ function GroundAutoBorder:doGround(ground1, ground2, badGround, border, currentF
                 end
 
                 if (getThingFromPosMock({x = pom.x + 1, y = pom.y, z = pom.z, stackpos = 0}).itemid == ground2) then
-                    if ((getThingFromPosMock({x = pom.x + 1, y = pom.y - 1, z = pom.z, stackpos = 0}).itemid ~= ground1)
-                            and (getThingFromPosMock({x = pom.x + 1, y = pom.y + 1, z = pom.z, stackpos = 0}).itemid ~= ground1)) then
-                        doCreateItemMock(
+                    if ((getThingFromPosMock({x = pom.x + 1, y = pom.y - 1, z = pom.z, stackpos = 0}).itemid ~= ground1) and
+						(getThingFromPosMock({x = pom.x + 1, y = pom.y + 1, z = pom.z, stackpos = 0}).itemid ~= ground1)
+					) then
+                        self:_createBorderItem(
 							border[4][1],
 							1,
-							{x = pom.x + 1, y = pom.y, z = pom.z}
+							{x = pom.x + 1, y = pom.y, z = pom.z},
+							true
                         )
                     end
 
                     if (se == 0) then
                         if (getThingFromPosMock({x = pom.x, y = pom.y + 1, z = pom.z, stackpos = 0}).itemid ~= ground1) then
                             -- todo: to check, probably does not work as expected
-                            if (getThingFromPosMock({x = pom.x + 1, y = pom.y + 1, z = pom.z, stackpos = 0}).itemid ~= badGround) then
-                                doCreateItemMock(
+                            if (getThingFromPosMock({x = pom.x + 1, y = pom.y + 1, z = pom.z, stackpos = 0}).itemid ~= badGround and
+								getThingFromPosMock({x = pom.x + 1, y = pom.y + 1, z = pom.z, stackpos = 0}).itemid ~= ground1
+							) then
+                                self:_createBorderItem(
 									border[5][1],
 									1,
-									{x = pom.x + 1, y = pom.y + 1, z = pom.z}
+									{x = pom.x + 1, y = pom.y + 1, z = pom.z},
+									true
                                 )
                             end
                         end
@@ -191,11 +260,14 @@ function GroundAutoBorder:doGround(ground1, ground2, badGround, border, currentF
                     if (ne == 0) then
                         if (getThingFromPosMock({x = pom.x, y = pom.y - 1, z = pom.z, stackpos = 0}).itemid ~= ground1) then
                             -- todo: to check, probably does not work as expected (new?)
-                            if (getThingFromPosMock({x = pom.x + 1, y = pom.y - 1, z = pom.z, stackpos = 0}).itemid ~= badGround) then
-                                doCreateItemMock(
+                            if (getThingFromPosMock({x = pom.x + 1, y = pom.y - 1, z = pom.z, stackpos = 0}).itemid ~= badGround and
+								getThingFromPosMock({x = pom.x + 1, y = pom.y - 1, z = pom.z, stackpos = 0}).itemid ~= ground1
+							) then
+                                self:_createBorderItem(
 									border[7][1],
 									1,
-									{x = pom.x + 1, y = pom.y - 1, z = pom.z}
+									{x = pom.x + 1, y = pom.y - 1, z = pom.z},
+									true
                                 )
                             end
                         end
@@ -224,58 +296,63 @@ function GroundAutoBorder:doGround2(ground1, ground2, badGround1, badGround2, bo
         for j = self.map.mainPos.x, self.map.mainPos.x + self.map.sizeX do
             local mapItem = getThingFromPosMock(
 				{x = pom.x, y = pom.y, z = pom.z, stackpos = 0}
-            ).itemid
+            )
+
             local nw = 0
             local ne = 0
             local sw = 0
             local se = 0
 
-            if (mapItem == ground1) then
+            if (mapItem.itemid == ground1) then
                 if (getThingFromPosMock(
 					{x = pom.x, y = pom.y - 1, z = pom.z, stackpos = 0}
-                ).itemid == ground2
+                	).itemid == ground2
                 ) then
                     if (getThingFromPosMock(
 						{x = pom.x + 1, y = pom.y - 1, z = pom.z, stackpos = 0}
-                    ).itemid == ground1
+                    	).itemid == ground1
                     ) then
-                        doCreateItemMock(
+                        self:_createBorderItem(
 							border[12][1],
 							1,
-							{x = pom.x, y = pom.y - 1, z = pom.z, stackpos = 1}
+							{x = pom.x, y = pom.y - 1, z = pom.z},
+							true
                         )
                     elseif (getThingFromPosMock(
 						{x = pom.x - 1, y = pom.y - 1, z = pom.z, stackpos = 0}
-                    ).itemid == ground1
+                    	).itemid == ground1
                     ) then
-                        doCreateItemMock(
+                        self:_createBorderItem(
 							border[11][1],
 							1,
-							{x = pom.x, y = pom.y - 1, z = pom.z, stackpos = 1}
+							{x = pom.x, y = pom.y - 1, z = pom.z},
+							true
                         )
                     else
-                        doCreateItemMock(
+                        self:_createBorderItem(
 							border[3][1],
 							1,
-							{x = pom.x, y = pom.y - 1, z = pom.z, stackpos = 1}
+							{x = pom.x, y = pom.y - 1, z = pom.z},
+							true
                         )
                     end
                     -- external top corners
                     if (getThingFromPosMock(
 						{x = pom.x + 1, y = pom.y, z = pom.z, stackpos = 0}
-                    ).itemid ~= ground1
+                    	).itemid ~= ground1
                     ) then
                         local test = getThingFromPosMock(
 							{x = pom.x + 1, y = pom.y - 1, z = pom.z, stackpos = 0}
-                        ).itemid
+                        	).itemid
                         if ((test ~= badGround1) and (test ~= badGround2)) then
-                            doCreateItemMock(
+                            self:_createBorderItem(
 								border[7][1],
 								1,
-								{x = pom.x + 1, y = pom.y - 1, z = pom.z, stackpos = 1}
+								{x = pom.x + 1, y = pom.y - 1, z = pom.z},
+								true
                             )
                             ne = 1
-                            --doCreateItemMock(
+                            --self:_createBorderItem(
                             --        2349,
                             --        1,
                             --        {x = pom.x + 1, y = pom.y - 1, z = pom.z, stackpos = 1}
@@ -284,16 +361,17 @@ function GroundAutoBorder:doGround2(ground1, ground2, badGround1, badGround2, bo
                     end
                     if (getThingFromPosMock(
 						{x = pom.x - 1, y = pom.y, z = pom.z, stackpos = 0}
-                    ).itemid ~= ground1
+                    	).itemid ~= ground1
                     ) then
                         local test = getThingFromPosMock(
 							{x = pom.x - 1, y = pom.y - 1, z = pom.z, stackpos = 0}
-                        ).itemid
+                        	).itemid
                         if ((test ~= badGround1) and (test ~= badGround2)) then
-                            doCreateItemMock(
+                            self:_createBorderItem(
 								border[8][1],
 								1,
-								{x = pom.x - 1, y = pom.y - 1, z = pom.z, stackpos = 1}
+								{x = pom.x - 1, y = pom.y - 1, z = pom.z},
+								true
                             )
                             nw = 1
                         end
@@ -302,65 +380,70 @@ function GroundAutoBorder:doGround2(ground1, ground2, badGround1, badGround2, bo
 
                 if (getThingFromPosMock(
 					{x = pom.x, y = pom.y + 1, z = pom.z, stackpos = 0}
-                ).itemid == ground2
+                	).itemid == ground2
                 ) then
                     if (getThingFromPosMock(
 						{x = pom.x - 1, y = pom.y + 1, z = pom.z, stackpos = 0}
-                    ).itemid == ground1
+                    	).itemid == ground1
                     ) then
-                        doCreateItemMock(
+                        self:_createBorderItem(
 							border[9][1],
 							1,
-							{x = pom.x, y = pom.y + 1, z = pom.z, stackpos = 1}
+							{x = pom.x, y = pom.y + 1, z = pom.z},
+							true
                         )
                     elseif (getThingFromPosMock(
                             {x = pom.x + 1, y = pom.y + 1, z = pom.z, stackpos = 0}
-                    ).itemid == ground1
+                    	).itemid == ground1
                     ) then
-                        doCreateItemMock(
+                        self:_createBorderItem(
 							border[10][1],
 							1,
-							{x = pom.x, y = pom.y + 1, z = pom.z, stackpos = 1}
+							{x = pom.x, y = pom.y + 1, z = pom.z},
+							true
                         )
                     else
-                        doCreateItemMock(
+                        self:_createBorderItem(
 							border[1][1],
 							1,
-							{x = pom.x, y = pom.y + 1, z = pom.z, stackpos = 1}
+							{x = pom.x, y = pom.y + 1, z = pom.z},
+							true
                         )
                     end
                     -- external bottom corners
                     if (getThingFromPosMock(
 						{x = pom.x + 1, y = pom.y, z = pom.z, stackpos = 0}
-                    ).itemid ~= ground1
+                    	).itemid ~= ground1
                     ) then
                         -- to check
                         local test = getThingFromPosMock(
 							{x = pom.x + 1, y = pom.y + 1, z = pom.z, stackpos = 0}
-                        ).itemid
+                        	).itemid
                         if ((test ~= badGround1) and (test ~= badGround2)) then
-                            doCreateItemMock(
+                            self:_createBorderItem(
 								border[5][1],
 								1,
-								{x = pom.x + 1, y = pom.y + 1, z = pom.z, stackpos = 1}
+								{x = pom.x + 1, y = pom.y + 1, z = pom.z},
+								true
                             )
                             se = 1
                         end
-
                     end
+
                     if (getThingFromPosMock(
 						{x = pom.x - 1, y = pom.y, z = pom.z, stackpos = 0}
-                    ).itemid ~= ground1
+                    	).itemid ~= ground1
                     ) then
                         -- to check
                         local test = getThingFromPosMock(
 							{x = pom.x - 1, y = pom.y + 1, z = pom.z, stackpos = 0}
-                        ).itemid
+                        	).itemid
                         if ((test ~= badGround1) and (test ~= badGround2)) then
-                            doCreateItemMock(
+                            self:_createBorderItem(
 								border[6][1],
 								1,
-								{x = pom.x - 1, y = pom.y + 1, z = pom.z, stackpos = 1}
+								{x = pom.x - 1, y = pom.y + 1, z = pom.z},
+								true
                             )
                             sw = 1
                         end
@@ -369,51 +452,55 @@ function GroundAutoBorder:doGround2(ground1, ground2, badGround1, badGround2, bo
 
                 if (getThingFromPosMock(
 					{x = pom.x - 1, y = pom.y, z = pom.z, stackpos = 0}
-                ).itemid == ground2
+                	).itemid == ground2
                 ) then
                     if ((getThingFromPosMock(
 						{x = pom.x - 1, y = pom.y - 1, z = pom.z, stackpos = 0}
-                    ).itemid ~= ground1) and (getThingFromPosMock(
+                    	).itemid ~= ground1) and (getThingFromPosMock(
 						{x = pom.x - 1, y = pom.y + 1, z = pom.z, stackpos = 0}
-                    ).itemid ~= ground1)
+                    	).itemid ~= ground1)
                     ) then
-                        doCreateItemMock(
+                        self:_createBorderItem(
 							border[2][1],
 							1,
-							{x = pom.x - 1, y = pom.y, z = pom.z, stackpos = 1}
+							{x = pom.x - 1, y = pom.y, z = pom.z},
+							true
                         )
                     end
                     if (nw == 0) then
                         if (getThingFromPosMock(
 							{x = pom.x, y = pom.y - 1, z = pom.z, stackpos = 0}
-                        ).itemid ~= ground1
+                        	).itemid ~= ground1
                         ) then
                             local test = getThingFromPosMock(
 								{x = pom.x - 1, y = pom.y - 1, z = pom.z, stackpos = 0}
-                            ).itemid
+                            	).itemid
                             if ((test ~= badGround1) and (test ~= badGround2)) then
-                                doCreateItemMock(
+                                self:_createBorderItem(
 									border[8][1],
 									1,
-									{x = pom.x - 1, y = pom.y - 1, z = pom.z, stackpos = 1}
+									{x = pom.x - 1, y = pom.y - 1, z = pom.z},
+									true
                                 )  -- unlucky corner
                             end
                         end
                     end
+
                     if (sw == 0) then
                         if (getThingFromPosMock(
 							{x = pom.x, y = pom.y + 1, z = pom.z, stackpos = 0}
-                        ).itemid ~= ground1
+                       		).itemid ~= ground1
                         ) then  -- new
                             -- to check
                             local test = getThingFromPosMock(
 								{x = pom.x - 1, y = pom.y + 1, z = pom.z, stackpos = 0}
-                            ).itemid
+                            	).itemid
                             if ((test ~= badGround1) and (test ~= badGround2)) then
-                                doCreateItemMock(
+                                self:_createBorderItem(
 									border[6][1],
 									1,
-									{x = pom.x - 1, y = pom.y + 1, z = pom.z, stackpos = 1}
+									{x = pom.x - 1, y = pom.y + 1, z = pom.z},
+									true
                                 )
                             end
                         end
@@ -422,33 +509,36 @@ function GroundAutoBorder:doGround2(ground1, ground2, badGround1, badGround2, bo
 
                 if (getThingFromPosMock(
 					{x = pom.x + 1, y = pom.y, z = pom.z, stackpos = 0}
-                ).itemid == ground2
+                	).itemid == ground2
                 ) then
                     if ((getThingFromPosMock(
 						{x = pom.x + 1, y = pom.y - 1, z = pom.z, stackpos = 0}
-                    ).itemid ~= ground1) and (getThingFromPosMock(
+                    	).itemid ~= ground1) and (getThingFromPosMock(
 						{x = pom.x + 1, y = pom.y + 1, z = pom.z, stackpos = 0}
-                    ).itemid ~= ground1)
+                    	).itemid ~= ground1)
                     ) then
-                        doCreateItemMock(
+                        self:_createBorderItem(
 							border[4][1],
 							1,
-							{x = pom.x + 1, y = pom.y, z = pom.z, stackpos = 1}
+							{x = pom.x + 1, y = pom.y, z = pom.z},
+							true
                         )
                     end
 
                     if (se == 0) then
                         if (getThingFromPosMock(
 							{x = pom.x, y = pom.y + 1, z = pom.z, stackpos = 0}
-                        ).itemid ~= ground1) then -- to check, probably does not work
+                        	).itemid ~= ground1
+						) then -- to check, probably does not work
                             local test = getThingFromPosMock(
 								{x = pom.x + 1, y = pom.y + 1, z = pom.z, stackpos = 0}
-                            ).itemid
+                            	).itemid
                             if ((test ~= badGround1) and (test ~= badGround2)) then
-                                doCreateItemMock(
+                                self:_createBorderItem(
 									border[5][1],
 									1,
-									{x = pom.x + 1, y = pom.y + 1, z = pom.z, stackpos = 1}
+									{x = pom.x + 1, y = pom.y + 1, z = pom.z},
+									true
                                 )
                             end
                         end
@@ -456,16 +546,18 @@ function GroundAutoBorder:doGround2(ground1, ground2, badGround1, badGround2, bo
                     if (ne == 0) then
                         if (getThingFromPosMock(
 							{x = pom.x, y = pom.y - 1, z = pom.z, stackpos = 0}
-                        ).itemid ~= ground1
+                        	).itemid ~= ground1
                         ) then  -- to check, probably does not work NEW
                             local test = getThingFromPosMock(
 								{x = pom.x + 1, y = pom.y - 1, z = pom.z, stackpos = 0}
-                            ).itemid
+                            	).itemid
                             if ((test ~= badGround1) and (test ~= badGround2)) then
-                                doCreateItemMock(
+
+                                self:_createBorderItem(
 									border[7][1],
 									1,
-									{x = pom.x + 1, y = pom.y - 1, z = pom.z, stackpos = 1}
+									{x = pom.x + 1, y = pom.y - 1, z = pom.z},
+									true
                                 )
                             end
                         end
@@ -479,7 +571,7 @@ function GroundAutoBorder:doGround2(ground1, ground2, badGround1, badGround2, bo
         pom.y = pom.y + 1
     end
 
-    print("Bordering2 ground on floor: " .. currentFloor .. " done, execution time: " .. os.clock() - startTime)
+    print("Bordering 2nd ground on floor: " .. currentFloor .. " done, execution time: " .. os.clock() - startTime)
 end
 
 function GroundAutoBorder:correctBorders(
@@ -548,7 +640,7 @@ function GroundAutoBorder:correctBorders(
                                                         end
                                                     end
                                                     --print("south x - " .. pom2.x .. " y - " .. pom2.y .. " z - " .. pom2.z )
-                                                    doCreateItemMock(
+                                                    self:_createBorderItem(
 														border[ax][1],
 														1,
 														{x = pom2.x, y = pom2.y, z = pom2.z}
@@ -606,7 +698,7 @@ function GroundAutoBorder:correctBorders(
                                                         end
                                                     end
                                                     --print("north x - " .. pom2.x .. " y - " .. pom2.y .. " z - " .. pom2.z )
-                                                    doCreateItemMock(
+                                                    self:_createBorderItem(
 														border[ax][1],
 														1,
 														{x = pom2.x, y = pom2.y, z = pom2.z}
@@ -663,7 +755,7 @@ function GroundAutoBorder:correctBorders(
                                                         end
                                                     end
                                                     --print("east x - " .. pom2.x .. " y - " .. pom2.y .. " z - " .. pom2.z )
-                                                    doCreateItemMock(
+                                                    self:_createBorderItem(
 														border[ax][1],
 														1,
 														{x = pom2.x, y = pom2.y, z = pom2.z}
@@ -720,7 +812,7 @@ function GroundAutoBorder:correctBorders(
                                                         end
                                                     end
                                                     --print("west x - " .. pom2.x .. " y - " .. pom2.y .. " z - " .. pom2.z )
-                                                    doCreateItemMock(
+                                                    self:_createBorderItem(
 														border[ax][1],
 														1,
 														{x = pom2.x, y = pom2.y, z = pom2.z}
@@ -748,3 +840,17 @@ function GroundAutoBorder:correctBorders(
 
     print("Corrections of borders on floor: " .. currentFloor .. " done, execution time: " .. os.clock() - startTime)
 end
+
+function GroundAutoBorder:_createBorderItem(borderItemId, count, pos, stackPosSafe)
+	if (self.map.mainPos.x <= pos.x and pos.x <= (self.map.mainPos.x + self.map.sizeX) and
+		self.map.mainPos.y <= pos.y and pos.y <= (self.map.mainPos.y + self.map.sizeY)
+	) then
+		doCreateItemMock(
+			borderItemId,
+			count,
+			pos,
+			stackPosSafe
+		)
+	end
+end
+

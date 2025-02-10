@@ -6,7 +6,7 @@ MAP_CONFIGURATION = {
     mainPos = {x = 145, y = 145, z = 7},
     mapSizeX = 30,
     mapSizeY = 30,
-	mapSizeZ = 2, -- if set to greater than 1 => multi floor
+	mapSizeZ = 4, -- if set to greater than 1 => multi floor
     wpMinDist = 6,
     wayPointsCount = 3
 }
@@ -24,7 +24,7 @@ local mapSizeZ = MAP_CONFIGURATION.mapSizeZ
 local wpMinDist = MAP_CONFIGURATION.wpMinDist
 local wayPointsCount = MAP_CONFIGURATION.wayPointsCount
 local wayPoints = {}
-local generatedMap
+local generatedMap = GroundMapper
 
 local script = {}
 
@@ -57,7 +57,7 @@ function script.run()
 		wayPointer:createPathBetweenWpsTSP(ITEMS_TABLE, 3, currentFloor) -- exact one
 		-- wayPointer:createPathBetweenWpsTSPMS(ITEMS_TABLE)
 
-		local roomBuilder = DungeonRoomBuilder.new(wayPoints[currentFloor]) -- todo: an issue when we have multi-floor gen script and we set in it mapSizeZ = 1
+		local roomBuilder = DungeonRoomBuilder.new(generatedMap, wayPoints[currentFloor])
 		roomBuilder:createRooms(ITEMS_TABLE, ROOM_SHAPES)
 
 		print('> 4 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
@@ -88,36 +88,14 @@ function script.run()
 			ITEMS_TABLE[1][1],
 			ITEMS_TABLE[12][1],
 			1,
-			4
+			3
 		)
 
 		print('> 7 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
 
-		------ repeat createMarkers & doGround2
-
-		marker:createMarkersAlternatively(
-			ITEMS_TABLE[1][1],
-			4,
-			4,
-			currentFloor
-		)
-
-		print('> 8 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
-
-		generatedMap:doGround2(
-			marker.markersTab,
-			cursor,
-			ITEMS_TABLE[1][1],
-			ITEMS_TABLE[12][1],
-			1,
-			4
-		)
-
-		print('> 9 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
-
 		generatedMap:correctGround(ITEMS_TABLE[1][1], ITEMS_TABLE[12][1], currentFloor) -- todo: most likely does not work in CLI mode
 
-		print('> 10 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
+		print('> 8 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
 
 		local groundAutoBorder = GroundAutoBorder.new(generatedMap)
 		groundAutoBorder:doGround(
@@ -128,7 +106,7 @@ function script.run()
 			currentFloor
 		)
 
-		print('> 11 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
+		print('> 9 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
 
 		groundAutoBorder:correctBorders(
 			ITEMS_TABLE[0][1],
@@ -140,7 +118,7 @@ function script.run()
 			currentFloor
 		)
 
-		print('> 12 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
+		print('> 10 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
 
 		addRotatedTab(BRUSH_BORDER_SHAPES, 9)
 
@@ -151,7 +129,7 @@ function script.run()
 			currentFloor
 		)
 
-		print('> 13 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
+		print('> 11 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
 
 		local brush = Brush.new()
 		brush:doCarpetBrush(
@@ -161,7 +139,7 @@ function script.run()
 			SAND_BASE_BRUSH
 		)
 
-		print('> 14 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
+		print('> 12 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
 
 		--local groundRandomizer = GroundRandomizer.new(generatedMap)
 		--groundRandomizer:randomize(ITEMS_TABLE, 40)
@@ -172,7 +150,7 @@ function script.run()
 		local detailer = Detailer.new(generatedMap, wayPoints[currentFloor])
 		detailer:createDetailsInRooms(ROOM_SHAPES, ITEMS_TABLE, TOMB_SAND_WALL_BORDER)
 
-		print('> 15 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
+		print('> 13 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
 
 		detailer:createDetailsOnMap(ITEMS_TABLE[11][1], 4, currentFloor)
 		detailer:createDetailsOnMap(ITEMS_TABLE[8][1], 10, currentFloor)
@@ -190,27 +168,35 @@ function script.run()
 		)
 		print("Combined creation of the details done, execution time: " .. os.clock() - startTime)
 
-		print('> 16 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
+		print('> 14 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
 
 		-- multi-floor
 		if (currentFloor ~= mainPos.z) then
-			promotedWaypoints[currentFloor + 1] = wayPointer:getCentralWaypointForNextFloor(wayPoints[currentFloor])
+			-- Central Points
+			promotedWaypoints[currentFloor + 1] = {
+				wayPointer:getCentralWaypointForNextFloor(promotedWaypoints, wayPoints, currentFloor)
+			}
+			--promotedWaypoints[currentFloor + 1] = {
+			--	wayPointer:getCentralWaypointForNextFloor(promotedWaypoints, wayPoints, currentFloor, true)
+			--}
 		else
 			print("No waypoints to promote for next floor - last floor processed.")
 		end
 	end
 
+	print('> 15 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
+
 	local elevator = ElevationBuilder.new(generatedMap, promotedWaypoints, TOMB_SAND_WALL_BORDER)
 	--elevator:createRopeLadders("north") -- just example
 	elevator:createDesertRamps("random", 4837)
 
-	print('> 17 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
+	print('> 16 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
 
 	if (PRECREATION_TABLE_MODE and RUNNING_MODE == 'tfs') then
 		local mapCreator = MapCreator.new(generatedMap)
 		mapCreator:drawMap()
 
-		print('> 18 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
+		print('> 17 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
 	end
 end
 

@@ -10,9 +10,16 @@ function Detailer.new(map, wayPoints)
     return instance
 end
 
-function Detailer:createDetailsInRooms(rmsh, itemsTab, wallBorder)
+function Detailer:createDetailsInRooms(rmsh, itemsTab, wallBorder, currentFloor)
     local startTime = os.clock()
-    for _, waypoint in pairs(self.wayPoints) do
+	local wayPoints = self.wayPoints
+	if (self.map.sizeZ > 1 and
+		currentFloor ~= nil and
+		self.wayPoints[currentFloor] ~= nil
+	) then
+		wayPoints = self.wayPoints[currentFloor]
+	end
+    for _, waypoint in pairs(wayPoints) do
         local pillar = math.random(1,#itemsTab[5]) -- chooses pillars for specific room
         local fountain = math.random(1,#itemsTab[17])
         local pom = {}
@@ -346,7 +353,7 @@ function Detailer:createDetailsOnMap(itemsTab, chance, currentFloor) -- chance i
                 if (state == true) then
                     local state2 = true
                     randomChance = math.random(1,100)
-                    local item = itemsTab[math.random(1,#itemsTab)]
+                    local item = itemsTab and itemsTab[math.random(1,#itemsTab)] or nil
                     if (randomChance <= chance) then
                         -- checking details around the pom,
                         -- to prevent situation when we have the same details nearby
@@ -532,7 +539,7 @@ function Detailer:createDetailsInCave(
 	local counter = 0
     local walkableTabY = {}
     for i = 1, detailsSpawnSize do
-        table.insert(walkableTabY , i, 0)
+        table.insert(walkableTabY, i, 0)
     end
 
     for ai = 1, #markersTab do
@@ -603,14 +610,14 @@ function Detailer:createDetailsInCave(
             if (walkableX >= 3) then
                 for cj = 1, detailsSpawnSize do
                     if (walkableTabY[cj] >= 2 and
-                            isWalkable(pom3) and
-                            walkableX > 0 and
-                            math.random(1,100) <= chance
+						isWalkable(pom3) and
+						walkableX > 0 and
+						math.random(1,100) <= chance
                     ) then
                         doCreateItemMock(
-                                pom_tab[bi][cj],
-                                1,
-                                pom3
+							pom_tab[bi][cj],
+							1,
+							pom3
                         )
                         walkableX = walkableX - 3
                         walkableTabY[cj] = walkableTabY[cj] - 3

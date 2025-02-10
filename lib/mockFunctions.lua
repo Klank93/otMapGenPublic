@@ -121,9 +121,9 @@ end
      if (LOG_TO_FILE and DEBUG_OUTPUT) then
          logger:debug(
 			 getFunctionCallerInfo(3) ..
-					 'Created itemId: %s, uid: %s, type/count: %s, on {x = %s, y = %s, z = %s, stackpos = %s}',
-			 itemId,
+			 	'Created uid: %s, itemId: %s, type/count: %s, on {x = %s, y = %s, z = %s, stackpos = %s}',
 			 uid or 'nil',
+			 itemId,
 			 typeOrCount,
 			 pos.x,
 			 pos.y,
@@ -159,7 +159,7 @@ getThingFromPosMock = function(pos)
             result = CLI_FINAL_MAP_TABLE[pos.x][pos.y][pos.z][pos.stackpos + 1]
             stackPos = pos.stackpos + 1
         elseif (pos.stackpos == nil and
-                not isEmpty(CLI_FINAL_MAP_TABLE, pos.x, pos.y, pos.z, getLastStackPos(CLI_FINAL_MAP_TABLE, pos))
+			not isEmpty(CLI_FINAL_MAP_TABLE, pos.x, pos.y, pos.z, getLastStackPos(CLI_FINAL_MAP_TABLE, pos))
         ) then
             local lastStackPos = getLastStackPos(CLI_FINAL_MAP_TABLE, pos)
             result = CLI_FINAL_MAP_TABLE[pos.x][pos.y][pos.z][lastStackPos]

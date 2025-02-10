@@ -30,10 +30,13 @@ function getFunctionCallerInfo(level)
             currentline .. ': '
 end
 
-function dumpVar(data)
+function dumpVar(data, withOutTrace)
     -- cache of tables already printed, to avoid infinite recursive loops
     local tableCache = {}
     local buffer = getFunctionCallerInfo(3)
+	if (withOutTrace == true) then
+		buffer = ""
+	end
     --local padder = "    "
     local padder = "  "
 
@@ -215,9 +218,10 @@ function makeSquare(itemId, pos) -- to point some position, only for testing pur
 end
 
 function isGround(itemId)
-    if (inArray(ITEMS_TABLE[0], itemId) or
-            inArray(ITEMS_TABLE[1], itemId) or
-            inArray(ITEMS_TABLE[12], itemId)
+    if ((ITEMS_TABLE[0] ~= nil and inArray(ITEMS_TABLE[0], itemId)) or
+		(ITEMS_TABLE[1] ~= nil and inArray(ITEMS_TABLE[1], itemId)) or
+		(ITEMS_TABLE[12] ~= nil and inArray(ITEMS_TABLE[12], itemId)) or
+		(ITEMS_TABLE[22] ~= nil and inArray(ITEMS_TABLE[22], itemId))
     ) then
         return true
     end

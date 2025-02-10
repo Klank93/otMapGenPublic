@@ -5,7 +5,7 @@ MAP_CONFIGURATION = {
     mainPos = {x = 145, y = 145, z = 7},
     mapSizeX = 100,
     mapSizeY = 100,
-	mapSizeZ = 1, -- no multi-floor for now
+	mapSizeZ = 3, -- if set to greater than 1 => multi floor
     wpMinDist = 13,
     wayPointsCount = 30
 }
@@ -23,114 +23,147 @@ local mapSizeZ = MAP_CONFIGURATION.mapSizeZ
 local wpMinDist = MAP_CONFIGURATION.wpMinDist
 local wayPointsCount = MAP_CONFIGURATION.wayPointsCount
 local wayPoints = {}
+local generatedMap = GroundMapper
 
 local script = {}
 
 loadSchemaFile() -- loads the schema file from map configuration with specific global ITEMS_TABLE
 
 function script.run()
-	------ Base stuff
+	local promotedWaypoints = {}
+	generatedMap = GroundMapper.new(mainPos, mapSizeX, mapSizeY, mapSizeZ, wpMinDist)
+	for currentFloor = mainPos.z - (mapSizeZ - 1), mainPos.z do -- multi-floor (it's working in ascending order, from upper floors to lower ones)
+		print('\n###########################>>>> Processing Floor: ' .. currentFloor)
 
-	local generatedMap = GroundMapper.new(mainPos, mapSizeX, mapSizeY, mapSizeZ, wpMinDist)
+		------ Base stuff
+		generatedMap:doMainGround(ITEMS_TABLE, currentFloor)
 
-	generatedMap:doMainGround(ITEMS_TABLE)
+		if (promotedWaypoints[currentFloor] ~= nil) then -- necessary addition for multi floor
+			wayPoints[currentFloor] = arrayMerge({}, promotedWaypoints[currentFloor])
+		end
 
-	local cursor = Cursor.new(mainPos)
-	local wayPointer = WayPointer.new(generatedMap, cursor)
-	wayPoints = wayPointer:createWaypointsAlternatively(wayPointsCount)
+		local cursor = Cursor.new(mainPos)
+		local wayPointer = WayPointer.new(generatedMap, cursor, wayPoints)
+		wayPoints = wayPointer:createWaypointsAlternatively(wayPointsCount, currentFloor)
 
-	--print('Length: ' .. #wayPoints)
-	--sortWaypoints(wayPoints)
-	--print(dumpVar(wayPoints))
+		wayPointer:createPathBetweenWpsTSP(ITEMS_TABLE, 3, currentFloor)
+		--wayPointer:createPathBetweenWpsTSPMS(ITEMS_TABLE)
 
-	wayPointer:createPathBetweenWpsTSP(ITEMS_TABLE)
-	--wayPointer:createPathBetweenWpsTSPMS(ITEMS_TABLE)
+		local dungeonRoomBuilder = DungeonRoomBuilder.new(generatedMap, wayPoints)
+		dungeonRoomBuilder:createRooms(ITEMS_TABLE, ROOM_SHAPES, currentFloor)
 
-	local dungeonRoomBuilder = DungeonRoomBuilder.new(wayPoints)
-	dungeonRoomBuilder:createRooms(ITEMS_TABLE, ROOM_SHAPES)
-
-	local wallAutoBorder = WallAutoBorder.new(generatedMap)
-	wallAutoBorder:doWalls(
-		ITEMS_TABLE[1][1],
-		ITEMS_TABLE[0][1],
-		BLACK_WALL_BORDER
-	)
-
-	wallAutoBorder:createArchways(BLACK_WALL_BORDER) -- todo: most likely does not work
-
-	local marker = Marker.new(generatedMap)
-	marker:createMarkersAlternatively(
+		local wallAutoBorder = WallAutoBorder.new(generatedMap, wayPoints)
+		wallAutoBorder:doWalls(
 			ITEMS_TABLE[1][1],
-			75,
-			6
-	)
-	-- todo: doGround can work incorrectly, differences in original files \/
-	generatedMap:doGround2(
-		marker.markersTab,
-		cursor,
-		ITEMS_TABLE[1][1],
-		ITEMS_TABLE[12][1],
-		1,
-		6
-	)
+			ITEMS_TABLE[0][1],
+			BLACK_WALL_BORDER,
+			currentFloor
+		)
 
-	-- todo: can work incorrectly, differences in original files \/
-	generatedMap:correctGround(
-		ITEMS_TABLE[1][1],
-		ITEMS_TABLE[12][1]
-	)
+		wallAutoBorder:createArchways(BLACK_WALL_BORDER, currentFloor)
 
-	local groundAutoBorder = GroundAutoBorder.new(generatedMap)
-	groundAutoBorder:doGround(
-		ITEMS_TABLE[12][1],
-		ITEMS_TABLE[1][1],
-		ITEMS_TABLE[0][1],
-		SAND_GROUND_BASE_BORDER
-	)
-	groundAutoBorder:correctBorders(
-		ITEMS_TABLE[0][1],
-		SAND_GROUND_BASE_BORDER,
-		BLACK_WALL_BORDER,
-		ITEMS_TABLE[12][1],
-		BORDER_CORRECT_SHAPES,
-		30
-	)
+		local marker = Marker.new(generatedMap)
+		marker:createMarkersAlternatively(
+			ITEMS_TABLE[1][1],
+			70,
+			6,
+			currentFloor
+		)
+		generatedMap:doGround2(
+			marker.markersTab,
+			cursor,
+			ITEMS_TABLE[1][1],
+			ITEMS_TABLE[12][1],
+			1,
+			3
+		)
 
-	addRotatedTab(BRUSH_BORDER_SHAPES, 9)
-	marker:createMarkersAlternatively(
-		ITEMS_TABLE[1][1],
-		100,
-		4
-	)
-	local brush = Brush.new()
-	brush:doCarpetBrush(
-		marker.markersTab,
-		ITEMS_TABLE[0][1],
-		BRUSH_BORDER_SHAPES,
-		SAND_BASE_BRUSH
-	)
+		generatedMap:correctGround(
+			ITEMS_TABLE[1][1],
+			ITEMS_TABLE[12][1],
+			currentFloor
+		)
 
-	------ Detailing Map
+		local groundAutoBorder = GroundAutoBorder.new(generatedMap)
+		groundAutoBorder:doGround(
+			ITEMS_TABLE[12][1],
+			ITEMS_TABLE[1][1],
+			ITEMS_TABLE[0][1],
+			SAND_GROUND_BASE_BORDER,
+			currentFloor
+		)
+		groundAutoBorder:correctBorders(
+			ITEMS_TABLE[0][1],
+			SAND_GROUND_BASE_BORDER,
+			BLACK_WALL_BORDER,
+			ITEMS_TABLE[12][1],
+			BORDER_CORRECT_SHAPES,
+			40,
+			currentFloor
+		)
 
-	local detailer = Detailer.new(generatedMap, wayPoints)
-	detailer:createDetailsInRooms(ROOM_SHAPES, ITEMS_TABLE, BLACK_WALL_BORDER)
+		addRotatedTab(BRUSH_BORDER_SHAPES, 9)
+		marker:createMarkersAlternatively(
+			0,
+			130,
+			4,
+			currentFloor
+		)
+		local brush = Brush.new()
+		brush:doCarpetBrush(
+			marker.markersTab,
+			ITEMS_TABLE[0][1],
+			BRUSH_BORDER_SHAPES,
+			SAND_BASE_BRUSH
+		)
 
-	detailer:createDetailsOnMap(ITEMS_TABLE[11][1], 4)
-	detailer:createDetailsOnMap(ITEMS_TABLE[8][1], 10)
-	detailer:createDetailsOnMap(ITEMS_TABLE[8][2], 4)
-	detailer:createDetailsOnMap(ITEMS_TABLE[8][3], 1)
-	detailer:createDetailsOnMap(ITEMS_TABLE[9][2], 4)
-	detailer:createDetailsOnMap(ITEMS_TABLE[9][1], 2)
+		------ Detailing Map
 
-	detailer:createHangableDetails(
-		ITEMS_TABLE[0][1],
-		BLACK_WALL_BORDER,
-		ITEMS_TABLE,
-		15
-	)
+		local detailer = Detailer.new(generatedMap, wayPoints)
+		detailer:createDetailsInRooms(ROOM_SHAPES, ITEMS_TABLE, BLACK_WALL_BORDER, currentFloor)
 
-	local groundRandomizer = GroundRandomizer.new(generatedMap)
-	groundRandomizer:randomize(ITEMS_TABLE, 30)
+		detailer:createDetailsOnMap(ITEMS_TABLE[11][1], 4, currentFloor)
+		detailer:createDetailsOnMap(ITEMS_TABLE[8][1], 10, currentFloor)
+		detailer:createDetailsOnMap(ITEMS_TABLE[8][2], 4, currentFloor)
+		detailer:createDetailsOnMap(ITEMS_TABLE[8][3], 1, currentFloor)
+		detailer:createDetailsOnMap(ITEMS_TABLE[9][2], 4, currentFloor)
+		detailer:createDetailsOnMap(ITEMS_TABLE[9][1], 2, currentFloor)
+
+		detailer:createHangableDetails(
+			ITEMS_TABLE[0][1],
+			BLACK_WALL_BORDER,
+			ITEMS_TABLE,
+			15,
+			currentFloor
+		)
+
+		local groundRandomizer = GroundRandomizer.new(generatedMap)
+		groundRandomizer:randomize(ITEMS_TABLE, 30, currentFloor)
+
+		-- multi-floor
+		if (currentFloor ~= mainPos.z) then
+			-- Central Points
+			--promotedWaypoints[currentFloor + 1] = {
+			--	wayPointer:getCentralWaypointForNextFloor(promotedWaypoints, wayPoints, currentFloor)
+			--}
+			--promotedWaypoints[currentFloor + 1] = {
+			--	wayPointer:getCentralWaypointForNextFloor(promotedWaypoints, wayPoints, currentFloor, true)
+			--}
+
+			-- External Points
+			promotedWaypoints[currentFloor + 1] = {
+				WayPointer:getExternalWaypointForNextFloor(promotedWaypoints, wayPoints, currentFloor)
+			}
+			--promotedWaypoints[currentFloor + 1] = {
+			--	WayPointer:getExternalWaypointForNextFloor(promotedWaypoints, wayPoints, currentFloor, math.random(1,4))
+			--}
+		else
+			print("No waypoints to promote for next floor - last floor processed.")
+		end
+	end
+
+	local elevator = ElevationBuilder.new(generatedMap, promotedWaypoints, TOMB_SAND_WALL_BORDER)
+	elevator:createGreyMountainRamps("random", 4837)
 
 	if (PRECREATION_TABLE_MODE and RUNNING_MODE == 'tfs') then
 		local mapCreator = MapCreator.new(generatedMap)

@@ -1,8 +1,9 @@
 CaveRoomBuilder = {}
 CaveRoomBuilder.__index = CaveRoomBuilder
 
-function CaveRoomBuilder.new(wayPoints)
+function CaveRoomBuilder.new(map, wayPoints)
     local instance = setmetatable({}, CaveRoomBuilder)
+	instance.map = map
     instance.wayPoints = wayPoints
 
     return instance
@@ -11,10 +12,19 @@ end
 function CaveRoomBuilder:createRooms(
 	itemsTab,
 	approximatedWidth,
-	approximatedHeight
+	approximatedHeight,
+	currentFloor
 )
     local startTime = os.clock()
-    for i = 1, #self.wayPoints do
+	local wayPoints = self.wayPoints
+	if (self.map.sizeZ > 1 and
+		currentFloor ~= nil and
+		self.wayPoints[currentFloor] ~= nil
+	) then
+		wayPoints = self.wayPoints[currentFloor]
+	end
+
+    for _, waypoint in pairs(wayPoints) do
         local newWidthMin = math.floor((approximatedWidth/3)*2)
         local newHeightMin = math.floor((approximatedHeight/3)*2)
         local newWidthMax = math.floor((approximatedWidth/3)*4)
@@ -22,7 +32,7 @@ function CaveRoomBuilder:createRooms(
 
         local newWidth = math.random(newWidthMin, newWidthMax)
         local newHeight = math.random(newHeightMin, newHeightMax)
-        self:_createRoom(itemsTab, self.wayPoints[i]["pos"], newWidth, newHeight)
+        self:_createRoom(itemsTab, waypoint["pos"], newWidth, newHeight)
     end
 
     print("Rooms created, execution time: " .. os.clock() - startTime)

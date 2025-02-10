@@ -1,28 +1,37 @@
 DungeonRoomBuilder = {}
 DungeonRoomBuilder.__index = DungeonRoomBuilder
 
-function DungeonRoomBuilder.new(wayPoints)
+function DungeonRoomBuilder.new(map, wayPoints)
     local instance = setmetatable({}, DungeonRoomBuilder)
+	instance.map = map
     instance.wayPoints = wayPoints
 
     return instance
 end
 
-function DungeonRoomBuilder:createRooms(itemsTab, roomShapes)
+function DungeonRoomBuilder:createRooms(itemsTab, roomShapes, currentFloor)
     local startTime = os.clock()
-    for a = 1, #self.wayPoints do
+	local wayPoints = self.wayPoints
+	if (self.map.sizeZ > 1 and
+		currentFloor ~= nil and
+		self.wayPoints[currentFloor] ~= nil
+	) then
+		wayPoints = self.wayPoints[currentFloor]
+	end
+
+    for a = 1, #wayPoints do
         local randValue = math.random(1,#roomShapes)
         local pom = {}
         local evenHeight = (roomShapes[randValue].height % 2)
         local evenWidth = (roomShapes[randValue].width % 2)
 
-        pom.x = self.wayPoints[a]["pos"].x
-        pom.y = self.wayPoints[a]["pos"].y
-        pom.z = self.wayPoints[a]["pos"].z
+        pom.x = wayPoints[a]["pos"].x
+        pom.y = wayPoints[a]["pos"].y
+        pom.z = wayPoints[a]["pos"].z
 
-        self.wayPoints[a]["room_shape"] = randValue
-        self.wayPoints[a]["room_height"] = roomShapes[randValue].height
-        self.wayPoints[a]["room_width"] = roomShapes[randValue].width
+		wayPoints[a]["room_shape"] = randValue
+		wayPoints[a]["room_height"] = roomShapes[randValue].height
+		wayPoints[a]["room_width"] = roomShapes[randValue].width
 
         if (evenHeight == 0) then -- even height of the room
             pom.y = (pom.y - (roomShapes[randValue].height / 2) + 1 ) -- + math.random(0,1)

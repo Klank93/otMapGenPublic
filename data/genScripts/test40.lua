@@ -6,7 +6,7 @@ MAP_CONFIGURATION = {
     mainPos = {x = 145, y = 145, z = 7},
     mapSizeX = 40,
     mapSizeY = 40,
-	mapSizeZ = 3, -- if set to greater than 1 => multi floor
+	mapSizeZ = 4, -- if set to greater than 1 => multi floor
     wpMinDist = 8,
     wayPointsCount = 7
 }
@@ -24,7 +24,7 @@ local mapSizeZ = MAP_CONFIGURATION.mapSizeZ
 local wpMinDist = MAP_CONFIGURATION.wpMinDist
 local wayPointsCount = MAP_CONFIGURATION.wayPointsCount
 local wayPoints = {}
-local generatedMap
+local generatedMap = GroundMapper
 
 local script = {}
 
@@ -57,8 +57,8 @@ function script.run()
 		wayPointer:createPathBetweenWpsTSP(ITEMS_TABLE, 3, currentFloor) -- exact one
 		-- wayPointer:createPathBetweenWpsTSPMS(ITEMS_TABLE)
 
-		local roomBuilder = DungeonRoomBuilder.new(wayPoints[currentFloor]) -- todo: an issue when we have multi-floor gen script and we set in it mapSizeZ = 1
-		roomBuilder:createRooms(ITEMS_TABLE, ROOM_SHAPES)
+		local roomBuilder = DungeonRoomBuilder.new(generatedMap, wayPoints)
+		roomBuilder:createRooms(ITEMS_TABLE, ROOM_SHAPES, currentFloor)
 
 		print('> 4 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
 
@@ -75,7 +75,7 @@ function script.run()
 		local marker = Marker.new(generatedMap)
 		marker:createMarkersAlternatively(
 			ITEMS_TABLE[1][1],
-			12,
+			6,
 			5,
 			currentFloor
 		)
@@ -97,7 +97,7 @@ function script.run()
 
 		marker:createMarkersAlternatively(
 			ITEMS_TABLE[1][1],
-			8,
+			5,
 			6,
 			currentFloor
 		)
@@ -146,7 +146,7 @@ function script.run()
 
 		marker:createMarkersAlternatively(
 			0,
-			18,
+			17,
 			4,
 			currentFloor
 		)
@@ -169,8 +169,8 @@ function script.run()
 		------ Detailing Map
 
 		local startTime = os.clock()
-		local detailer = Detailer.new(generatedMap, wayPoints[currentFloor])
-		detailer:createDetailsInRooms(ROOM_SHAPES, ITEMS_TABLE, TOMB_SAND_WALL_BORDER)
+		local detailer = Detailer.new(generatedMap, wayPoints)
+		detailer:createDetailsInRooms(ROOM_SHAPES, ITEMS_TABLE, TOMB_SAND_WALL_BORDER, currentFloor)
 
 		print('> 15 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
 
@@ -194,23 +194,39 @@ function script.run()
 
 		-- multi-floor
 		if (currentFloor ~= mainPos.z) then
-			promotedWaypoints[currentFloor + 1] = wayPointer:getCentralWaypointForNextFloor(wayPoints[currentFloor])
+			-- Central Points
+			--promotedWaypoints[currentFloor + 1] = {
+			--	wayPointer:getCentralWaypointForNextFloor(promotedWaypoints, wayPoints, currentFloor)
+			--}
+			--promotedWaypoints[currentFloor + 1] = {
+			--	wayPointer:getCentralWaypointForNextFloor(promotedWaypoints, wayPoints, currentFloor, true)
+			--}
+
+			-- External Points
+			promotedWaypoints[currentFloor + 1] = {
+				WayPointer:getExternalWaypointForNextFloor(promotedWaypoints, wayPoints, currentFloor)
+			}
+			--promotedWaypoints[currentFloor + 1] = {
+			--	WayPointer:getExternalWaypointForNextFloor(promotedWaypoints, wayPoints, currentFloor, math.random(1,4))
+			--}
 		else
 			print("No waypoints to promote for next floor - last floor processed.")
 		end
 	end
 
+	print('> 17 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
+
 	local elevator = ElevationBuilder.new(generatedMap, promotedWaypoints, TOMB_SAND_WALL_BORDER)
 	--elevator:createRopeLadders("north") -- just example
 	elevator:createDesertRamps("random", 4837)
 
-	print('> 17 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
+	print('> 18 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
 
 	if (PRECREATION_TABLE_MODE and RUNNING_MODE == 'tfs') then
 		local mapCreator = MapCreator.new(generatedMap)
 		mapCreator:drawMap()
 
-		print('> 18 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
+		print('> 19 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
 	end
 end
 

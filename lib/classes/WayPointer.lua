@@ -179,7 +179,7 @@ function WayPointer:createWaypointsAlternatively(pointsAmount, currentFloor) -- 
     -- /\ if #availableMapTilesTab is near to 0, reconsider decreasing the value of wpMinDist or increase the map size
     print("Waypoints created alternatively, execution time: ".. os.clock() - startTime)
 
-	if (self.map.sizeZ == 1) then -- todo: an issue when we have multi-floor gen script and we set in it mapSizeZ = 1
+	if (self.map.sizeZ == 1) then
 		return self.wayPoints[currentFloor] -- backward compatibility
 	else
 		return self.wayPoints
@@ -241,14 +241,14 @@ function WayPointer:_createPathBetweenTwoPoints(itemsTab, pos1, pos2, currentFlo
                 cr:right(1)
                 for i=1, #self.wayPoints[currentFloor] do
                     if (cr.pos ~= self.wayPoints[currentFloor][i]["pos"]) then
-                        brush:doBrushLines(itemsTab, 3, cr.pos, 0)
+                        brush:doBrushLines(itemsTab[1], 3, cr.pos, 0)
                     end
                 end
             elseif (pom > 0) then
                 cr:left(1)
                 for i=1, #self.wayPoints[currentFloor] do
                     if (cr.pos ~= self.wayPoints[currentFloor][i]["pos"]) then
-                        brush:doBrushLines(itemsTab, 3, cr.pos, 0)
+                        brush:doBrushLines(itemsTab[1], 3, cr.pos, 0)
                     end
                 end
             elseif (pom == 0)then
@@ -256,7 +256,7 @@ function WayPointer:_createPathBetweenTwoPoints(itemsTab, pos1, pos2, currentFlo
             end
         until (cr.pos.x == pos2.x)
 
-        brush:doBrushSquares(itemsTab, 3, cr.pos)
+        brush:doBrushSquares(itemsTab[1], 3, cr.pos)
         -- doCreateItemMock(598, 1, cr.pos) -- points the crossing
 
         cr:setPos(pos2.x, pos1.y, pos1.z)
@@ -267,14 +267,14 @@ function WayPointer:_createPathBetweenTwoPoints(itemsTab, pos1, pos2, currentFlo
                 cr:down(1)
                 for i=1, #self.wayPoints[currentFloor] do
                     if (cr.pos ~= self.wayPoints[currentFloor][i]["pos"]) then
-                        brush:doBrushLines(itemsTab, 3, cr.pos, 1)
+                        brush:doBrushLines(itemsTab[1], 3, cr.pos, 1)
                     end
                 end
             elseif (pom > 0) then
                 cr:up(1)
                 for i=1, #self.wayPoints[currentFloor] do
                     if (cr.pos ~= self.wayPoints[currentFloor][i]["pos"]) then
-                        brush:doBrushLines(itemsTab, 3, cr.pos, 1)
+                        brush:doBrushLines(itemsTab[1], 3, cr.pos, 1)
                     end
                 end
             elseif (pom == 0)then
@@ -282,7 +282,7 @@ function WayPointer:_createPathBetweenTwoPoints(itemsTab, pos1, pos2, currentFlo
             end
         until (cr.pos.y == pos2.y)
 
-        brush:doBrushSquares(itemsTab, 3, cr.pos)
+        brush:doBrushSquares(itemsTab[1], 3, cr.pos)
         --doCreateItemMock(598, 1, cr.pos) -- points the crossing
 
     else
@@ -295,14 +295,14 @@ function WayPointer:_createPathBetweenTwoPoints(itemsTab, pos1, pos2, currentFlo
                 cr:down(1) -- todo: there can be an issue in method, with parameters
                 for i=1, #self.wayPoints[currentFloor] do
                     if (cr.pos ~= self.wayPoints[currentFloor][i]["pos"]) then
-                        brush:doBrushLines(itemsTab, 3, cr.pos, 1)
+                        brush:doBrushLines(itemsTab[1], 3, cr.pos, 1)
                     end
                 end
             elseif (pom > 0) then
                 cr:up(1)
                 for i=1, #self.wayPoints[currentFloor] do
                     if (cr.pos ~= self.wayPoints[currentFloor][i]["pos"]) then
-                        brush:doBrushLines(itemsTab, 3, cr.pos, 1)
+                        brush:doBrushLines(itemsTab[1], 3, cr.pos, 1)
                     end
                 end
             elseif (pom == 0) then
@@ -310,7 +310,7 @@ function WayPointer:_createPathBetweenTwoPoints(itemsTab, pos1, pos2, currentFlo
             end
         until (cr.pos.y == pos2.y)
 
-        brush:doBrushSquares(itemsTab, 3, cr.pos)
+        brush:doBrushSquares(itemsTab[1], 3, cr.pos)
 
         --doCreateItemMock(598, 1, cr.pos) -- points the crossing
 
@@ -322,14 +322,14 @@ function WayPointer:_createPathBetweenTwoPoints(itemsTab, pos1, pos2, currentFlo
                 cr:right(1)
                 for i=1, #self.wayPoints[currentFloor] do
                     if (cr.pos ~= self.wayPoints[currentFloor][i]["pos"]) then
-                        brush:doBrushLines(itemsTab, 3, cr.pos, 0)
+                        brush:doBrushLines(itemsTab[1], 3, cr.pos, 0)
                     end
                 end
             elseif (pom > 0) then
                 cr:left(1)
                 for i=1, #self.wayPoints[currentFloor] do
                     if (cr.pos ~= self.wayPoints[currentFloor][i]["pos"]) then
-                        brush:doBrushLines(itemsTab, 3, cr.pos, 0)
+                        brush:doBrushLines(itemsTab[1], 3, cr.pos, 0)
                     end
                 end
             elseif (pom == 0) then
@@ -337,14 +337,14 @@ function WayPointer:_createPathBetweenTwoPoints(itemsTab, pos1, pos2, currentFlo
             end
         until (cr.pos.x == pos2.x)
 
-        brush:doBrushSquares(itemsTab, 3, cr.pos)
+        brush:doBrushSquares(itemsTab[1], 3, cr.pos)
         --doCreateItemMock(598, 1, cr.pos) -- points the crossing
     end
 end
 
 function WayPointer:createPathBetweenWpsTSP(itemsTab, brushSize, currentFloor)
-	currentFloor = currentFloor or self.map.mainPos.z
-	brushSize = brushSize or 3
+	currentFloor = defaultParam(currentFloor, self.map.mainPos.z)
+	brushSize = defaultParam(brushSize, 3)
     local startTime = os.clock()
     local tsp = TSP.new(self.wayPoints[currentFloor])
     -- looks like original TSP is actually faster than TSPSA,
@@ -390,12 +390,24 @@ function WayPointer:createPathBetweenWpsTSPMS(itemsTab, brushSize)
     print("Paths between waypoints created, execution time: " .. os.clock() - startTime)
 end
 
-function WayPointer:getCentralWaypointForNextFloor(waypoints)
-	return self:_promoteWaypoints(waypoints, math.random(1,4), true, 1)
+function WayPointer:getCentralWaypointForNextFloor(promotedWaypoints, wayPoints, currentFloor, isRandomQuadrant)
+	-- return wayPoint nearest to the center, from random quadrant if requested
+	if (isRandomQuadrant == true) then
+		return self:_promoteCentralWaypoint(promotedWaypoints, wayPoints, currentFloor, math.random(1,4))
+	end
+
+	-- without reconsidering quadrants, just nearest to center
+	return self:_promoteClosestToCenter(promotedWaypoints, wayPoints, currentFloor)
 end
 
-function WayPointer:getWaypointsForNextFloor(waypoints, quadrantNumber, numToPromote)
-	return self:_promoteWaypoints(waypoints, quadrantNumber, false, numToPromote)
+function WayPointer:getExternalWaypointForNextFloor(promotedWaypoints, wayPoints, currentFloor, quadrantNumber)
+	-- return wayPoint further from the center, from specific quadrant if requested
+	if (quadrantNumber ~= nil) then
+		return self:_promoteExternalWaypoint(promotedWaypoints, wayPoints, currentFloor, quadrantNumber)
+	end
+
+	-- without reconsidering quadrants, just furthest from center
+	return self:_promoteFurtherFromCenter(promotedWaypoints, wayPoints, currentFloor)
 end
 
 function WayPointer:_createPathBetweenTwoPointsTSP(itemsTab, pos1, pos2, brushSize, currentFloor)
@@ -417,12 +429,12 @@ function WayPointer:_createPathBetweenTwoPointsTSP(itemsTab, pos1, pos2, brushSi
 
             for i = 1, #self.wayPoints[currentFloor] do
                 if cr.pos ~= self.wayPoints[currentFloor][i]["pos"] then
-                    brush:doBrushLines(itemsTab, brushSize, cr.pos, (axis == "x") and 0 or 1)
+                    brush:doBrushLines(itemsTab[1], brushSize, cr.pos, (axis == "x") and 0 or 1)
                 end
             end
         end
 
-        brush:doBrushSquares(itemsTab, brushSize, cr.pos)
+        brush:doBrushSquares(itemsTab[1], brushSize, cr.pos)
     end
 
     cr:setPos(pos1.x, pos1.y, pos1.z)
@@ -434,53 +446,275 @@ function WayPointer:_createPathBetweenTwoPointsTSP(itemsTab, pos1, pos2, brushSi
     moveCursorAndBrush(pos1.y, pos2.y, "y")
 end
 
-function WayPointer:_promoteWaypoints(waypoints, quadrantNumber, useCentralPoint, numToPromote)
-	local filteredWaypoints = {}
+function WayPointer:_promoteCentralWaypoint(promotedWaypoints, wayPoints, currentFloor, quadrantNumber)
+	local startTime = os.clock()
+	if not wayPoints[currentFloor] or #wayPoints[currentFloor] == 0 then
+		error("Empty input wayPoints array for floor " .. tostring(currentFloor))
+	end
+
+	local centerX, centerY = self:_getCentralAxes(wayPoints[currentFloor])
+	local bestPoint = nil
+	local minDistance = math.huge
+
+	-- Ensure promotedWaypoints[currentFloor + 1] exists
+	if not promotedWaypoints[currentFloor + 1] then
+		promotedWaypoints[currentFloor + 1] = {}
+	end
+
+	-- Find the best central point in the specified quadrant
+	for _, waypoint in ipairs(wayPoints[currentFloor]) do
+		local x, y = waypoint.pos.x, waypoint.pos.y
+		local inQuadrant =
+			(quadrantNumber == 1 and x >= centerX and y <= centerY) or
+			(quadrantNumber == 2 and x <= centerX and y <= centerY) or
+			(quadrantNumber == 3 and x <= centerX and y >= centerY) or
+			(quadrantNumber == 4 and x >= centerX and y >= centerY)
+
+		local distance = (x - centerX)^2 + (y - centerY)^2 -- Squared distance for efficiency
+
+		if (inQuadrant and
+			distance < minDistance and
+			not self:_isPointTooClose(promotedWaypoints, currentFloor, x, y) and
+			not self:_isPointAlreadyPromoted(promotedWaypoints[currentFloor + 1], x, y)
+		) then
+			minDistance = distance
+			bestPoint = waypoint
+		end
+	end
+
+	if not bestPoint then
+		local newQuadrantNumber = (quadrantNumber + 1) % 5
+		if (newQuadrantNumber == 0) then
+			newQuadrantNumber = 1
+		end
+
+		print("##################### WARNING #####################")
+		print("### WARNING: Could not find a valid central waypoint for quadrant " ..
+			tostring(quadrantNumber) .. " on floor " ..
+			tostring(currentFloor) .. " retrying with new quadrant number: " ..
+			newQuadrantNumber
+		)
+
+		return self:_promoteCentralWaypoint(promotedWaypoints, wayPoints, currentFloor, newQuadrantNumber)
+	end
+
+	print("Promoting central waypoint for elevation done, execution time: " .. os.clock() - startTime)
+	return {
+		["pos"] = {
+			x = bestPoint.pos.x,
+			y = bestPoint.pos.y,
+			z = bestPoint.pos.z + 1
+		},
+		["room_shape"] = nil,
+		["room_height"] = nil,
+		["room_width"] = nil
+	}
+end
+
+function WayPointer:_promoteClosestToCenter(promotedWaypoints, wayPoints, currentFloor)
+	local startTime = os.clock()
+	if not wayPoints[currentFloor] or #wayPoints[currentFloor] == 0 then
+		error("Empty input wayPoints array for floor " .. tostring(currentFloor))
+	end
+
+	local centerX, centerY = self:_getCentralAxes(wayPoints[currentFloor])
+	local bestPoint = nil
+	local minDistance = math.huge
+
+	-- Ensure promotedWaypoints[currentFloor + 1] exists
+	if not promotedWaypoints[currentFloor + 1] then
+		promotedWaypoints[currentFloor + 1] = {}
+	end
+
+	-- Find the best central point
+	for _, waypoint in ipairs(wayPoints[currentFloor]) do
+		local x, y = waypoint.pos.x, waypoint.pos.y
+		local distance = (x - centerX)^2 + (y - centerY)^2 -- Squared distance for efficiency
+
+		if (distance < minDistance and
+			not self:_isPointTooClose(promotedWaypoints, currentFloor, x, y) and
+			not self:_isPointAlreadyPromoted(promotedWaypoints[currentFloor + 1], x, y)
+		) then
+			minDistance = distance
+			bestPoint = waypoint
+		end
+	end
+
+	if not bestPoint then
+		error("Could not find a valid central waypoint for floor " .. tostring(currentFloor))
+	end
+
+	print("Promoting closest central waypoint for elevation done, execution time: " .. os.clock() - startTime)
+	return {
+		["pos"] = {
+			x = bestPoint.pos.x,
+			y = bestPoint.pos.y,
+			z = bestPoint.pos.z + 1
+		},
+		["room_shape"] = nil,
+		["room_height"] = nil,
+		["room_width"] = nil
+	}
+end
+
+function WayPointer:_promoteExternalWaypoint(promotedWaypoints, wayPoints, currentFloor, quadrantNumber)
+	local startTime = os.clock()
+	if not wayPoints[currentFloor] or #wayPoints[currentFloor] == 0 then
+		error("Empty input wayPoints array for floor " .. tostring(currentFloor))
+	end
+
+	local centerX, centerY = self:_getCentralAxes(wayPoints[currentFloor])
+	local farthestPoint = nil
+	local maxDistance = -math.huge
+
+	-- Ensure promotedWaypoints[currentFloor + 1] exists
+	if not promotedWaypoints[currentFloor + 1] then
+		promotedWaypoints[currentFloor + 1] = {}
+	end
+
+	-- Determine the farthest point in the specified quadrant
+	for _, point in ipairs(wayPoints[currentFloor]) do
+		local x, y = point.pos.x, point.pos.y
+		local distance = (x - centerX)^2 + (y - centerY)^2 -- Squared distance for efficiency
+
+		if (quadrantNumber == 1 and x >= centerX and y <= centerY) or
+			(quadrantNumber == 2 and x <= centerX and y <= centerY) or
+			(quadrantNumber == 3 and x <= centerX and y >= centerY) or
+			(quadrantNumber == 4 and x >= centerX and y >= centerY) then
+
+			if (not self:_isPointTooClose(promotedWaypoints, currentFloor, x, y) and
+				not self:_isPointAlreadyPromoted(promotedWaypoints[currentFloor + 1], x, y) and
+				distance > maxDistance
+			) then
+				maxDistance = distance
+				farthestPoint = point
+			end
+		end
+	end
+
+	if not farthestPoint then
+		local newQuadrantNumber = (quadrantNumber + 1) % 5
+		if newQuadrantNumber == 0 then
+			newQuadrantNumber = 1
+		end
+
+		print("##################### WARNING #####################")
+		print("### WARNING: Could not find a valid farthest waypoint in quadrant " ..
+			tostring(quadrantNumber) .. " on floor " ..
+			tostring(currentFloor) .. " retrying with new quadrant number: " ..
+			newQuadrantNumber
+		)
+
+		return self:_promoteExternalWaypoint(promotedWaypoints, wayPoints, currentFloor, newQuadrantNumber)
+	end
+
+	print("Promoting external waypoint from quadrant: " .. quadrantNumber ..
+		" for elevation done, execution time: " .. os.clock() - startTime)
+	return {
+		["pos"] = {
+			x = farthestPoint.pos.x,
+			y = farthestPoint.pos.y,
+			z = farthestPoint.pos.z + 1
+		},
+		["room_shape"] = nil,
+		["room_height"] = nil,
+		["room_width"] = nil
+	}
+end
+
+function WayPointer:_promoteFurtherFromCenter(promotedWaypoints, wayPoints, currentFloor)
+	local startTime = os.clock()
+	if not wayPoints[currentFloor] or #wayPoints[currentFloor] == 0 then
+		error("Empty input wayPoints array for floor " .. tostring(currentFloor))
+	end
+
+	local centerX, centerY = self:_getCentralAxes(wayPoints[currentFloor])
+	local farthestPoint = nil
+	local maxDistance = -math.huge
+
+	-- Ensure promotedWaypoints[currentFloor + 1] exists
+	if not promotedWaypoints[currentFloor + 1] then
+		promotedWaypoints[currentFloor + 1] = {}
+	end
+
+	-- Find the farthest point from the center
+	for _, point in ipairs(wayPoints[currentFloor]) do
+		local x, y = point.pos.x, point.pos.y
+		local distance = (x - centerX)^2 + (y - centerY)^2 -- Squared distance for efficiency
+
+		-- Check if the point is already promoted on the next floor or too close to previous floor
+		if (not self:_isPointTooClose(promotedWaypoints, currentFloor, x, y) and
+			not self:_isPointAlreadyPromoted(promotedWaypoints[currentFloor + 1], x, y) and
+			distance > maxDistance
+		) then
+			maxDistance = distance
+			farthestPoint = point
+		end
+	end
+
+	if not farthestPoint then
+		print("##################### WARNING #####################")
+		error("WARNING: Could not find a valid farthest waypoint from center on floor " .. tostring(currentFloor))
+		--return nil -- Return nil instead of error to avoid hard crashes
+	end
+
+	print("Promoting furthest external waypoint for elevation done, execution time: " .. os.clock() - startTime)
+	return {
+		["pos"] = {
+			x = farthestPoint.pos.x,
+			y = farthestPoint.pos.y,
+			z = farthestPoint.pos.z + 1
+		},
+		["room_shape"] = nil,
+		["room_height"] = nil,
+		["room_width"] = nil
+	}
+end
+
+function WayPointer:_getCentralAxes(points)
 	local centerX, centerY = 0, 0
 	local totalX, totalY, count = 0, 0, 0
 
 	-- Calculate the center of all waypoints if central point selection is enabled
-	if useCentralPoint == true then
-		for _, waypoint in ipairs(waypoints) do
-			totalX = totalX + waypoint.pos.x
-			totalY = totalY + waypoint.pos.y
-			count = count + 1
-		end
-		if count > 0 then
-			centerX = totalX / count
-			centerY = totalY / count
-		end
+	for _, point in ipairs(points) do
+		totalX = totalX + point.pos.x
+		totalY = totalY + point.pos.y
+		count = count + 1
 	end
 
-	-- Filter waypoints based on the selected quadrantNumber
-	for _, waypoint in ipairs(waypoints) do
-		local x, y = waypoint.pos.x, waypoint.pos.y
-		if quadrantNumber == 1 and x >= centerX and y <= centerY then
-			table.insert(filteredWaypoints, waypoint)
-		elseif quadrantNumber == 2 and x <= centerX and y <= centerY then
-			table.insert(filteredWaypoints, waypoint)
-		elseif quadrantNumber == 3 and x <= centerX and y >= centerY then
-			table.insert(filteredWaypoints, waypoint)
-		elseif quadrantNumber == 4 and x >= centerX and y >= centerY then
-			table.insert(filteredWaypoints, waypoint)
-		end
+	if count > 0 then
+		centerX = totalX / count
+		centerY = totalY / count
+
+		return totalX / count, totalY / count
 	end
 
-	-- Randomly select waypoints to promote if more than the required number are available
-	local promotedWaypoints = {}
-	math.randomseed(os.time())
-	while #filteredWaypoints > 0 and #promotedWaypoints < numToPromote do
-		local index = math.random(1, #filteredWaypoints)
-		local promotedWaypoint = table.remove(filteredWaypoints, index)
-		local waypointCopy = {
-			["pos"] = {x = promotedWaypoint.pos.x, y = promotedWaypoint.pos.y, z = promotedWaypoint.pos.z + 1},
-			["room_shape"] = nil,
-			["room_height"] = nil,
-			["room_width"] = nil
-		}
-
-		table.insert(promotedWaypoints, waypointCopy)
-	end
-
-	return promotedWaypoints
+	return nil, nil
 end
+
+function WayPointer:_isPointTooClose(promotedWaypoints, prevFloor, x, y, minimumSquareDistance)
+	minimumSquareDistance = defaultParam(minimumSquareDistance, 3)
+	-- Check if a similar point (close one) exists on the previous floor
+	if promotedWaypoints[prevFloor] then
+		for _, prevPoint in ipairs(promotedWaypoints[prevFloor]) do
+			local px, py = prevPoint.pos.x, prevPoint.pos.y
+			if math.abs(px - x) <= minimumSquareDistance and math.abs(py - y) <= minimumSquareDistance then
+				return true
+			end
+		end
+	end
+
+	return false
+end
+
+function WayPointer:_isPointAlreadyPromoted(promotedWaypointsFloor, x, y)
+	if promotedWaypointsFloor then
+		for _, point in ipairs(promotedWaypointsFloor) do
+			if point.pos.x == x and point.pos.y == y then
+				return true
+			end
+		end
+	end
+	return false
+end
+
