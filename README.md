@@ -1,5 +1,5 @@
 # Abcq/Acedb Map Generator
-### version 0.0.9 (alpha)
+### version 0.1.0 (alpha)
 
 ## The Goal:
 The goal of this script/app is to provide a tool for map generation for Open Tibia Servers.
@@ -50,7 +50,9 @@ where ```<params_list_separated_by_comma>``` look like:\
 under the global table variable, which will represent all new items on the map and later based on this data
 create the actual items on the map.
 Otherwise, it will create items on map during the generation process, in just one step.
-Which way to use depends on your specific needs (tableMode is incredibly faster).
+Which way to use depends on your specific needs.
+
+**TableMode is incredibly faster, it's highly recommended to use it! Generating multi-floor maps on running TFS without it can be almost impossible.**
 - ```<optional_save_param>``` optional param, determining do we want to save generated map
   after the process. If yes, value is "```save```". The generated file will appear in the TFS root directory.
 #### Examples:
