@@ -105,7 +105,7 @@ function script.run()
 		addRotatedTab(BRUSH_BORDER_SHAPES, 9)
 		marker:createMarkersAlternatively(
 			0,
-			20,
+			18,
 			4,
 			currentFloor
 		)

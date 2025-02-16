@@ -79,7 +79,7 @@ normally, in running TFS and causes at the same time server freeze, outside the 
 so TFS only draws a map based on already created data.
 This approach, with some small modifications will allow to generate maps without any freeze completely :)
 
-Bad news is that, I will not continue extending this feature for public - want to keep no-freeze map generation private, for myself.
+Im not going to continue extending this feature for public - want to keep no-freeze map generation private, for myself.
 
 ### Running unit tests:
 - ```Lua tests/unit/testMockOperations.lua```
