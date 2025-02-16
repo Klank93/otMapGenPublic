@@ -26,7 +26,7 @@ function MapJsonReader:load(filename)
 		return false, "JSON decoding error: " .. err
 	end
 
-	local map = self:deserializeMapData(data)
+	local map = self:deserializeMapData(data['map'])
 	print("# Map: " .. filename .. " loading finished.")
 
 	return map

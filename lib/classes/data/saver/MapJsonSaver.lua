@@ -12,18 +12,20 @@ function MapJsonSaver.new(map, mapData)
 end
 
 function MapJsonSaver:serializeMapData()
-	local serializedData = {}
+	local serializedData = {
+		['map'] = {}
+	}
 
 	for x, xData in pairs(self.mapData) do
-		serializedData[x] = {}
+		serializedData['map'][x] = {}
 		for y, yData in pairs(xData) do
-			serializedData[x][y] = {}
+			serializedData['map'][x][y] = {}
 			for z, zData in pairs(yData) do
-				serializedData[x][y][z] = {}
+				serializedData['map'][x][y][z] = {}
 
 				-- Zamiast trzymać `stackpos` jako indeks, zamień go na klucz
 				for stackpos, itemData in ipairs(zData) do
-					table.insert(serializedData[x][y][z], {
+					table.insert(serializedData['map'][x][y][z], {
 						stackpos = stackpos,
 						item = itemData
 					})
@@ -35,10 +37,10 @@ function MapJsonSaver:serializeMapData()
 	return serializedData
 end
 
-function MapJsonSaver:save()
+function MapJsonSaver:save(generalStartTime)
 	local filename = ROOT_PATH .. 'generatedFiles/json/' ..
 		MAP_CONFIGURATION.saveMapFilename ..
-		string.format('-%s.json', os.date('%S'))
+		string.format('-%s.json', generalStartTime)
 	print('# Running saving map: ' .. filename)
 
 	local file = io.open(filename, "w")

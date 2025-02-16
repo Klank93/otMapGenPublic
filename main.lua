@@ -43,7 +43,9 @@ end
 local function saveGeneratedMap(scriptName, generatedMap, generalStartTime)
 	logger = setupLogger(scriptName, "saving-map", generalStartTime)
 
-	local filename = rootPath .. "generatedFiles/" .. MAP_CONFIGURATION.saveMapFilename .. string.format("-%s.otbm", os.date("%S"))
+	local filename = rootPath ..
+		"generatedFiles/" .. MAP_CONFIGURATION.saveMapFilename ..
+		string.format("-%s.otbm", generalStartTime)
 	local mainPos = generatedMap.mainPos
 	local mapSizeX, mapSizeY, mapSizeZ = generatedMap.sizeX, generatedMap.sizeY, generatedMap.sizeZ - 1
 
@@ -60,7 +62,7 @@ local function saveGeneratedJson(scriptName, generatedMap, generalStartTime)
 	logger = setupLogger(scriptName, "saving-map", generalStartTime)
 
 	local mapJsonSaver = MapJsonSaver.new(generatedMap, CLI_FINAL_MAP_TABLE)
-	mapJsonSaver:save()
+	mapJsonSaver:save(generalStartTime)
 end
 
 -- Read map from JSON
