@@ -211,6 +211,12 @@ function script.run()
 		local mapCreator = MapCreator.new(generatedMap)
 		mapCreator:drawMap()
 	end
+
+	return generatedMap
+end
+
+function script.getMap()
+	return GroundMapper.new(mainPos, mapSizeX, mapSizeY, mapSizeZ, wpMinDist)
 end
 
 return script

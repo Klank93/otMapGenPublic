@@ -105,7 +105,7 @@ function script.run()
 		addRotatedTab(BRUSH_BORDER_SHAPES, 9)
 		marker:createMarkersAlternatively(
 			0,
-			20,
+			18,
 			4,
 			currentFloor
 		)
@@ -169,6 +169,12 @@ function script.run()
 		local mapCreator = MapCreator.new(generatedMap)
 		mapCreator:drawMap()
 	end
+
+	return generatedMap
+end
+
+function script.getMap()
+	return GroundMapper.new(mainPos, mapSizeX, mapSizeY, mapSizeZ, wpMinDist)
 end
 
 return script

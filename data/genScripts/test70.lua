@@ -265,6 +265,12 @@ function script.run()
 
 		print('> 21 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
 	end
+
+	return generatedMap
+end
+
+function script.getMap()
+	return GroundMapper.new(mainPos, mapSizeX, mapSizeY, mapSizeZ, wpMinDist)
 end
 
 return script

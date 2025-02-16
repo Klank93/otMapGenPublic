@@ -212,4 +212,8 @@ function script.run()
 	print("Combined creation of the details done, execution time: " .. os.clock() - detailsCreationStartTime) -- in case of addEvents, has to be removed
 end
 
+function script.getMap()
+	return GroundMapper.new(mainPos, mapSizeX, mapSizeY, mapSizeZ, wpMinDist)
+end
+
 return script
