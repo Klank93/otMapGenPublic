@@ -79,7 +79,7 @@ normally, in running TFS and causes at the same time server freeze, outside the 
 so TFS only draws a map based on already created data.
 This approach, with some small modifications will allow to generate maps without any freeze completely :)
 
-Im not going to continue extending this feature for public - want to keep no-freeze map generation private, for myself.
+I'm not going to continue extending this feature for public - want to keep no-freeze map generation private, for myself.
 
 ### Running unit tests:
 - ```Lua tests/unit/testMockOperations.lua```
@@ -89,7 +89,8 @@ Im not going to continue extending this feature for public - want to keep no-fre
 - Capaverde, Zbizu: https://otland.net/threads/savemap-function-saves-it-to-a-new-otbm.193781 (saving maps to .otbm)
 - Kikito: https://github.com/kikito/ansicolors.lua (ansicolors, added, but currently not being used)
 - Bluebird75: https://github.com/bluebird75/luaunit (lua unit test framework)
-- Core Lua 5.1 Logging
+- Core Lua 5.1 Logging (added as library)
+- David Kolf's JSON module for Lua 5.1/5.2 https://github.com/LuaDist/dkjson (json deserialization/serialization)
 
 ### Todos:
 - improved logging, for example (with asci colors):

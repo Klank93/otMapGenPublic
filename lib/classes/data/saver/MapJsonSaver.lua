@@ -23,7 +23,7 @@ function MapJsonSaver:serializeMapData()
 			for z, zData in pairs(yData) do
 				serializedData['map'][x][y][z] = {}
 
-				-- Zamiast trzymać `stackpos` jako indeks, zamień go na klucz
+				-- Instead of keeping 'stackpos' as index (was causing issues), it's a field under the object
 				for stackpos, itemData in ipairs(zData) do
 					table.insert(serializedData['map'][x][y][z], {
 						stackpos = stackpos,
@@ -48,7 +48,7 @@ function MapJsonSaver:save(generalStartTime)
 
 	local serializedData = self:serializeMapData()
 
-	file:write(json.encode(serializedData, { indent = true })) -- Użycie indentacji dla czytelności
+	file:write(json.encode(serializedData, {indent = true})) -- indentation enabled, to make it human readable, please disable in "production" usage
 	file:close()
 
 	print('# Saving map: ' .. filename .. ' finished.')
