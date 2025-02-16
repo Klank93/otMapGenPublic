@@ -14,6 +14,9 @@ end
 local folders = {
     'lib/externalResources',
     'lib',
+	'lib/classes/data',
+	'lib/classes/data/reader',
+	'lib/classes/data/saver',
     'lib/classes/tools',
     'lib/classes',
     'lib/data',

@@ -6,7 +6,7 @@ MAP_CONFIGURATION = {
     mainPos = {x = 145, y = 145, z = 7},
     mapSizeX = 40,
     mapSizeY = 40,
-	mapSizeZ = 4, -- if set to greater than 1 => multi floor
+	mapSizeZ = 1, -- if set to greater than 1 => multi floor
     wpMinDist = 8,
     wayPointsCount = 7
 }
@@ -228,6 +228,12 @@ function script.run()
 
 		print('> 19 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
 	end
+
+	return generatedMap
+end
+
+function script.getMap()
+	return GroundMapper.new(mainPos, mapSizeX, mapSizeY, mapSizeZ, wpMinDist)
 end
 
 return script

@@ -265,6 +265,8 @@ function script.run()
 
 		print('> 21 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
 	end
+
+	return generatedMap
 end
 
 return script

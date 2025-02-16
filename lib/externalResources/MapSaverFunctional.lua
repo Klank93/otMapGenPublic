@@ -148,7 +148,8 @@ function saveMap3(name, frompos, topos) --e.g. "map.otbm"
     local first = true
     local l_x=-1
     local l_y=-1
-    local l_Z=-1
+    local l_z=-1
+
     for z=frompos.z,topos.z do
         for x=frompos.x,topos.x do
             local prog = (x - frompos.x) * 100 / (topos.x - frompos.x)
@@ -157,7 +158,6 @@ function saveMap3(name, frompos, topos) --e.g. "map.otbm"
 			end
 
             for y=frompos.y,topos.y do
-
                 if x<l_x or x>=l_x+256 or y<l_y or y>=l_y+256 or z~=l_z then
                     if not first then
                         endNode(f)
@@ -182,7 +182,7 @@ function saveMap3(name, frompos, topos) --e.g. "map.otbm"
                     local pos = {x=x,y=y,z=z,stackpos=stackpos}
                     local thing = getTileThingByPosMock(pos)
 
-                    if (thing.itemid==0 and stackpos==0) then --no tile, so we can skip it
+                    if (thing.itemid == 0 and stackpos == 0) then --no tile, so we can skip it
                         break
                     end
                     if thing.itemid > 0 and stackpos ~= 253 then --TODO: save item counts, save containers

@@ -83,3 +83,5 @@ logs/*
 
 generatedFiles/*
 !generatedFiles/.gitkeep
+generatedFiles/json/
+!generatedFiles/json/.gitkeep

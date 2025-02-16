@@ -6,7 +6,7 @@ MAP_CONFIGURATION = {
     mainPos = {x = 145, y = 145, z = 7},
     mapSizeX = 30,
     mapSizeY = 30,
-	mapSizeZ = 4, -- if set to greater than 1 => multi floor
+	mapSizeZ = 1, -- if set to greater than 1 => multi floor
     wpMinDist = 6,
     wayPointsCount = 3
 }
@@ -57,8 +57,8 @@ function script.run()
 		wayPointer:createPathBetweenWpsTSP(ITEMS_TABLE, 3, currentFloor) -- exact one
 		-- wayPointer:createPathBetweenWpsTSPMS(ITEMS_TABLE)
 
-		local roomBuilder = DungeonRoomBuilder.new(generatedMap, wayPoints[currentFloor])
-		roomBuilder:createRooms(ITEMS_TABLE, ROOM_SHAPES)
+		local roomBuilder = DungeonRoomBuilder.new(generatedMap, wayPoints)
+		roomBuilder:createRooms(ITEMS_TABLE, ROOM_SHAPES, currentFloor)
 
 		print('> 4 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
 
@@ -147,8 +147,8 @@ function script.run()
 		------ Detailing Map
 
 		local startTime = os.clock()
-		local detailer = Detailer.new(generatedMap, wayPoints[currentFloor])
-		detailer:createDetailsInRooms(ROOM_SHAPES, ITEMS_TABLE, TOMB_SAND_WALL_BORDER)
+		local detailer = Detailer.new(generatedMap, wayPoints)
+		detailer:createDetailsInRooms(ROOM_SHAPES, ITEMS_TABLE, TOMB_SAND_WALL_BORDER, currentFloor)
 
 		print('> 13 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
 
@@ -198,6 +198,12 @@ function script.run()
 
 		print('> 17 memory: ' .. round(collectgarbage("count"), 3) .. ' kB')
 	end
+
+	return generatedMap
+end
+
+function script.getMap()
+	return GroundMapper.new(mainPos, mapSizeX, mapSizeY, mapSizeZ, wpMinDist)
 end
 
 return script
