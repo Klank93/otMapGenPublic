@@ -1,5 +1,5 @@
 # Abcq/Acedb Map Generator
-### version 0.1.0 (alpha)
+### version 0.1.1 (alpha)
 
 ## The Goal:
 The goal of this script/app is to provide a tool for map generation for Open Tibia Servers.
@@ -59,8 +59,27 @@ Which way to use depends on your specific needs.
 - ```/genMap test40,save```
 - ```/genMap test40,tableMode,save```
 
-#### Erasing generated map (only in TFS, you need to provide generation script file - the same, which was used for generation):
+### Erasing generated map (only in TFS, you need to provide generation script file - the same, which was used for generation):
 - ```/genMap test40,erase```
+
+### New feature (ver. >=0.1.1):
+Possibility to generate map in CLI with saving to JSON format and then using it for map drawning in running TFS
+
+##### CLI (I step):
+```Lua main.lua test70,saveJson cli```
+it will result with new file under generatedFiles/json directory
+##### TFS (II step, in-game):
+```/genMap test70,readJson,<json_filename_with_format>```
+
+e.g.:
+```/genMap test70,readJson,test70-35.json```
+
+Main benefit from this is separating the generation process, which takes much time
+normally, in running TFS and causes at the same time server freeze, outside the TFS process,
+so TFS only draws a map based on already created data.
+This approach, with some small modifications will allow to generate maps without any freeze completely :)
+
+Bad news is that, I will not continue extending this feature for public - want to keep no-freeze map generation private, for myself.
 
 ### Running unit tests:
 - ```Lua tests/unit/testMockOperations.lua```

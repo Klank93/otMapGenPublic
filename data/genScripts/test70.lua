@@ -269,4 +269,8 @@ function script.run()
 	return generatedMap
 end
 
+function script.getMap()
+	return GroundMapper.new(mainPos, mapSizeX, mapSizeY, mapSizeZ, wpMinDist)
+end
+
 return script

@@ -16,7 +16,7 @@ else
 	dofile(rootPath .. "bootstrap.lua")
 end
 
--- Function to configure logger
+-- Configure logger
 local function setupLogger(scriptName, logType, timestamp)
 	return logging.file(
 		rootPath .. "logs/" .. scriptName .. "-" .. logType .. "-%s.log",
@@ -25,27 +25,26 @@ local function setupLogger(scriptName, logType, timestamp)
 	)
 end
 
--- Function to load script file path
+-- Load script file path
 local function loadScriptFile(params, generalStartTime)
 	local scriptPath = rootPath .. "data/genScripts/" .. params[1] .. ".lua"
 	print("# Executing script: " .. scriptPath .. ", logIdentifier: " .. generalStartTime)
 	return scriptPath
 end
 
--- Function to erase the map
+-- Erase map
 local function eraseGeneratedMap(scriptPath)
 	dofile(scriptPath)
 	eraseMap()
 	print("Map was erased for script: " .. scriptPath)
 end
 
--- Function to save map in .otbm format
+-- Save map in .otbm format
 local function saveGeneratedMap(scriptName, generatedMap, generalStartTime)
 	logger = setupLogger(scriptName, "saving-map", generalStartTime)
 
 	local filename = rootPath .. "generatedFiles/" .. MAP_CONFIGURATION.saveMapFilename .. string.format("-%s.otbm", os.date("%S"))
 	local mainPos = generatedMap.mainPos
-	--local mapSizeX, mapSizeY, mapSizeZ = generatedMap.mapSizeX, generatedMap.mapSizeY, generatedMap.mapSizeZ - 1
 	local mapSizeX, mapSizeY, mapSizeZ = generatedMap.sizeX, generatedMap.sizeY, generatedMap.sizeZ - 1
 
 	local fromPos = { x = mainPos.x - 5, y = mainPos.y - 5, z = mainPos.z - mapSizeZ }
@@ -56,7 +55,7 @@ local function saveGeneratedMap(scriptName, generatedMap, generalStartTime)
 	print("# Saving map: " .. filename .. " finished.")
 end
 
--- Function to save map in JSON format
+-- Save map in JSON format
 local function saveGeneratedJson(scriptName, generatedMap, generalStartTime)
 	logger = setupLogger(scriptName, "saving-map", generalStartTime)
 
@@ -64,9 +63,36 @@ local function saveGeneratedJson(scriptName, generatedMap, generalStartTime)
 	mapJsonSaver:save()
 end
 
+-- Read map from JSON
 local function readGeneratedJson(filename, generatedMap)
 	local mapReader = MapJsonReader.new(generatedMap)
 	return mapReader:load(filename)
+end
+
+-- Draw map from memory (e.g. previously loaded from json)
+local function drawMemoryMap(generatedMap)
+	if (PRECREATION_TABLE_MODE and RUNNING_MODE == 'tfs') then
+		local mapCreator = MapCreator.new(generatedMap)
+		mapCreator:drawMap()
+	else
+		error('Drawning map available only in running TFS with tableMode.')
+	end
+end
+
+-- Process map operations (execution, saving, etc.)
+local function processMapOperation(scriptName, params, generatedMap, generalStartTime)
+	local endMessage = "# General execution time: " .. (os.clock() - generalStartTime)
+	if LOG_TO_FILE then
+		endMessage = endMessage .. ", logIdentifier: " .. generalStartTime
+	end
+
+	if params[2] == "save" or params[3] == "save" then
+		saveGeneratedMap(scriptName, generatedMap, generalStartTime)
+	elseif params[2] == "saveJson" or params[3] == "saveJson" then
+		saveGeneratedJson(scriptName, generatedMap, generalStartTime)
+	end
+
+	print(endMessage)
 end
 
 -- Main function executed in TFS when using talk action
@@ -97,36 +123,25 @@ function onSay(player, words, param)
 	end
 
 	local runningScript = dofile(scriptPath)
-	if (params[2] == "readJson" or params[3] == "readJson") and
-		(params[3] ~= nil or params[4] ~= nil)
-	then
-		local map = runningScript.getMap()
 
-		local endMessage = "# General execution time: " .. (os.clock() - generalStartTime)
-		if LOG_TO_FILE then
-			endMessage = endMessage .. ", logIdentifier: " .. generalStartTime
-		end
+	if ((params[2] == "readJson" or params[3] == "readJson") and
+		(params[3] ~= nil or params[4] ~= nil)
+	) then
+		local map = runningScript.getMap()
 		local filename = params[3] ~= "readJson" and params[3] or params[4]
 
-		CLI_FINAL_MAP_TABLE  = readGeneratedJson(filename, map)
-		saveGeneratedMap(scriptName, map, generalStartTime)
+		CLI_FINAL_MAP_TABLE = readGeneratedJson(filename, map)
+		if RUNNING_MODE == "tfs" then
+			PRECREATION_TABLE_MODE = true
+			drawMemoryMap(map)
+		else
+			saveGeneratedMap(scriptName, map, generalStartTime)
+		end
 
-		print(endMessage)
+		print("# General execution time: " .. (os.clock() - generalStartTime))
 	else
 		local generatedMap = runningScript.run()
-
-		local endMessage = "# General execution time: " .. (os.clock() - generalStartTime)
-		if LOG_TO_FILE then
-			endMessage = endMessage .. ", logIdentifier: " .. generalStartTime
-		end
-
-		if params[2] == "save" or params[3] == "save" then
-			saveGeneratedMap(scriptName, generatedMap, generalStartTime)
-		elseif params[2] == "saveJson" or params[3] == "saveJson" then
-			saveGeneratedJson(scriptName, generatedMap, generalStartTime)
-		end
-
-		print(endMessage)
+		processMapOperation(scriptName, params, generatedMap, generalStartTime)
 	end
 end
 
