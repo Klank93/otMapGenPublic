@@ -31,6 +31,10 @@ function CaveGroundMapper:correctCaveShapes(
     pom.y = self.mainPos.y
     pom.z = currentFloor
 
+    if type(groundItemId) == "table" then
+        groundItemId = groundItemId[1]
+    end
+
     for i = self.mainPos.y, self.mainPos.y + self.sizeY do
         for j = self.mainPos.x, self.mainPos.x + self.sizeX do
             step = 1
@@ -508,6 +512,10 @@ function CaveGroundMapper:correctBackgroundShapes(
     pom.x = self.mainPos.x
     pom.y = self.mainPos.y
     pom.z = currentFloor
+
+    if type(groundItemId) == "table" then
+        groundItemId = groundItemId[1]
+    end
 
     for i = self.mainPos.y, self.mainPos.y + self.sizeY do
         for j = self.mainPos.x, self.mainPos.x + self.sizeX do

@@ -256,7 +256,7 @@ function WayPointer:_createPathBetweenTwoPoints(itemsTab, pos1, pos2, currentFlo
             end
         until (cr.pos.x == pos2.x)
 
-        brush:doBrushSquares(itemsTab[1], 3, cr.pos)
+        brush:doBrushSquares(itemsTab, 3, cr.pos)
         -- doCreateItemMock(598, 1, cr.pos) -- points the crossing
 
         cr:setPos(pos2.x, pos1.y, pos1.z)
@@ -282,7 +282,7 @@ function WayPointer:_createPathBetweenTwoPoints(itemsTab, pos1, pos2, currentFlo
             end
         until (cr.pos.y == pos2.y)
 
-        brush:doBrushSquares(itemsTab[1], 3, cr.pos)
+        brush:doBrushSquares(itemsTab, 3, cr.pos)
         --doCreateItemMock(598, 1, cr.pos) -- points the crossing
 
     else
@@ -310,7 +310,7 @@ function WayPointer:_createPathBetweenTwoPoints(itemsTab, pos1, pos2, currentFlo
             end
         until (cr.pos.y == pos2.y)
 
-        brush:doBrushSquares(itemsTab[1], 3, cr.pos)
+        brush:doBrushSquares(itemsTab, 3, cr.pos)
 
         --doCreateItemMock(598, 1, cr.pos) -- points the crossing
 
@@ -337,7 +337,7 @@ function WayPointer:_createPathBetweenTwoPoints(itemsTab, pos1, pos2, currentFlo
             end
         until (cr.pos.x == pos2.x)
 
-        brush:doBrushSquares(itemsTab[1], 3, cr.pos)
+        brush:doBrushSquares(itemsTab, 3, cr.pos)
         --doCreateItemMock(598, 1, cr.pos) -- points the crossing
     end
 end
@@ -434,7 +434,7 @@ function WayPointer:_createPathBetweenTwoPointsTSP(itemsTab, pos1, pos2, brushSi
             end
         end
 
-        brush:doBrushSquares(itemsTab[1], brushSize, cr.pos)
+        brush:doBrushSquares(itemsTab, brushSize, cr.pos)
     end
 
     cr:setPos(pos1.x, pos1.y, pos1.z)

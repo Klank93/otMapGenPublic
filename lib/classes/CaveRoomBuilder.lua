@@ -80,7 +80,7 @@ function CaveRoomBuilder:_createRoom(itemsTab, centerPos, width, height)
 
             -- print("Expression : " .. expression)
             if (expression <= 0) then
-                doCreateItemMock(itemsTab[1][1], 1, pom)
+                doCreateItemMock(itemsTab[1], 1, pom)
             --else
             --    doCreateItemMock(231, 1, pom)
             end

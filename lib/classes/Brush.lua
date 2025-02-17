@@ -80,7 +80,7 @@ function Brush:doBrushSquares(newGroundItemIds, size, centerPos, goodGroundItemI
 
         --else size - 1 bo pom = centerPos
     end
-
+    print("newGroundItemIds[1]", newGroundItemIds[1])
     for i = 1, size do
         for j = 1, size do
 			if (type(goodGroundItemIds) == "table" and not isEmpty(goodGroundItemIds)) then
@@ -91,8 +91,8 @@ function Brush:doBrushSquares(newGroundItemIds, size, centerPos, goodGroundItemI
 				end
 
 				if item and inArray(goodGroundItemIds, item.itemid) then
-					doCreateItemMock(
-						newGroundItemIds[1],
+					doCreateItemMock( -- This requires ItemId.
+						newGroundItemIds[1], -- This has to be item id not table.
 						1,
 						{x = pom.x, y = pom.y, z = pom.z, stackpos = 0},
 						true

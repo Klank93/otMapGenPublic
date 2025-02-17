@@ -19,6 +19,10 @@ function GroundAutoBorder:doGround(ground1, ground2, badGround, border, currentF
     pom.y = self.map.mainPos.y
     pom.z = currentFloor
 
+    if type(ground2) == "table" then
+        ground2 = ground2[1]
+    end
+
     for i = self.map.mainPos.y, self.map.mainPos.y + self.map.sizeY do
         for j = self.map.mainPos.x, self.map.mainPos.x + self.map.sizeX do
 			local itemId
@@ -291,6 +295,10 @@ function GroundAutoBorder:doGround2(ground1, ground2, badGround1, badGround2, bo
     pom.x = self.map.mainPos.x
     pom.y = self.map.mainPos.y
     pom.z = currentFloor
+
+    if type(ground2) == "table" then
+        ground2 = ground2[1]
+    end
 
     for i = self.map.mainPos.y, self.map.mainPos.y + self.map.sizeY do
         for j = self.map.mainPos.x, self.map.mainPos.x + self.map.sizeX do

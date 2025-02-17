@@ -50,6 +50,10 @@ function GroundMapper:doGround(
     local lastPos = {}
     local pathSize = 0
 
+    if type(badGroundItemId) == "table" then
+        badGroundItemId = badGroundItemId[1]
+    end
+
     for i = 1, #markersTab do
         pathSize = 0
 
@@ -116,6 +120,10 @@ function GroundMapper:doGround2(
 	if (brushSizes == nil) then
 		brushSizes = {3}
 	end
+
+    if type(goodGroundItemId) == "table" then
+        goodGroundItemId = goodGroundItemId[1]
+    end
 
     local startTime = os.clock()
     local lastPos = {}
@@ -201,6 +209,10 @@ function GroundMapper:correctGround(
     pom.x = self.mainPos.x
     pom.y = self.mainPos.y
     pom.z = currentFloor
+
+    if type(mainGround) == "table" then
+        mainGround = mainGround[1]
+    end
 
     for i = self.mainPos.y, self.mainPos.y + self.sizeY do
         for j = self.mainPos.x, self.mainPos.x + self.sizeX do

@@ -130,6 +130,10 @@ function Marker:createMarkersAlternatively( -- performance improvement ~40% in c
         minDistanceBetweenTwoMarkers,
 		currentFloor
 	)
+
+    if type(acceptedGroundItemId) == "table" then
+        acceptedGroundItemId = acceptedGroundItemId[1]
+    end
 	currentFloor = currentFloor or self.map.mainPos.z
     local startTime = os.clock()
     local acceptedMapTilesTab = {}
@@ -138,6 +142,7 @@ function Marker:createMarkersAlternatively( -- performance improvement ~40% in c
 
     for i = self.map.pos.y, self.map.pos.y + self.map.sizeY - 1 do
         for j = self.map.pos.x, self.map.pos.x + self.map.sizeX - 1 do
+            local targetItem = getThingFromPosMock({x = j, y = i, z = currentFloor, stackpos = 0}).itemid
             if (acceptedGroundItemId == 0) then
                 local isWalkable = isWalkable(
 					{x = j, y = i, z = currentFloor}
@@ -151,10 +156,7 @@ function Marker:createMarkersAlternatively( -- performance improvement ~40% in c
 				else
 					--print("unwalkable pos: " .. dumpVar({x = j, y = i, z = currentFloor}))
 				end
-            elseif (getThingFromPosMock(
-                    {x = j, y = i, z = currentFloor, stackpos = 0}
-                ).itemid == acceptedGroundItemId
-            ) then
+            elseif targetItem then
                 table.insert(
 					acceptedMapTilesTab,
 					{x = j, y = i, z = currentFloor}

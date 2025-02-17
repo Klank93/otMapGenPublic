@@ -23,10 +23,10 @@ function GroundRandomizer:randomize(itemsTab, chance, currentFloor)
                     {x = pom.x, y = pom.y, z = pom.z, stackpos = 0}
             )
             local randChance = math.random(1, 100)
-            if (getitem.itemid == itemsTab[1][1]) then
+            if (getitem.itemid == itemsTab[1]) then
                 if (randChance <= chance) then
                     doCreateItemMock(
-						itemsTab[1][math.random(2, #itemsTab[1])],
+						itemsTab[math.random(2, #itemsTab)],
 						1,
 						{x = pom.x, y = pom.y, z = pom.z}
                     )

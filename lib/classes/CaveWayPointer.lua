@@ -149,31 +149,31 @@ function CaveWayPointer:_createPathBetweenTwoPoints(itemsTab, pos1, pos2, brushS
                 if (directionY > 0) then
                     pom.y = pom.y - 1 -- up
                     --	print("Up-Left")
-                    self.brush:doBrushSquares(itemsTab[1], brushSize, pom)
+                    self.brush:doBrushSquares(itemsTab, brushSize, pom)
                 elseif (directionY < 0) then
                     pom.y = pom.y + 1 -- down
                     --	print("Down-Left")
 
-                    self.brush:doBrushSquares(itemsTab[1], brushSize, pom)
+                    self.brush:doBrushSquares(itemsTab, brushSize, pom)
                 end
                 pom.x = pom.x - 1
                 --	print("Left")
-                self.brush:doBrushSquares(itemsTab[1], brushSize, pom)
+                self.brush:doBrushSquares(itemsTab, brushSize, pom)
             elseif (directionX < 0) then -- right
                 if (directionY > 0) then
                     pom.y = pom.y - 1 -- up
                     --	print("Up-Right")
 
-                    self.brush:doBrushSquares(itemsTab[1], brushSize, pom)
+                    self.brush:doBrushSquares(itemsTab, brushSize, pom)
                 elseif (directionY < 0) then
                     pom.y = pom.y + 1 -- down
                     --	print("Down-Right")
 
-                    self.brush:doBrushSquares(itemsTab[1], brushSize, pom)
+                    self.brush:doBrushSquares(itemsTab, brushSize, pom)
                 end
                 pom.x = pom.x + 1
                 --	print("Right")
-                self.brush:doBrushSquares(itemsTab[1], brushSize, pom)
+                self.brush:doBrushSquares(itemsTab, brushSize, pom)
             else -- x in the same line
                 if (directionY > 0) then
                     pom.y = pom.y - 1 -- up
@@ -183,7 +183,7 @@ function CaveWayPointer:_createPathBetweenTwoPoints(itemsTab, pos1, pos2, brushS
                     --	print("Down")
                 end
 
-                self.brush:doBrushSquares(itemsTab[1], brushSize, pom)
+                self.brush:doBrushSquares(itemsTab, brushSize, pom)
             end
         until (pom.x == pos2.x and pom.y == pos2.y)
     end

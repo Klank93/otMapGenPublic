@@ -9,7 +9,9 @@ end
 -- Function to parse brush data from an XML file
 function parseBrushes(filename)
     local xmlFolder = 'lib/data/input/'
+
     local filePath = ROOT_PATH .. xmlFolder .. filename ..'.xml'
+    print("PATH", filePath)
     local file = io.open(filePath, "r")
     if not file then return nil end
 

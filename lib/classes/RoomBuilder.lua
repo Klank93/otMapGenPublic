@@ -48,7 +48,7 @@ function DungeonRoomBuilder:createRooms(itemsTab, roomShapes, currentFloor)
         for i=1, roomShapes[randValue].height do
             for j=1, roomShapes[randValue].width do
                 if (roomShapes[randValue].shape[i][j] ~= 0) then
-                    doCreateItemMock(itemsTab[1][1], 1, pom)
+                    doCreateItemMock(itemsTab[1], 1, pom)
                 end
                 pom.x = pom.x + 1
             end

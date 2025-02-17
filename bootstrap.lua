@@ -24,7 +24,8 @@ local folders = {
     'lib/data/brushes',
 	'lib/data/elevation',
     'lib/data/shapes',
-	'lib/commonScripts'
+	'lib/commonScripts',
+    'lib/enum'
 }
 local filesCount = 0
 for i = 1, #folders do
