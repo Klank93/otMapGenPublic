@@ -6,6 +6,39 @@ function loadSchemaFile()
     dofile(schemaFilePath)
 end
 
+-- Function to parse brush data from an XML file
+function parseBrushes(filename)
+    local xmlFolder = 'lib/data/input/'
+    local filePath = ROOT_PATH .. xmlFolder .. filename ..'.xml'
+    local file = io.open(filePath, "r")
+    if not file then return nil end
+
+    --  local content = file:read("*all")
+
+    print("Parsing file:", filename)
+
+    local brushes = {}
+    local currentBrush = nil
+
+    for line in file:lines() do
+        -- Match the opening <brush> tag and extract the name
+        local brushName = line:match('<brush name="(.-)"')
+        if brushName then
+            currentBrush = brushName
+            brushes[currentBrush] = {}
+        end
+        -- Match item IDs and their chance values inside the brush
+        local itemId, chance = line:match('<item id="(%d+)" chance="(%d+)"')
+        if itemId and chance and currentBrush then
+            --   table.insert(brushes[currentBrush], { id = tonumber(itemId), chance = tonumber(chance) })
+            table.insert(brushes[currentBrush],  tonumber(itemId))
+        end
+    end
+    file:close()
+    return brushes
+end
+
+
 function defaultParam(value, defaultValue)
     if value == nil then
         return defaultValue
